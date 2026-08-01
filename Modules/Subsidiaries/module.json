@@ -1,0 +1,11 @@
+{
+    "name": "Subsidiaries",
+    "alias": "subsidiaries",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Subsidiaries\\Providers\\SubsidiariesServiceProvider"
+    ],
+    "files": []
+}

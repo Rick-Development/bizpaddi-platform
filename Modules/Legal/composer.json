@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/legal",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Legal\\": "/",
+            "Modules\\Legal\\Database\\Factories\\": "database/factories/",
+            "Modules\\Legal\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Legal\\Tests\\": "tests/"
+        }
+    }
+}

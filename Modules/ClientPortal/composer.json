@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/clientportal",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ClientPortal\\": "/",
+            "Modules\\ClientPortal\\Database\\Factories\\": "database/factories/",
+            "Modules\\ClientPortal\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\ClientPortal\\Tests\\": "tests/"
+        }
+    }
+}

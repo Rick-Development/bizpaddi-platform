@@ -1,0 +1,73 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('leads', function (Blueprint $table) {
+            // Make email unique if not already
+            $table->string('email')->unique()->change();
+            
+            // Add lead tracking fields
+            $table->string('source')->nullable()->after('company')->comment('e.g., Website Form, Referral, Cold Call, Social Media');
+            $table->integer('score')->default(0)->after('source')->comment('Lead score 0-100');
+            
+            // Add assignment field (without foreign key for now)
+            $table->unsignedBigInteger('assigned_to')->nullable()->after('score');
+            
+            // Add activity tracking
+            $table->timestamp('last_contacted_at')->nullable()->after('assigned_to');
+            
+            // Add conversion tracking (without foreign key for now)
+            $table->unsignedBigInteger('converted_to_contact_id')->nullable()->after('last_contacted_at');
+            $table->timestamp('converted_at')->nullable()->after('converted_to_contact_id');
+            
+            // Add flexible metadata storage
+            $table->json('metadata')->nullable()->after('converted_at');
+            
+            // Update status enum to include 'nurturing'
+            $table->enum('status', ['new', 'contacted', 'nurturing', 'qualified', 'converted', 'lost'])->default('new')->change();
+            
+            // Add indexes for performance
+            $table->index('status');
+            $table->index('assigned_to');
+            $table->index('source');
+            $table->index('score');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('leads', function (Blueprint $table) {
+            // Drop indexes
+            $table->dropIndex(['status']);
+            $table->dropIndex(['assigned_to']);
+            $table->dropIndex(['source']);
+            $table->dropIndex(['score']);
+            
+            // Drop columns
+            $table->dropColumn([
+                'source',
+                'score',
+                'assigned_to',
+                'last_contacted_at',
+                'converted_to_contact_id',
+                'converted_at',
+                'metadata',
+            ]);
+            
+            // Revert status enum
+            $table->enum('status', ['new', 'contacted', 'qualified', 'converted', 'lost'])->default('new')->change();
+        });
+    }
+};

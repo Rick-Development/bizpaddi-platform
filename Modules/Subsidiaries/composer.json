@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/subsidiaries",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Subsidiaries\\": "/",
+            "Modules\\Subsidiaries\\Database\\Factories\\": "database/factories/",
+            "Modules\\Subsidiaries\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Subsidiaries\\Tests\\": "tests/"
+        }
+    }
+}

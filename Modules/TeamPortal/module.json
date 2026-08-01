@@ -1,0 +1,11 @@
+{
+    "name": "TeamPortal",
+    "alias": "teamportal",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\TeamPortal\\Providers\\TeamPortalServiceProvider"
+    ],
+    "files": []
+}
