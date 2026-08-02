@@ -22,7 +22,7 @@
                 <h3 class="mt-4 text-sm font-semibold text-gray-900 group-hover:text-brand-primary transition-colors">{{ $project->name }}</h3>
                 <dl class="mt-1 flex flex-grow flex-col justify-between">
                     <dt class="sr-only">Client</dt>
-                    <dd class="text-sm text-gray-500">{{ $project->client->name }}</dd>
+                    <dd class="text-sm text-gray-500">{{ optional($project->client)->name ?? 'No Client' }}</dd>
                     <dt class="sr-only">Description</dt>
                     <dd class="text-sm text-gray-500 mt-2 line-clamp-2">{{ Str::limit(strip_tags($project->description), 100) }}</dd>
                 </dl>
