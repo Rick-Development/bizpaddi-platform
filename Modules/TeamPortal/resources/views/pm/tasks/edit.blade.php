@@ -98,7 +98,7 @@
                             <li class="flex items-center justify-between text-sm text-gray-600 bg-white border border-gray-100 px-3 py-2 rounded-lg shadow-sm">
                                 <div class="flex items-center gap-2 overflow-hidden">
                                     <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                    <a href="{{ route('pm.attachments.download', $media) }}" class="text-brand-primary hover:underline truncate" title="Download {{ $media->file_name }}">{{ $media->file_name }}</a>
+                                    <a href="{{ $media->getUrl() }}" download class="text-brand-primary hover:underline truncate" title="Download {{ $media->file_name }}">{{ $media->file_name }}</a>
                                     <span class="text-xs text-gray-400 whitespace-nowrap">({{ $media->human_readable_size }})</span>
                                 </div>
                                 <div class="flex items-center gap-2 ml-4">
