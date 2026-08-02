@@ -13,7 +13,7 @@ class PortfolioController extends Controller
     public function index()
     {
         $projects = \Modules\Portfolio\Models\Project::with('industry')->orderBy('year', 'desc')->get();
-        $industries = \Modules\Portfolio\Models\Industry::all();
+        $industries = \Modules\Portfolio\Models\Industry::has('projects')->get();
         return view('portfolio::index', compact('projects', 'industries'));
     }
 

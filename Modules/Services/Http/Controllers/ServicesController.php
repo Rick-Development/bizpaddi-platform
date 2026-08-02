@@ -34,7 +34,8 @@ class ServicesController extends Controller
      */
     public function show($id)
     {
-        return view('services::show');
+        $service = \Modules\Services\Models\Service::findOrFail($id);
+        return view('services::show', compact('service'));
     }
 
     /**

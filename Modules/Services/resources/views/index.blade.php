@@ -56,7 +56,7 @@
                         </div>
                         
                         <div class="px-8 pb-8">
-                            <a href="#" class="inline-flex items-center text-brand-primary font-semibold group-hover:text-purple-600 transition-colors">
+                            <a href="{{ route('services.show', $service->id) }}" class="inline-flex items-center text-brand-primary font-semibold group-hover:text-purple-600 transition-colors">
                                 {{ __('Learn More') }}
                                 <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
