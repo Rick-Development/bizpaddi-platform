@@ -13,7 +13,7 @@
 </div>
 
 <div class="max-w-3xl">
-    <form action="{{ route('team.pm.tasks.update', [$project, $task]) }}" method="POST" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
+    <form action="{{ route('team.pm.tasks.update', [$project, $task]) }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
         @csrf
         @method('PUT')
         
@@ -67,9 +67,43 @@
             <select name="milestone_id" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all outline-none text-sm">
                 <option value="">No milestone</option>
                 @foreach($project->milestones as $milestone)
-                <option value="{{ $milestone->id }}" {{ old('milestone_id', $task->milestone_id) == $milestone->id ? 'selected' : '' }}>{{ $milestone->name }}</option>
+                <option value="{{ $milestone->id }}" {{ old('milestone_id', $task->milestone_id) == $milestone->id ? 'selected' : '' }}>{{ $milestone->title ?? $milestone->name }}</option>
                 @endforeach
             </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Attachments (Images, Videos, Files)</label>
+            <input type="file" name="attachments[]" id="file_upload" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent bg-gray-50">
+            <p class="mt-1 text-xs text-gray-500">You can select multiple files to add. Max size per file: 20MB.</p>
+            <ul id="file_list" class="mt-2 text-sm text-gray-700 space-y-1"></ul>
+            
+            <script>
+                document.getElementById('file_upload').addEventListener('change', function(e) {
+                    const list = document.getElementById('file_list');
+                    list.innerHTML = '';
+                    for (let i = 0; i < this.files.length; i++) {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center gap-2 bg-gray-100 px-2 py-1 rounded';
+                        li.innerHTML = `<svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg> ${this.files[i].name}`;
+                        list.appendChild(li);
+                    }
+                });
+            </script>
+            @if($task->getMedia('task_attachments')->count() > 0)
+                <div class="mt-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Existing Attachments:</p>
+                    <ul class="space-y-2">
+                        @foreach($task->getMedia('task_attachments') as $media)
+                            <li class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                <a href="{{ $media->getUrl() }}" target="_blank" class="text-brand-primary hover:underline truncate">{{ $media->file_name }}</a>
+                                <span class="ml-2 text-xs text-gray-400">({{ $media->human_readable_size }})</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
 
         <div class="pt-6 flex justify-end">

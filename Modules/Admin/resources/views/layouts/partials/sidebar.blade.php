@@ -372,7 +372,7 @@
                     </li>
 
                     <!-- Project Management -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.pm-projects.*') || request()->routeIs('admin.tasks.*') ? 'true' : 'false' }} }">
+                    <li x-data="{ open: {{ request()->routeIs('admin.pm-projects.*') || request()->routeIs('admin.tasks.*') || request()->routeIs('admin.work-logs.*') || request()->routeIs('admin.pm-milestones.*') || request()->routeIs('admin.kanban.*') || request()->routeIs('admin.team-monitoring.*') || request()->routeIs('admin.kpis.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
@@ -399,8 +399,13 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.work-logs.index') }}" class="{{ request()->routeIs('admin.work-logs.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Daily Work Logs
+                                <a href="{{ route('admin.work-logs.index') }}" class="{{ request()->routeIs('admin.work-logs.index') || request()->routeIs('admin.work-logs.show') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Work Session Logs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.work-logs.export-page') }}" class="{{ request()->routeIs('admin.work-logs.export-page') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Export Generator
                                 </a>
                             </li>
                             <li>

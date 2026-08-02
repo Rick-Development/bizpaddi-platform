@@ -4,8 +4,8 @@
 <div class="px-4 py-6 sm:px-6 lg:px-8">
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-            <h1 class="text-2xl font-bold leading-6 text-gray-900">Daily Work Logs</h1>
-            <p class="mt-2 text-sm text-gray-700">Track your daily activities, challenges, and progress.</p>
+            <h1 class="text-2xl font-bold leading-6 text-gray-900">Work Session Logs</h1>
+            <p class="mt-2 text-sm text-gray-700">Track your work sessions, check-ins, challenges, and progress.</p>
         </div>
     </div>
 

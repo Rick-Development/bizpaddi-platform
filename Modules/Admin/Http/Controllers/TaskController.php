@@ -5,10 +5,10 @@ namespace Modules\Admin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\ProjectManagement\Models\Task;
 use Modules\ProjectManagement\Models\Project;
-
 use App\Models\User;
-use App\Models\Admin; // Keep if needed for something else, or remove
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TaskController extends Controller
 {
@@ -16,7 +16,11 @@ class TaskController extends Controller
     {
         $tasks = Task::with(['project', 'assignee'])
             ->when($request->status, function ($query, $status) {
-                $query->where('status', $status);
+                if ($status === 'overdue') {
+                    $query->where('status', '!=', 'completed')->whereNotNull('due_date')->where('due_date', '<', Carbon::now());
+                } else {
+                    $query->where('status', $status);
+                }
             })
             ->when($request->project_id, function ($query, $id) {
                 $query->where('project_id', $id);
@@ -24,10 +28,16 @@ class TaskController extends Controller
             ->when($request->assigned_to, function ($query, $id) {
                 $query->where('assigned_to', $id);
             })
+            ->when($request->priority, function ($query, $priority) {
+                $query->where('priority', $priority);
+            })
             ->latest()
             ->paginate(20);
 
-        return view('admin::tasks.index', compact('tasks'));
+        $projects = Project::all();
+        $users = User::all();
+
+        return view('admin::tasks.index', compact('tasks', 'projects', 'users'));
     }
 
     public function create(Request $request)
@@ -47,13 +57,20 @@ class TaskController extends Controller
             'description' => 'nullable|string',
             'project_id' => 'required|exists:pm_projects,id',
             'assigned_to' => 'nullable|exists:users,id',
-            'status' => 'required|in:todo,in_progress,review,done',
+            'status' => 'required|in:todo,in_progress,review,done,completed',
             'priority' => 'required|in:low,medium,high,urgent',
             'due_date' => 'nullable|date',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
+            'attachments.*' => 'nullable|file|max:20480', // 20MB max per file
         ]);
 
-        Task::create($validated);
+        $task = Task::create($validated);
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $task->addMedia($file)->toMediaCollection('task_attachments');
+            }
+        }
 
         return redirect()->route('admin.tasks.index')->with('success', 'Task created successfully.');
     }
@@ -67,7 +84,7 @@ class TaskController extends Controller
     public function updateStatus(Request $request, Task $task)
     {
         $validated = $request->validate([
-            'status' => 'required|in:todo,in_progress,review,done',
+            'status' => 'required|in:todo,in_progress,review,done,completed',
         ]);
 
         $task->update(['status' => $validated['status']]);
@@ -100,13 +117,20 @@ class TaskController extends Controller
             'description' => 'nullable|string',
             'project_id' => 'required|exists:pm_projects,id',
             'assigned_to' => 'nullable|exists:users,id',
-            'status' => 'required|in:todo,in_progress,review,done',
+            'status' => 'required|in:todo,in_progress,review,done,completed',
             'priority' => 'required|in:low,medium,high,urgent',
             'due_date' => 'nullable|date',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
+            'attachments.*' => 'nullable|file|max:20480', // 20MB max per file
         ]);
 
         $task->update($validated);
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $task->addMedia($file)->toMediaCollection('task_attachments');
+            }
+        }
 
         return redirect()->route('admin.tasks.index')->with('success', 'Task updated successfully.');
     }
@@ -115,5 +139,137 @@ class TaskController extends Controller
     {
         $task->delete();
         return back()->with('success', 'Task deleted successfully.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = Task::with(['project', 'assignee']);
+
+        $projectFilter = null;
+        if ($request->filled('project_id')) {
+            $query->where('project_id', $request->project_id);
+            $projectFilter = Project::find($request->project_id);
+        }
+
+        $userFilter = null;
+        if ($request->filled('assigned_to')) {
+            $query->where('assigned_to', $request->assigned_to);
+            $userFilter = User::find($request->assigned_to);
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'overdue') {
+                $query->where('status', '!=', 'completed')->whereNotNull('due_date')->where('due_date', '<', Carbon::now());
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
+
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        $tasks = $query->latest()->get();
+
+        // Calculate Overview KPIs
+        $totalTasks = $tasks->count();
+        $completedTasks = $tasks->whereIn('status', ['completed', 'done'])->count();
+        $inProgressTasks = $tasks->whereIn('status', ['in_progress', 'review'])->count();
+        $todoTasks = $tasks->where('status', 'todo')->count();
+        $overdueTasks = $tasks->filter(function($t) {
+            return !in_array($t->status, ['completed', 'done']) && $t->due_date && $t->due_date->isPast();
+        })->count();
+
+        $completionRate = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100, 1) : 0;
+
+        // Group by Project
+        $groupedTasks = $tasks->groupBy(function($item) {
+            return $item->project->title ?? 'General Tasks';
+        });
+
+        $pdf = Pdf::loadView('admin::tasks.export-pdf', compact(
+            'tasks',
+            'groupedTasks',
+            'projectFilter',
+            'userFilter',
+            'totalTasks',
+            'completedTasks',
+            'inProgressTasks',
+            'todoTasks',
+            'overdueTasks',
+            'completionRate'
+        ));
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $filename = 'tasks_report_' . Carbon::now()->format('Y_m_d_His') . '.pdf';
+
+        if ($request->boolean('preview', false)) {
+            return $pdf->stream($filename);
+        }
+
+        return $pdf->download($filename);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $query = Task::with(['project', 'assignee']);
+
+        if ($request->filled('project_id')) {
+            $query->where('project_id', $request->project_id);
+        }
+
+        if ($request->filled('assigned_to')) {
+            $query->where('assigned_to', $request->assigned_to);
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'overdue') {
+                $query->where('status', '!=', 'completed')->whereNotNull('due_date')->where('due_date', '<', Carbon::now());
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
+
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        $tasks = $query->latest()->get();
+
+        $filename = 'tasks_export_' . Carbon::now()->format('Y_m_d_His') . '.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($tasks) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID', 'Task Title', 'Project Name', 'Assigned To', 'Priority', 'Status', 'Due Date', 'Is Overdue', 'Created At']);
+
+            foreach ($tasks as $task) {
+                $isOverdue = !in_array($task->status, ['completed', 'done']) && $task->due_date && $task->due_date->isPast();
+
+                fputcsv($file, [
+                    $task->id,
+                    $task->title,
+                    $task->project->title ?? 'General',
+                    $task->assignee->name ?? 'Unassigned',
+                    strtoupper($task->priority ?? 'MEDIUM'),
+                    ucfirst($task->status ?? 'todo'),
+                    $task->due_date ? $task->due_date->format('Y-m-d') : 'No Due Date',
+                    $isOverdue ? 'YES' : 'NO',
+                    $task->created_at ? $task->created_at->format('Y-m-d H:i') : ''
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

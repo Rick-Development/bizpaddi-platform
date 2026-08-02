@@ -6,50 +6,98 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center flex-wrap gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Team Performance</h1>
-                <p class="mt-2 text-sm text-gray-500">View monthly performance metrics and KPIs for your team</p>
+                <p class="mt-2 text-sm text-gray-500">View performance metrics and KPIs based on tasks and attendance</p>
             </div>
-            <a href="{{ route('admin.team-members.index') }}" class="px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all">
-                Back to Team
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ route('admin.team-members.index') }}" class="px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all">
+                    Back to Team
+                </a>
+
+                <!-- Export Dropdown -->
+                <div x-data="{ open: false }" class="relative inline-block text-left">
+                    <button @click="open = !open" type="button" class="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary text-white text-sm font-bold rounded-xl hover:bg-brand-primary/90 transition-colors shadow-sm">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        Export Report
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+    
+                    <div x-show="open" @click.away="open = false" x-cloak class="origin-top-right absolute right-0 mt-2 w-60 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50">
+                        <div class="py-1">
+                            <div class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Download PDF</div>
+                            <a href="{{ route('admin.team-performance.export-pdf', array_merge(request()->all(), ['period' => 'daily'])) }}" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                📅 Export Daily Report
+                            </a>
+                            <a href="{{ route('admin.team-performance.export-pdf', array_merge(request()->all(), ['period' => 'weekly'])) }}" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                🗓️ Export Weekly Report
+                            </a>
+                            <a href="{{ route('admin.team-performance.export-pdf', array_merge(request()->all(), ['period' => 'monthly'])) }}" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                📆 Export Monthly Report
+                            </a>
+                            <a href="{{ route('admin.team-performance.export-pdf', array_merge(request()->all(), ['period' => 'yearly'])) }}" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                📊 Export Yearly Report
+                            </a>
+                            <a href="{{ route('admin.team-performance.export-pdf', array_merge(request()->all(), ['period' => 'custom', 'preview' => '1'])) }}" target="_blank" class="group flex items-center px-4 py-2 text-sm text-brand-primary font-medium hover:bg-brand-primary/10">
+                                👁️ Preview Custom Range
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" x-data="{ period: '{{ $period ?? 'monthly' }}' }">
+        <form method="GET" action="{{ route('admin.team-performance.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <select name="month" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
-                    @for($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
-                            {{ \Carbon\Carbon::create(null, $m, 1)->format('F') }}
-                        </option>
-                    @endfor
+                <label class="block text-sm font-medium text-gray-700 mb-2">Period</label>
+                <select name="period" x-model="period" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="custom">Custom Range</option>
                 </select>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <select name="year" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
-                    @for($y = now()->year; $y >= now()->year - 5; $y--)
-                        <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
-                    @endfor
-                </select>
+            <div x-show="period !== 'custom'">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Target Date</label>
+                <input type="date" name="start_date" value="{{ request('start_date') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
+                <p class="text-[10px] text-gray-500 mt-1">Leave blank for current {{ request('period', 'monthly') }}</p>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Team Member</label>
+            <div x-show="period === 'custom'" x-cloak>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                <input type="date" name="start_date" value="{{ request('start_date') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
+            </div>
+            <div x-show="period === 'custom'" x-cloak>
+                <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                <input type="date" name="end_date" value="{{ request('end_date') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
+            </div>
+            
+            <div :class="period === 'custom' ? '' : 'md:col-span-2'">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
                 <select name="team_member" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
-                    <option value="">All Team Members</option>
-                    @foreach($teamMembers as $member)
-                        <option value="{{ $member->id }}" {{ $teamMemberId == $member->id ? 'selected' : '' }}>
-                            {{ $member->name }}
-                        </option>
-                    @endforeach
+                    <optgroup label="Groups">
+                        <option value="group_active" {{ request('team_member') == 'group_active' ? 'selected' : '' }}>All Active Team</option>
+                        <option value="group_suspended" {{ request('team_member') == 'group_suspended' ? 'selected' : '' }}>All Suspended Team</option>
+                        <option value="group_inactive" {{ request('team_member') == 'group_inactive' ? 'selected' : '' }}>All Inactive Team</option>
+                    </optgroup>
+                    <optgroup label="Individual Team Members">
+                        @foreach($teamMembers as $member)
+                            <option value="{{ $member->id }}" {{ request('team_member') == $member->id ? 'selected' : '' }}>
+                                {{ $member->name }}
+                            </option>
+                        @endforeach
+                    </optgroup>
                 </select>
             </div>
-            <div class="flex items-end">
+            <div class="flex items-start mt-7">
                 <button type="submit" class="w-full px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors font-medium">
                     Apply Filters
                 </button>
@@ -72,7 +120,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Total Tasks</p>
             <h2 class="text-4xl font-black text-gray-900">{{ $totalTasksCompleted }}</h2>
-            <p class="mt-2 text-xs text-gray-500">Completed this month</p>
+            <p class="mt-2 text-xs text-gray-500">Completed in period</p>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Top Performer</p>
@@ -89,7 +137,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/50">
             <h3 class="text-lg font-bold text-gray-900">
-                Performance for {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
+                Performance for {{ $periodLabel }}
             </h3>
         </div>
 

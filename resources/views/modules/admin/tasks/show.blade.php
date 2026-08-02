@@ -37,7 +37,7 @@
                         Comments ({{ $task->comments->count() }})
                     </button>
                     <button type="button" onclick="switchCollaborationTab('files')" id="tab-files" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                        Files ({{ $task->getMedia('attachments')->count() }})
+                        Files ({{ $task->getMedia('task_attachments')->count() }})
                     </button>
                     <button type="button" onclick="switchCollaborationTab('time')" id="tab-time" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Time Logs ({{ $task->timeLogs->count() }})
@@ -54,15 +54,30 @@
                         <input type="hidden" name="commentable_type" value="task">
                         <textarea name="content" rows="3" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm" placeholder="Add a comment..."></textarea>
                         <div class="mt-3 flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <label class="cursor-pointer text-xs text-gray-500 hover:text-gray-700">
-                                    <input type="file" name="attachment" class="hidden">
-                                    Attach file
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" name="is_internal" value="1" class="rounded border-gray-300 text-brand-primary focus:ring-brand-primary">
-                                    <span class="ml-2 text-xs text-gray-500">Internal Only</span>
-                                </label>
+                            <div class="flex flex-col space-y-2">
+                                <div class="flex items-center space-x-4">
+                                    <label class="cursor-pointer text-xs text-gray-500 hover:text-gray-700">
+                                        <input type="file" name="attachments[]" id="comment_attachments" multiple class="hidden" onchange="updateCommentFileList(this)">
+                                        Attach file(s)
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="is_internal" value="1" class="rounded border-gray-300 text-brand-primary focus:ring-brand-primary">
+                                        <span class="ml-2 text-xs text-gray-500">Internal Only</span>
+                                    </label>
+                                </div>
+                                <ul id="comment_file_list" class="text-xs text-gray-600 space-y-1"></ul>
+                                <script>
+                                    function updateCommentFileList(input) {
+                                        const list = document.getElementById('comment_file_list');
+                                        list.innerHTML = '';
+                                        for (let i = 0; i < input.files.length; i++) {
+                                            const li = document.createElement('li');
+                                            li.className = 'flex items-center gap-1';
+                                            li.innerHTML = `📎 ${input.files[i].name}`;
+                                            list.appendChild(li);
+                                        }
+                                    }
+                                </script>
                             </div>
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-600 hover:bg-gray-700">
                                 Post
@@ -119,8 +134,21 @@
                                     <p class="mb-2 text-sm text-gray-500 font-semibold">Click to upload or drag and drop</p>
                                     <p class="text-xs text-gray-400">Any file (MAX. 10MB)</p>
                                 </div>
-                                <input id="task-file" name="file" type="file" class="hidden" />
+                                <input id="task-file" name="files[]" type="file" multiple class="hidden" onchange="updateFileList(this)" />
                             </label>
+                            <ul id="task_file_list" class="mt-2 text-sm text-gray-700 space-y-1 w-full text-left"></ul>
+                            <script>
+                                function updateFileList(input) {
+                                    const list = document.getElementById('task_file_list');
+                                    list.innerHTML = '';
+                                    for (let i = 0; i < input.files.length; i++) {
+                                        const li = document.createElement('li');
+                                        li.className = 'flex items-center gap-2 bg-gray-100 px-2 py-1 rounded text-xs';
+                                        li.innerHTML = `<svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg> ${input.files[i].name}`;
+                                        list.appendChild(li);
+                                    }
+                                }
+                            </script>
                         </div>
 
                         <div class="flex items-center space-x-4">
@@ -134,7 +162,7 @@
                         </div>
                     </form>
                     <div class="mt-6 grid grid-cols-1 gap-2 text-left">
-                        @foreach($task->getMedia('attachments') as $media)
+                        @foreach($task->getMedia('task_attachments') as $media)
                         <div class="p-2 border border-gray-200 rounded-lg flex items-center justify-between text-sm bg-white shadow-sm">
                             <div class="flex items-center space-x-2">
                                 <span class="truncate max-w-xs">{{ $media->file_name }}</span>
@@ -143,6 +171,7 @@
                                 @endif
                             </div>
                             <div class="flex items-center space-x-3">
+                                <a href="{{ $media->getUrl() }}" target="_blank" class="text-brand-primary hover:text-brand-primary/80">View</a>
                                 <a href="{{ $media->getUrl() }}" download class="text-blue-500 hover:text-blue-700">Download</a>
                                 <form action="{{ route('pm.attachments.destroy', $media) }}" method="POST" onsubmit="return confirm('Delete this file?')">
                                     @csrf @method('DELETE')

@@ -3,7 +3,7 @@
 @section('title', 'Work Log Details')
 
 @section('content')
-<div class="mb-6">
+<div class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
         <a href="{{ route('admin.work-logs.index') }}" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -14,6 +14,14 @@
             <h1 class="text-2xl font-bold text-gray-900">Work Log Details</h1>
             <p class="mt-1 text-sm text-gray-600">ID: #{{ $workLog->id }} • {{ $workLog->start_time ? $workLog->start_time->format('M d, Y') : 'N/A' }}</p>
         </div>
+    </div>
+    <div>
+        <a href="{{ route('admin.work-logs.single-pdf', $workLog->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-primary/90 transition-colors shadow-sm">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Download PDF Report
+        </a>
     </div>
 </div>
 

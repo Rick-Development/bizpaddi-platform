@@ -174,42 +174,189 @@ class TeamMemberController extends Controller
 
     public function performance(Request $request)
     {
-        // Get filter parameters
-        $month = $request->input('month', now()->month);
-        $year = $request->input('year', now()->year);
-        $teamMemberId = $request->input('team_member');
-
-        // Build query for performance records
-        $query = \Modules\ProjectManagement\Models\Performance::with('user')
-            ->where('month', $month)
-            ->where('year', $year);
-
-        // Filter by specific team member if selected
-        if ($teamMemberId) {
-            $query->where('user_id', $teamMemberId);
+        $period = $request->input('period', 'monthly');
+        $teamMemberId = $request->input('team_member', '');
+        
+        $startDate = \Carbon\Carbon::now()->startOfMonth();
+        $endDate = \Carbon\Carbon::now()->endOfMonth();
+        $periodLabel = '';
+        
+        if ($period === 'custom' && ($request->filled('start_date') || $request->filled('end_date'))) {
+            $startDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date)->startOfDay() : \Carbon\Carbon::minValue();
+            $endDate = $request->filled('end_date') ? \Carbon\Carbon::parse($request->end_date)->endOfDay() : \Carbon\Carbon::now()->endOfDay();
+            $periodLabel = $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y');
+        } elseif ($period === 'daily') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::today();
+            $startDate = $refDate->copy()->startOfDay();
+            $endDate = $refDate->copy()->endOfDay();
+            $periodLabel = $refDate->format('F d, Y');
+        } elseif ($period === 'weekly') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfWeek();
+            $endDate = $refDate->copy()->endOfWeek();
+            $periodLabel = $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y');
+        } elseif ($period === 'yearly') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfYear();
+            $endDate = $refDate->copy()->endOfYear();
+            $periodLabel = $startDate->format('Y');
+        } else {
+            // Default Monthly
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfMonth();
+            $endDate = $refDate->copy()->endOfMonth();
+            $periodLabel = $startDate->format('F Y');
         }
 
-        $performances = $query->orderBy('score', 'desc')->get();
+        // Target Users
+        $targetUsers = collect();
+        if ($teamMemberId === 'group_active') {
+            $targetUsers = User::where('status', 'active')->orderBy('name')->get();
+        } elseif ($teamMemberId === 'group_suspended') {
+            $targetUsers = User::where('status', 'suspended')->orderBy('name')->get();
+        } elseif ($teamMemberId === 'group_inactive') {
+            $targetUsers = User::where('status', 'inactive')->orderBy('name')->get();
+        } elseif (!empty($teamMemberId) && is_numeric($teamMemberId)) {
+            $targetUsers = User::where('id', $teamMemberId)->get();
+        } else {
+            $targetUsers = User::where('status', 'active')->orderBy('name')->get(); // Default to all active
+        }
 
-        // Get all team members for filter dropdown
+        $performances = collect();
+        $totalTasksCompleted = 0;
+
+        foreach ($targetUsers as $user) {
+            $metrics = \Modules\ProjectManagement\Services\PerformanceEngine::calculate($user->id, $startDate, $endDate);
+            $totalTasksCompleted += $metrics['tasks']['completed'];
+            
+            // Create a pseudo-model to match the view's expectations
+            $performances->push((object)[
+                'user' => $user,
+                'score' => $metrics['score'],
+                'tasks_completed' => $metrics['tasks']['completed'],
+                'tasks_late' => $metrics['tasks']['late'],
+                'tasks_early' => $metrics['tasks']['early'],
+                'bonus_points' => $metrics['total_bonus'],
+                'penalty_points' => $metrics['total_penalty'],
+                'metrics' => $metrics
+            ]);
+        }
+
+        $performances = $performances->sortByDesc('score')->values();
+
+        // All users for dropdown
         $teamMembers = User::orderBy('name')->get();
-
-        // Calculate summary statistics
         $totalMembers = $performances->count();
-        $averageScore = $performances->avg('score') ?? 0;
+        $averageScore = $totalMembers > 0 ? $performances->avg('score') : 0;
         $topPerformer = $performances->first();
-        $totalTasksCompleted = $performances->sum('tasks_completed');
 
         return view('admin::team-members.performance', compact(
             'performances',
             'teamMembers',
-            'month',
-            'year',
+            'period',
+            'periodLabel',
             'teamMemberId',
             'totalMembers',
             'averageScore',
             'topPerformer',
-            'totalTasksCompleted'
+            'totalTasksCompleted',
+            'startDate',
+            'endDate'
         ));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $period = $request->input('period', 'monthly');
+        $teamMemberId = $request->input('team_member', '');
+        
+        $startDate = \Carbon\Carbon::now()->startOfMonth();
+        $endDate = \Carbon\Carbon::now()->endOfMonth();
+        $periodLabel = '';
+        
+        if ($period === 'custom' && ($request->filled('start_date') || $request->filled('end_date'))) {
+            $startDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date)->startOfDay() : \Carbon\Carbon::minValue();
+            $endDate = $request->filled('end_date') ? \Carbon\Carbon::parse($request->end_date)->endOfDay() : \Carbon\Carbon::now()->endOfDay();
+            $periodLabel = $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y');
+        } elseif ($period === 'daily') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::today();
+            $startDate = $refDate->copy()->startOfDay();
+            $endDate = $refDate->copy()->endOfDay();
+            $periodLabel = $refDate->format('F d, Y');
+        } elseif ($period === 'weekly') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfWeek();
+            $endDate = $refDate->copy()->endOfWeek();
+            $periodLabel = $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y');
+        } elseif ($period === 'yearly') {
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfYear();
+            $endDate = $refDate->copy()->endOfYear();
+            $periodLabel = $startDate->format('Y');
+        } else {
+            // Default Monthly
+            $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+            $startDate = $refDate->copy()->startOfMonth();
+            $endDate = $refDate->copy()->endOfMonth();
+            $periodLabel = $startDate->format('F Y');
+        }
+
+        // Target Users
+        $targetUsers = collect();
+        if ($teamMemberId === 'group_active') {
+            $targetUsers = User::where('status', 'active')->orderBy('name')->get();
+        } elseif ($teamMemberId === 'group_suspended') {
+            $targetUsers = User::where('status', 'suspended')->orderBy('name')->get();
+        } elseif ($teamMemberId === 'group_inactive') {
+            $targetUsers = User::where('status', 'inactive')->orderBy('name')->get();
+        } elseif (!empty($teamMemberId) && is_numeric($teamMemberId)) {
+            $targetUsers = User::where('id', $teamMemberId)->get();
+        } else {
+            $targetUsers = User::where('status', 'active')->orderBy('name')->get(); // Default to all active
+        }
+
+        $performances = collect();
+        $totalTasksCompleted = 0;
+
+        foreach ($targetUsers as $user) {
+            $metrics = \Modules\ProjectManagement\Services\PerformanceEngine::calculate($user->id, $startDate, $endDate);
+            $totalTasksCompleted += $metrics['tasks']['completed'];
+            
+            $performances->push((object)[
+                'user' => $user,
+                'score' => $metrics['score'],
+                'tasks_completed' => $metrics['tasks']['completed'],
+                'tasks_late' => $metrics['tasks']['late'],
+                'tasks_early' => $metrics['tasks']['early'],
+                'bonus_points' => $metrics['total_bonus'],
+                'penalty_points' => $metrics['total_penalty'],
+                'metrics' => $metrics
+            ]);
+        }
+
+        $performances = $performances->sortByDesc('score')->values();
+        $totalMembers = $performances->count();
+        $averageScore = $totalMembers > 0 ? $performances->avg('score') : 0;
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin::team-members.export-pdf', compact(
+            'performances',
+            'period',
+            'periodLabel',
+            'teamMemberId',
+            'totalMembers',
+            'averageScore',
+            'totalTasksCompleted',
+            'startDate',
+            'endDate'
+        ));
+
+        // Use orientation landscape for more space if needed, though portrait is fine.
+        $pdf->setPaper('A4', 'portrait');
+
+        if ($request->has('preview')) {
+            return $pdf->stream('Team_Performance_Report.pdf');
+        }
+
+        return $pdf->download('Team_Performance_Report.pdf');
     }
 }

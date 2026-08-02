@@ -14,22 +14,34 @@ class AttachmentController extends Controller
         $request->validate([
             'model_id' => 'required|integer',
             'model_type' => 'required|in:project,task',
-            'file' => 'required|file|max:10240', // 10MB limit
+            'file' => 'nullable|file|max:10240', // 10MB limit
+            'files.*' => 'nullable|file|max:10240', // 10MB limit for multiple
             'collection' => 'nullable|string|in:attachments,vault',
         ]);
 
         $modelClass = $request->model_type === 'project' ? Project::class : Task::class;
         $model = $modelClass::findOrFail($request->model_id);
 
-        $media = $model->addMediaFromRequest('file');
-        
-        if ($request->has('is_internal')) {
-            $media->withCustomProperties(['is_internal' => true]);
+        $uploadedFiles = [];
+        if ($request->hasFile('files')) {
+            $uploadedFiles = $request->file('files');
+        } elseif ($request->hasFile('file')) {
+            $uploadedFiles = [$request->file('file')];
         }
-        
-        $media->toMediaCollection($request->collection ?? 'attachments');
 
-        return back()->with('success', 'File uploaded successfully.');
+        foreach ($uploadedFiles as $uploadedFile) {
+            $media = $model->addMedia($uploadedFile);
+            
+            if ($request->has('is_internal')) {
+                $media->withCustomProperties(['is_internal' => true]);
+            }
+            
+            // For tasks, use task_attachments, for others use requested collection or attachments
+            $collection = $request->collection ?? ($request->model_type === 'task' ? 'task_attachments' : 'attachments');
+            $media->toMediaCollection($collection);
+        }
+
+        return back()->with('success', 'File(s) uploaded successfully.');
     }
 
     public function destroy($id)

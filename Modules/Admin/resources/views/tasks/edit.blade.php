@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <form action="{{ route('admin.tasks.update', $task) }}" method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+    <form action="{{ route('admin.tasks.update', $task) }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
         @csrf
         @method('PUT')
 
@@ -68,6 +68,40 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
                 <input type="date" name="due_date" value="{{ old('due_date', $task->due_date?->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
             </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Attachments (Images, Videos, Files)</label>
+            <input type="file" name="attachments[]" id="file_upload" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent bg-gray-50">
+            <p class="mt-1 text-xs text-gray-500">You can select multiple files to add. Max size per file: 20MB.</p>
+            <ul id="file_list" class="mt-2 text-sm text-gray-700 space-y-1"></ul>
+            
+            <script>
+                document.getElementById('file_upload').addEventListener('change', function(e) {
+                    const list = document.getElementById('file_list');
+                    list.innerHTML = '';
+                    for (let i = 0; i < this.files.length; i++) {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center gap-2 bg-gray-100 px-2 py-1 rounded';
+                        li.innerHTML = `<svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg> ${this.files[i].name}`;
+                        list.appendChild(li);
+                    }
+                });
+            </script>
+            @if($task->getMedia('task_attachments')->count() > 0)
+                <div class="mt-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Existing Attachments:</p>
+                    <ul class="space-y-2">
+                        @foreach($task->getMedia('task_attachments') as $media)
+                            <li class="flex items-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                <a href="{{ $media->getUrl() }}" target="_blank" class="text-brand-primary hover:underline truncate">{{ $media->file_name }}</a>
+                                <span class="ml-2 text-xs text-gray-400">({{ $media->human_readable_size }})</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -10,9 +10,9 @@
             <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Task Board</h1>
             <p class="text-sm text-gray-500 mt-1">Manage and track project progress</p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center flex-wrap gap-3">
             <!-- Project Filter -->
-            <form method="GET" class="flex items-center">
+            <form method="GET" class="flex items-center gap-2">
                 <div class="relative">
                     <select name="project_id" onchange="this.form.submit()" class="appearance-none pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary shadow-sm transition-all cursor-pointer hover:border-gray-300">
                         <option value="">All Projects</option>
@@ -27,6 +27,21 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Export Task PDF & CSV Buttons -->
+            <a href="{{ route('admin.tasks.export-pdf', array_merge(request()->all(), ['preview' => 1])) }}" target="_blank" class="inline-flex items-center px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 shadow-sm transition-all">
+                <svg class="w-4 h-4 mr-2 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Export Task PDF
+            </a>
+
+            <a href="{{ route('admin.tasks.export-csv', request()->all()) }}" class="inline-flex items-center px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 shadow-sm transition-all">
+                <svg class="w-4 h-4 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Export CSV
+            </a>
             
             <a href="{{ route('admin.tasks.create', ['project_id' => request('project_id')]) }}" class="inline-flex items-center px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-xl hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/30 transition-all hover:-translate-y-0.5">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>

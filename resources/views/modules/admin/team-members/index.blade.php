@@ -32,8 +32,8 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
             <select name="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
                 <option value="">All Roles</option>
-                @foreach($roles as $key => $label)
-                    <option value="{{ $key }}" {{ request('role') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                 @endforeach
             </select>
         </div>
@@ -109,7 +109,7 @@
                     <svg class="h-4 w-4 mr-2 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span class="text-gray-700 font-medium">{{ $roles[$member->role] ?? ucfirst($member->role) }}</span>
+                    <span class="text-gray-700 font-medium">{{ ucfirst($member->role) }}</span>
                 </div>
                 @if($member->department)
                 <div class="flex items-center text-sm text-gray-600">

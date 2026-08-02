@@ -28,6 +28,7 @@ class TaskController extends Controller
             'status' => 'nullable|in:todo,in_progress,review,done',
             'due_date' => 'nullable|date',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
+            'attachments.*' => 'nullable|file|max:20480',
         ]);
 
         // Automatically add the user to the team if they aren't already part of it
@@ -41,6 +42,12 @@ class TaskController extends Controller
         $task = $project->tasks()->create(array_merge($validated, [
             'assigned_by' => auth()->id(),
         ]));
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $task->addMedia($file)->toMediaCollection('task_attachments');
+            }
+        }
 
         // TODO: Send notification to assigned user
 
@@ -66,6 +73,7 @@ class TaskController extends Controller
             'status' => 'required|in:todo,in_progress,review,done',
             'due_date' => 'nullable|date',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
+            'attachments.*' => 'nullable|file|max:20480',
         ]);
 
         // Automatically add the user to the team if they aren't already part of it
@@ -77,6 +85,12 @@ class TaskController extends Controller
         }
 
         $task->update($validated);
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $task->addMedia($file)->toMediaCollection('task_attachments');
+            }
+        }
 
         return redirect()->route('team.pm.projects.show', $project)
             ->with('success', 'Task updated successfully!');

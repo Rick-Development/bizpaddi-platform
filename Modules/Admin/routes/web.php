@@ -47,6 +47,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('team-members', \Modules\Admin\Http\Controllers\TeamMemberController::class);
         Route::patch('team-members/{user}/status', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'updateStatus'])->name('team-members.update-status');
         Route::get('team-performance', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'performance'])->name('team-performance.index');
+        Route::get('team-performance/export-pdf', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'exportPdf'])->name('team-performance.export-pdf');
         
         // Departments & Roles
         Route::resource('departments', \Modules\Admin\Http\Controllers\DepartmentController::class);
@@ -228,9 +229,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('pm-projects', \Modules\Admin\Http\Controllers\PMProjectController::class);
         Route::get('pm-projects/{pm_project}/milestones', [\Modules\Admin\Http\Controllers\PMProjectController::class, 'milestones'])->name('pm-projects.milestones');
         Route::resource('pm-milestones', \Modules\Admin\Http\Controllers\PMMilestoneController::class);
+        Route::get('tasks/export-pdf', [TaskController::class, 'exportPdf'])->name('tasks.export-pdf');
+        Route::get('tasks/export-csv', [TaskController::class, 'exportCsv'])->name('tasks.export-csv');
         Route::resource('tasks', TaskController::class);
         Route::get('kanban', [KanbanController::class, 'index'])->name('kanban.index');
         Route::post('kanban/update-order', [KanbanController::class, 'updateOrder'])->name('kanban.update-order');
+        Route::get('project-management/work-logs/export', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'exportPage'])->name('work-logs.export-page');
+        Route::get('project-management/work-logs/export-pdf', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'exportPdf'])->name('work-logs.export-pdf');
+        Route::get('project-management/work-logs/export-csv', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'exportCsv'])->name('work-logs.export-csv');
+        Route::get('project-management/work-logs/{workLog}/pdf', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'exportSinglePdf'])->name('work-logs.single-pdf');
         Route::get('project-management/work-logs', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'index'])->name('work-logs.index');
         Route::get('project-management/work-logs/{workLog}', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'show'])->name('work-logs.show');
         Route::resource('kpis', \Modules\Admin\Http\Controllers\KPIController::class);

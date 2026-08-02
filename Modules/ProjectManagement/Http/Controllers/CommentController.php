@@ -47,7 +47,11 @@ public function store(Request $request)
         'is_internal' => $request->is_internal ?? false,
     ]);
 
-    if ($request->hasFile('attachment')) {
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $comment->addMedia($file)->toMediaCollection('comment_attachments');
+        }
+    } elseif ($request->hasFile('attachment')) {
         $comment->addMediaFromRequest('attachment')->toMediaCollection('comment_attachments');
     }
 
