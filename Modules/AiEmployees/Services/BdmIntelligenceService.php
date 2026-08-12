@@ -46,13 +46,39 @@ class BdmIntelligenceService
         // Retrieve system prompt directly from database (strip Summernote HTML tags)
         $systemPrompt = strip_tags($agent->system_prompt);
 
-        return Prism::text()
-            ->using($activeProvider, $modelName)
-            ->withPrompt("{$systemPrompt}\n\n{$prompt}")
-            ->withTools($tools)
-            ->withMaxSteps(5)
-            ->withMaxTokens(2000)
-            ->generate();
+        $attempts = 0;
+        $maxAttempts = 4;
+        $delay = 5;
+
+        while ($attempts < $maxAttempts) {
+            try {
+                if ($attempts > 0) {
+                    sleep($delay * $attempts + 2);
+                }
+
+                return Prism::text()
+                    ->using($activeProvider, $modelName)
+                    ->withPrompt("{$systemPrompt}\n\n{$prompt}")
+                    ->withTools($tools)
+                    ->withMaxSteps(5)
+                    ->withMaxTokens(2000)
+                    ->generate();
+
+            } catch (\Exception $e) {
+                $attempts++;
+                if ($attempts >= $maxAttempts) {
+                    throw $e;
+                }
+
+                $err = strtolower($e->getMessage());
+                // If we hit a rate limit (RPM/TPM/Quota), sleep for 62 seconds to completely reset the window
+                if (str_contains($err, 'rate limit') || str_contains($err, 'rate_limit') || str_contains($err, '429') || str_contains($err, 'limit')) {
+                    sleep(62);
+                } else {
+                    sleep(5);
+                }
+            }
+        }
     }
 
     /**
