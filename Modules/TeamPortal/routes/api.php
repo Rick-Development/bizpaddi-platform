@@ -23,7 +23,7 @@ use Modules\TeamPortal\Http\Controllers\Api\PM\DashboardController as PMDashboar
 use Modules\TeamPortal\Http\Controllers\Api\PM\ProjectController as PMProjectController;
 use Modules\TeamPortal\Http\Controllers\Api\PM\TaskController as PMTaskController;
 
-Route::middleware(['auth:sanctum', 'user_type:team'])->prefix('v1/team')->group(function () {
+Route::middleware(['auth:sanctum', 'user_type:team'])->prefix('v1/team')->name('team.')->group(function () {
     // Auth & Profile
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/profile', [AuthController::class, 'updateProfile']);
@@ -106,7 +106,7 @@ Route::middleware(['auth:sanctum', 'user_type:team'])->prefix('v1/team')->group(
     Route::get('/wallet/transactions', [WalletController::class, 'transactions']);
 
     // Project Manager (PM) Routes
-    Route::prefix('pm')->group(function () {
+    Route::prefix('pm')->name('pm.')->group(function () {
         Route::get('/dashboard', [PMDashboardController::class, 'index']);
         Route::apiResource('projects', PMProjectController::class)->only(['index', 'show']);
         Route::get('/tasks/team-members', [PMTaskController::class, 'teamMembers']);

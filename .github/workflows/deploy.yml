@@ -26,9 +26,10 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             composer install --no-dev --optimize-autoloader --no-interaction
+            rm -rf node_modules
             npm install
             npm run build
-            php artisan migrate --force
-            php artisan optimize:clear
-            php artisan optimize
-            php artisan queue:restart
+            php -d opcache.enable_cli=0 artisan migrate --force
+            php -d opcache.enable_cli=0 artisan optimize:clear
+            php -d opcache.enable_cli=0 artisan optimize
+            php -d opcache.enable_cli=0 artisan queue:restart

@@ -33,7 +33,7 @@ use Modules\Admin\Http\Controllers\Api\PM\TaskController;
 use Modules\Admin\Http\Controllers\Api\PM\WorkLogController;
 use Modules\Admin\Http\Controllers\Api\PM\ProjectChatController;
 
-Route::middleware(['auth:sanctum', 'user_type:admin'])->prefix('v1/admin')->group(function () {
+Route::middleware(['auth:sanctum', 'user_type:admin'])->prefix('v1/admin')->name('admin.')->group(function () {
     // Auth & Profile
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/profile', [AuthController::class, 'updateProfile']);
@@ -83,7 +83,7 @@ Route::middleware(['auth:sanctum', 'user_type:admin'])->prefix('v1/admin')->grou
     });
 
     // Project Management
-    Route::prefix('pm')->group(function () {
+    Route::prefix('pm')->name('pm.')->group(function () {
         Route::apiResource('projects', ProjectController::class);
         Route::patch('projects/{id}/status', [ProjectController::class, 'updateStatus']);
 
