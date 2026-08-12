@@ -46,6 +46,9 @@ jobs:
             
             run_php artisan migrate --force
             run_php artisan optimize:clear
+            run_php artisan route:clear
+            run_php artisan view:clear
+            run_php artisan config:clear
             run_php artisan optimize
             run_php artisan queue:restart
 
