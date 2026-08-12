@@ -26,10 +26,16 @@ class TaskController extends Controller
             'assigned_to' => 'required|exists:users,id',
             'priority' => 'required|in:low,medium,high',
             'status' => 'nullable|in:todo,in_progress,review,done',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|string',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
             'attachments.*' => 'nullable|file|max:20480',
         ]);
+
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = \Carbon\Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         // Automatically add the user to the team if they aren't already part of it
         if (!$project->teamMembers->contains($validated['assigned_to'])) {
@@ -71,10 +77,16 @@ class TaskController extends Controller
             'assigned_to' => 'required|exists:users,id',
             'priority' => 'required|in:low,medium,high',
             'status' => 'required|in:todo,in_progress,review,done',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|string',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
             'attachments.*' => 'nullable|file|max:20480',
         ]);
+
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = \Carbon\Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         // Automatically add the user to the team if they aren't already part of it
         if (!$project->teamMembers->contains($validated['assigned_to'])) {

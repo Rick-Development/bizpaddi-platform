@@ -31,6 +31,16 @@
                     @endif
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900">{{ $task->title }}</h1>
+                @if($task->due_date)
+                <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-2">
+                    <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="{{ $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-600 font-semibold' : '' }}">
+                        Due: {{ $task->due_date->format('M d, Y') }} at {{ $task->due_date->format('g:i A') }}
+                    </span>
+                </div>
+                @endif
             </div>
             
             <div class="mt-4 sm:mt-0">

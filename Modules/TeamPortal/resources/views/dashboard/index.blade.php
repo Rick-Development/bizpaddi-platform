@@ -4,11 +4,75 @@
 
 @section('content')
 <div class="dashboard-wrapper space-y-8 animate-fade-in">
+    <!-- Blinking Overdue Tasks Reminder Banner -->
+    <div id="overdue-tasks-reminder" class="hidden">
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl shadow-md flex items-center justify-between animate-background-flash">
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-3.5 w-3.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-600 animate-intense-blink"></span>
+                </span>
+                <div class="text-sm text-red-700">
+                    <span class="font-extrabold uppercase tracking-wide text-xs bg-red-100 px-2 py-0.5 rounded-md mr-2">Action Required</span>
+                    You have <span id="overdue-count-badge" class="font-extrabold underline">0</span> overdue task(s). Please review and complete them!
+                </div>
+            </div>
+            <a href="{{ route('team.tasks.index') }}" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95">
+                View Tasks &rarr;
+            </a>
+        </div>
+    </div>
+
+    <!-- Blinking Upcoming Tasks Reminder Banner (Due within 48h) -->
+    <div id="upcoming-tasks-reminder" class="hidden">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-2xl shadow-md flex items-center justify-between animate-yellow-flash">
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-3.5 w-3.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-600 animate-intense-blink"></span>
+                </span>
+                <div class="text-sm text-amber-700">
+                    <span class="font-extrabold uppercase tracking-wide text-xs bg-amber-100 px-2 py-0.5 rounded-md mr-2">Warning</span>
+                    You have <span id="upcoming-count-badge" class="font-extrabold underline">0</span> task(s) due within the next 48 hours. Please plan accordingly!
+                </div>
+            </div>
+            <a href="{{ route('team.tasks.index') }}" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95">
+                View Tasks &rarr;
+            </a>
+        </div>
+    </div>
     <!-- Welcome Header -->
-    <div class="welcome-banner relative overflow-hidden rounded-3xl bg-brand-secondary p-8 text-white shadow-2xl">
+    <div class="welcome-banner relative overflow-hidden rounded-3xl bg-brand-secondary p-8 text-white shadow-2xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div class="relative z-10">
             <h1 class="text-4xl font-extrabold tracking-tight">Focus on Project Delivery, {{ auth()->user()->name }}!</h1>
             <p class="mt-2 text-brand-primary font-bold uppercase tracking-widest text-sm">Team Sentinel Dashboard</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 relative z-10">
+            <!-- Overdue Badge inside Welcome Card -->
+            <div id="card-overdue-badge" class="hidden shrink-0">
+                <div class="flex items-center gap-2 bg-red-50 border border-red-500/50 rounded-2xl px-4 py-2 shadow-lg backdrop-blur-sm animate-background-flash">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600 animate-intense-blink"></span>
+                    </span>
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-red-700">
+                        <span id="card-overdue-count" class="text-red-950 text-sm font-black underline mr-1">0</span> Overdue
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Upcoming Badge inside Welcome Card -->
+            <div id="card-upcoming-badge" class="hidden shrink-0">
+                <div class="flex items-center gap-2 bg-amber-50 border border-amber-500/50 rounded-2xl px-4 py-2 shadow-lg backdrop-blur-sm animate-yellow-flash">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500 animate-intense-blink"></span>
+                    </span>
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700">
+                        <span id="card-upcoming-count" class="text-amber-950 text-sm font-black underline mr-1">0</span> Due Soon
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-brand-primary/10 blur-3xl"></div>
         <div class="absolute -left-10 -bottom-10 h-48 w-48 rounded-full bg-white/5 blur-2xl"></div>
@@ -110,9 +174,9 @@
                             <div class="flex items-center gap-3">
                                 <span class="text-xs font-bold text-gray-400">{{ $task->project->name ?? 'Direct Mission' }}</span>
                                 @if($task->due_date)
-                                <span class="flex items-center gap-1 text-[10px] font-black uppercase text-brand-primary">
+                                <span class="flex items-center gap-1 text-[10px] font-black uppercase text-brand-primary {{ $task->due_date->isPast() ? 'text-red-600' : '' }}">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    {{ $task->due_date->diffForHumans() }}
+                                    {{ $task->due_date->format('M d, Y \a\t g:i A') }}
                                 </span>
                                 @endif
                             </div>
@@ -148,8 +212,29 @@
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes backgroundFlash {
+        0%, 100% { background-color: #FEF2F2; border-color: #FCA5A5; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1); }
+        50% { background-color: #FEE2E2; border-color: #EF4444; box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25); }
+    }
+    @keyframes intenseBlink {
+        0%, 100% { opacity: 0.15; transform: scale(0.85); }
+        50% { opacity: 1; transform: scale(1.15); }
+    }
+    @keyframes yellowFlash {
+        0%, 100% { background-color: #FEF3C7; border-color: #FCD34D; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1); }
+        50% { background-color: #FFFBEB; border-color: #F59E0B; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.25); }
+    }
     .animate-fade-in {
         animation: fadeIn 0.6s ease-out forwards;
+    }
+    .animate-background-flash {
+        animation: backgroundFlash 1s infinite ease-in-out;
+    }
+    .animate-yellow-flash {
+        animation: yellowFlash 1.5s infinite ease-in-out;
+    }
+    .animate-intense-blink {
+        animation: intenseBlink 0.6s infinite ease-in-out;
     }
 </style>
 
@@ -231,6 +316,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    // Fetch overdue and upcoming tasks count via AJAX
+    fetch('{{ route("team.api.overdue-tasks-count") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.overdue_count > 0) {
+                document.getElementById('overdue-count-badge').textContent = data.overdue_count;
+                document.getElementById('overdue-tasks-reminder').classList.remove('hidden');
+                
+                // Show inside Welcome Header Card
+                document.getElementById('card-overdue-count').textContent = data.overdue_count;
+                document.getElementById('card-overdue-badge').classList.remove('hidden');
+            }
+            if (data.upcoming_count > 0) {
+                document.getElementById('upcoming-count-badge').textContent = data.upcoming_count;
+                document.getElementById('upcoming-tasks-reminder').classList.remove('hidden');
+                
+                // Show inside Welcome Header Card
+                document.getElementById('card-upcoming-count').textContent = data.upcoming_count;
+                document.getElementById('card-upcoming-badge').classList.remove('hidden');
+            }
+        })
+        .catch(error => console.error('Error fetching overdue tasks:', error));
 });
 </script>
 @endpush

@@ -25,6 +25,7 @@ Route::prefix('team')->name('team.')->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('api/overdue-tasks-count', [DashboardController::class, 'getOverdueTasksCount'])->name('api.overdue-tasks-count');
         Route::get('/', function() { return redirect()->route('team.dashboard'); });
 
         // Profile

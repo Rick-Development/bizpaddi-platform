@@ -45,11 +45,23 @@ class PMProjectController extends Controller
             'client_id' => 'nullable|exists:clients,id',
             'manager_id' => 'nullable|exists:users,id',
             'status' => 'required|in:pending,active,on_hold,completed,cancelled',
-            'start_date' => 'nullable|date',
-            'due_date' => 'nullable|date',
+            'start_date' => 'nullable|string',
+            'due_date' => 'nullable|string',
             'budget' => 'nullable|numeric',
             'currency_id' => 'nullable|exists:currencies,id',
         ]);
+
+        if (!empty($validated['start_date'])) {
+            $validated['start_date'] = \Carbon\Carbon::parse($validated['start_date']);
+        } else {
+            $validated['start_date'] = null;
+        }
+
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = \Carbon\Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         Project::create($validated);
 
@@ -78,11 +90,23 @@ class PMProjectController extends Controller
             'client_id' => 'nullable|exists:clients,id',
             'manager_id' => 'nullable|exists:users,id',
             'status' => 'required|in:pending,active,on_hold,completed,cancelled',
-            'start_date' => 'nullable|date',
-            'due_date' => 'nullable|date',
+            'start_date' => 'nullable|string',
+            'due_date' => 'nullable|string',
             'budget' => 'nullable|numeric',
             'currency_id' => 'nullable|exists:currencies,id',
         ]);
+
+        if (!empty($validated['start_date'])) {
+            $validated['start_date'] = \Carbon\Carbon::parse($validated['start_date']);
+        } else {
+            $validated['start_date'] = null;
+        }
+
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = \Carbon\Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         $pmProject->update($validated);
 

@@ -59,10 +59,17 @@ class TaskController extends Controller
             'assigned_to' => 'nullable|exists:users,id',
             'status' => 'required|in:todo,in_progress,review,done,completed',
             'priority' => 'required|in:low,medium,high,urgent',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|string',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
-            'attachments.*' => 'nullable|file|max:20480', // 20MB max per file
+            'attachments.*' => 'nullable|file|max:20480',
         ]);
+
+        // Parse datetime-local or plain date into a proper Carbon datetime
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         $task = Task::create($validated);
 
@@ -119,10 +126,17 @@ class TaskController extends Controller
             'assigned_to' => 'nullable|exists:users,id',
             'status' => 'required|in:todo,in_progress,review,done,completed',
             'priority' => 'required|in:low,medium,high,urgent',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|string',
             'milestone_id' => 'nullable|exists:pm_milestones,id',
-            'attachments.*' => 'nullable|file|max:20480', // 20MB max per file
+            'attachments.*' => 'nullable|file|max:20480',
         ]);
+
+        // Parse datetime-local or plain date into a proper Carbon datetime
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         $task->update($validated);
 

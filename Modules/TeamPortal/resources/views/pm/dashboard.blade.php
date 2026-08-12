@@ -81,7 +81,12 @@
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex-1">
                             <h3 class="font-semibold text-gray-900">{{ $item['project']->name }}</h3>
-                            <p class="text-sm text-gray-500 mt-1">{{ $item['project']->client->name ?? 'No client' }}</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ $item['project']->client->name ?? 'No client' }}
+                                @if($item['project']->due_date)
+                                    • <span class="font-medium text-gray-700">Due: {{ $item['project']->due_date->format('M d, Y \a\t g:i A') }}</span>
+                                @endif
+                            </p>
                         </div>
                         <div class="flex items-center gap-2">
                             @if($item['health'] === 'critical')
@@ -142,7 +147,7 @@
                                 @if($task->assignee)
                                 <span class="text-xs text-gray-600">{{ $task->assignee->name }}</span>
                                 @endif
-                                <span class="text-xs text-gray-400">{{ $task->updated_at->diffForHumans() }}</span>
+                                <span class="text-xs text-gray-400" title="{{ $task->updated_at->diffForHumans() }}">{{ $task->updated_at->format('M d, Y \a\t g:i A') }}</span>
                             </div>
                         </div>
                     </div>

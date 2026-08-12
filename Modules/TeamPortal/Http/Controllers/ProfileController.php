@@ -21,7 +21,7 @@ class ProfileController extends Controller
         // Gather stats for the profile page
         $stats = [
             'total_tasks'       => $user->assignedTasks()->count(),
-            'completed_tasks'   => $user->assignedTasks()->where('status', 'completed')->orWhere('status', 'done')->count(),
+            'completed_tasks'   => $user->assignedTasks()->where(function ($q) { $q->where('status', 'completed')->orWhere('status', 'done'); })->count(),
             'active_projects'   => $user->assignedProjects()->count(),
             'total_work_logs'   => $user->workLogs()->count(),
         ];

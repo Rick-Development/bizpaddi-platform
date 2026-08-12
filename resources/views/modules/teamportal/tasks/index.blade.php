@@ -58,8 +58,8 @@
                                         <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                         </svg>
-                                        <span class="{{ $task->due_date->isPast() ? 'text-red-600 font-medium' : '' }}">
-                                            Due {{ $task->due_date->format('M d, Y') }}
+                                        <span class="{{ $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-600 font-semibold' : '' }}">
+                                            Due {{ $task->due_date->format('M d, Y') }} at {{ $task->due_date->format('g:i A') }}
                                         </span>
                                     </div>
                                     @endif

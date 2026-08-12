@@ -45,9 +45,26 @@
                         <p class="text-[10px] text-gray-500 mb-2 truncate">{{ $task->project->name }}</p>
                         
                         <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div class="text-[10px] text-gray-400 font-medium font-mono">
-                                {{ $task->due_date ? $task->due_date->format('M d') : 'No due date' }}
-                            </div>
+                             <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
+                                    @if($task->due_date)
+                                        @if(!in_array($task->status, ['done','completed']))
+                                            @if($task->due_date->isPast())
+                                                <span class="relative flex h-2 w-2 shrink-0">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600 animate-intense-blink"></span>
+                                                </span>
+                                            @elseif($task->due_date->diffInHours(now(), false) >= -48)
+                                                <span class="relative flex h-2 w-2 shrink-0">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500 animate-intense-blink"></span>
+                                                </span>
+                                            @endif
+                                        @endif
+                                        {{ $task->due_date->format('M d') }} at {{ $task->due_date->format('g:i A') }}
+                                    @else
+                                        No due date
+                                    @endif
+                                </div>
                             @if($task->requires_client_approval)
                             <div class="flex items-center gap-1">
                                 <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Client Review</span>
@@ -114,4 +131,16 @@ function updateTaskOrder() {
     .catch(error => console.error('Error:', error));
 }
 </script>
+@endpush
+
+@push('styles')
+<style>
+    @keyframes intenseBlink {
+        0%, 100% { opacity: 0.15; transform: scale(0.85); }
+        50% { opacity: 1; transform: scale(1.15); }
+    }
+    .animate-intense-blink {
+        animation: intenseBlink 0.6s infinite ease-in-out;
+    }
+</style>
 @endpush

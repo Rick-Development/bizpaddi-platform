@@ -102,13 +102,13 @@
                 <input type="number" name="budget" value="{{ old('budget', $project->budget) }}" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                <input type="date" name="start_date" value="{{ old('start_date', $project->start_date?->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date &amp; Time</label>
+                <input type="datetime-local" name="start_date" value="{{ old('start_date', $project->start_date?->format('Y-m-d\TH:i')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                <input type="date" name="due_date" value="{{ old('due_date', $project->due_date?->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date &amp; Time</label>
+                <input type="datetime-local" name="due_date" value="{{ old('due_date', $project->due_date?->format('Y-m-d\TH:i')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
             </div>
         </div>
 

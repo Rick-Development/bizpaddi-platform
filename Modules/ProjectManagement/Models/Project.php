@@ -42,9 +42,9 @@ class Project extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'due_date' => 'date',
-        'completed_at' => 'date',
+        'start_date' => 'datetime',
+        'due_date' => 'datetime',
+        'completed_at' => 'datetime',
         'budget' => 'decimal:2',
         'hourly_rate' => 'decimal:2',
     ];

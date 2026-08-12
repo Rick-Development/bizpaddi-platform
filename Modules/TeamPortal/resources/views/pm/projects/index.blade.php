@@ -66,14 +66,14 @@
             </div>
 
             <!-- Dates -->
-            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+            <div class="flex flex-col gap-1 text-[11px] text-gray-500 mb-4">
                 @if($project->start_date)
-                <span>Started: {{ $project->start_date->format('M d, Y') }}</span>
+                <div>Started: <span class="font-medium text-gray-700">{{ $project->start_date->format('M d, Y \a\t g:i A') }}</span></div>
                 @endif
                 @if($project->due_date)
-                <span class="{{ $project->due_date->isPast() && $project->status !== 'completed' ? 'text-red-600 font-semibold' : '' }}">
-                    Due: {{ $project->due_date->format('M d, Y') }}
-                </span>
+                <div class="{{ $project->due_date->isPast() && $project->status !== 'completed' ? 'text-red-600 font-semibold' : '' }}">
+                    Due: <span class="font-medium {{ $project->due_date->isPast() && $project->status !== 'completed' ? 'text-red-600' : 'text-gray-700' }}">{{ $project->due_date->format('M d, Y \a\t g:i A') }}</span>
+                </div>
                 @endif
             </div>
 

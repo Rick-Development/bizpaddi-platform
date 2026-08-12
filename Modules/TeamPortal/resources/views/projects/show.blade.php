@@ -59,7 +59,7 @@
                                     {{ ucfirst(str_replace('_', ' ', $task->status)) }}
                                 </span>
                                 @if($task->due_date)
-                                <span>Due: {{ $task->due_date->format('M d') }}</span>
+                                <span>Due: {{ $task->due_date->format('M d \a\t g:i A') }}</span>
                                 @endif
                                 <span class="capitalize px-1.5 py-0.5 rounded {{ $task->priority === 'high' ? 'bg-red-50 text-red-600 font-bold' : 'bg-gray-50' }}">
                                     {{ $task->priority }}
@@ -89,11 +89,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Start Date</p>
-                        <p class="text-sm font-bold text-gray-900 mt-1">{{ $project->start_date ? $project->start_date->format('M d, Y') : 'N/A' }}</p>
+                        <p class="text-sm font-bold text-gray-900 mt-1">{{ $project->start_date ? $project->start_date->format('M d, Y \a\t g:i A') : 'N/A' }}</p>
                     </div>
                     <div class="p-3 bg-gray-50 rounded-xl border border-gray-100">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Due Date</p>
-                        <p class="text-sm font-bold text-gray-900 mt-1">{{ $project->due_date ? $project->due_date->format('M d, Y') : 'N/A' }}</p>
+                        <p class="text-sm font-bold text-gray-900 mt-1">{{ $project->due_date ? $project->due_date->format('M d, Y \a\t g:i A') : 'N/A' }}</p>
                     </div>
                 </div>
 

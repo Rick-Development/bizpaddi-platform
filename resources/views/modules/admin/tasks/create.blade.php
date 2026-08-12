@@ -59,8 +59,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                <input type="date" name="due_date" value="{{ old('due_date') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date &amp; Time</label>
+                <input type="datetime-local" name="due_date" value="{{ old('due_date') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <p class="mt-1 text-xs text-gray-400">Set the exact date and time this task expires (e.g. 2:30 PM)</p>
             </div>
         </div>
 

@@ -57,8 +57,8 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Due Date</label>
-                <input type="date" name="due_date" value="{{ old('due_date', $task->due_date ? $task->due_date->format('Y-m-d') : '') }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all outline-none text-sm">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Due Date &amp; Time</label>
+                <input type="datetime-local" name="due_date" value="{{ old('due_date', $task->due_date ? $task->due_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all outline-none text-sm">
             </div>
         </div>
 

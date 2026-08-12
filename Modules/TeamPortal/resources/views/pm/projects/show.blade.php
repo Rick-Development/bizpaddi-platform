@@ -11,7 +11,7 @@
                 {{ $project->status }}
             </span>
         </div>
-        <p class="mt-2 text-sm text-gray-600">{{ $project->client->name ?? 'No Client' }} • Due {{ $project->due_date ? $project->due_date->format('M j, Y') : 'N/A' }}</p>
+        <p class="mt-2 text-sm text-gray-600">{{ $project->client->name ?? 'No Client' }} • Due {{ $project->due_date ? $project->due_date->format('M j, Y \a\t g:i A') : 'N/A' }}</p>
     </div>
     <div class="flex items-center gap-3">
         <a href="{{ route('team.pm.projects.team', $project) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
@@ -58,9 +58,9 @@
                         <div class="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold ring-2 ring-white">?</div>
                         @endif
                     </div>
-                    <div class="flex items-center gap-1 text-[10px] text-gray-500">
+                    <div class="flex items-center gap-1 text-[10px] {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-500' }}">
                         <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        {{ $task->due_date ? $task->due_date->format('M j') : 'No date' }}
+                        {{ $task->due_date ? $task->due_date->format('M j \a\t g:i A') : 'No date' }}
                     </div>
                 </div>
             </div>
@@ -139,11 +139,11 @@
                 <div class="pt-4 border-t border-gray-100 grid grid-cols-2 gap-4">
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Start Date</span>
-                        <p class="text-sm font-semibold text-gray-900">{{ $project->start_date ? $project->start_date->format('M j, Y') : 'N/A' }}</p>
+                        <p class="text-sm font-semibold text-gray-900">{{ $project->start_date ? $project->start_date->format('M j, Y \a\t g:i A') : 'N/A' }}</p>
                     </div>
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 block mb-1">Due Date</span>
-                        <p class="text-sm font-semibold text-gray-900">{{ $project->due_date ? $project->due_date->format('M j, Y') : 'N/A' }}</p>
+                        <p class="text-sm font-semibold text-gray-900">{{ $project->due_date ? $project->due_date->format('M j, Y \a\t g:i A') : 'N/A' }}</p>
                     </div>
                 </div>
             </div>

@@ -66,7 +66,13 @@ class DashboardController extends Controller
             ->where('date', $today)
             ->first();
 
-        return view('teamportal::dashboard.index', compact('stats', 'recentTasks', 'attendanceToday', 'taskDistribution', 'completionTrend'));
+        $overdueTasksCount = Task::where('assigned_to', $user->id)
+            ->whereIn('status', ['todo', 'in_progress', 'review'])
+            ->whereNotNull('due_date')
+            ->where('due_date', '<', now())
+            ->count();
+
+        return view('teamportal::dashboard.index', compact('stats', 'recentTasks', 'attendanceToday', 'taskDistribution', 'completionTrend', 'overdueTasksCount'));
     }
 
     public function accountStatus()
@@ -81,5 +87,28 @@ class DashboardController extends Controller
         };
 
         return view('teamportal::account-status', compact('status', 'message', 'user'));
+    }
+
+    public function getOverdueTasksCount()
+    {
+        $user = auth()->user();
+        
+        $overdueCount = Task::where('assigned_to', $user->id)
+            ->whereIn('status', ['todo', 'in_progress', 'review'])
+            ->whereNotNull('due_date')
+            ->where('due_date', '<', now())
+            ->count();
+
+        $upcomingCount = Task::where('assigned_to', $user->id)
+            ->whereIn('status', ['todo', 'in_progress', 'review'])
+            ->whereNotNull('due_date')
+            ->where('due_date', '>=', now())
+            ->where('due_date', '<=', now()->addHours(48))
+            ->count();
+
+        return response()->json([
+            'overdue_count' => $overdueCount,
+            'upcoming_count' => $upcomingCount,
+        ]);
     }
 }
