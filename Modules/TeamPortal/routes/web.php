@@ -28,8 +28,10 @@ Route::prefix('team')->name('team.')->group(function () {
         Route::get('/', function() { return redirect()->route('team.dashboard'); });
 
         // Profile
-        Route::get('profile', [\Modules\TeamPortal\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('profile', [\Modules\TeamPortal\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+        Route::get('profile/edit', [\Modules\TeamPortal\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('profile', [\Modules\TeamPortal\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('profile/password', [\Modules\TeamPortal\Http\Controllers\ProfileController::class, 'edit'])->name('profile.password');
 
         // Tasks
         Route::get('my-tasks', [TaskController::class, 'index'])->name('tasks.index');

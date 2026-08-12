@@ -6,6 +6,11 @@
 <div class="px-4 sm:px-6 lg:px-8">
     <div class="mb-8 flex items-center justify-between">
         <div>
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <a href="{{ route('team.profile.index') }}" class="hover:text-brand-primary transition-colors">My Profile</a>
+                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <span>Edit</span>
+            </div>
             <h1 class="text-2xl font-semibold text-gray-900">Profile Settings</h1>
             <p class="mt-2 text-sm text-gray-700">Update your personal information and password</p>
         </div>
@@ -85,6 +90,15 @@
                                 <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" class="shadow-sm focus:ring-brand-primary focus:border-brand-primary block w-full sm:text-sm border-gray-300 rounded-md px-4 py-2">
                             </div>
                             @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="bio" class="block text-sm font-medium text-gray-700">Bio <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <div class="mt-1">
+                                <textarea name="bio" id="bio" rows="3" placeholder="Tell the team a little about yourself..." class="shadow-sm focus:ring-brand-primary focus:border-brand-primary block w-full sm:text-sm border-gray-300 rounded-md px-4 py-2 resize-none">{{ old('bio', $user->bio) }}</textarea>
+                            </div>
+                            @error('bio') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                            <p class="mt-1 text-xs text-gray-400">Max 1000 characters.</p>
                         </div>
                     </div>
 
