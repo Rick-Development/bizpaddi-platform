@@ -801,27 +801,47 @@ class McpService
     protected function bdmCreateLead($args)
     {
         // ── Sanitize AI-fabricated contact data ──────────────────────────
-        // Strip any obviously fake/hallucinated emails and phone numbers
-        // so the CRM only contains real, verifiable contacts.
+        // Strip any fake/hallucinated emails and phone numbers
+        // so the CRM database only contains genuine, verified contacts.
 
-        $email = $args['email'] ?? null;
-        $phone = $args['phone'] ?? null;
+        $email = isset($args['email']) ? trim((string)$args['email']) : null;
+        $phone = isset($args['phone']) ? trim((string)$args['phone']) : null;
 
-        // Detect fake email patterns: generic prefixes with no proven source
-        $fakeEmailPrefixes = ['contact@', 'info@', 'hello@', 'admin@', 'support@', 'sales@', 'office@', 'mail@', 'enquiries@'];
+        // Clean out filler words
+        $fillers = ['n/a', 'null', 'none', 'unknown', 'not provided', 'not publicly listed', 'not available', 'nil', '-'];
+        if ($email && in_array(strtolower($email), $fillers)) {
+            $email = null;
+        }
+        if ($phone && in_array(strtolower($phone), $fillers)) {
+            $phone = null;
+        }
+
+        // Detect fake email patterns: generic prefixes or non-email format
         if ($email) {
-            foreach ($fakeEmailPrefixes as $prefix) {
-                if (stripos($email, $prefix) === 0) {
-                    $email = null; // Strip it — too generic to be verified
-                    break;
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $email = null;
+            } else {
+                $fakeEmailPrefixes = ['contact@', 'info@', 'hello@', 'admin@', 'support@', 'sales@', 'office@', 'mail@', 'enquiries@', 'email@'];
+                foreach ($fakeEmailPrefixes as $prefix) {
+                    if (stripos($email, $prefix) === 0) {
+                        $email = null;
+                        break;
+                    }
                 }
             }
         }
 
-        // Detect fake sequential/placeholder phone numbers:
-        // e.g. +2348000000001, +2348000000002 ... (8+ repeated zeros)
-        if ($phone && preg_match('/0{5,}/', preg_replace('/[\s\-\(\)\+]/', '', $phone))) {
-            $phone = null; // Strip placeholder phone
+        // Detect fake/sequential phone numbers:
+        if ($phone) {
+            $digits = preg_replace('/[^\d]/', '', $phone);
+            // Catch sequential patterns like 1234567, 2345678, 5678901, 6789012, 7890123, 0123456
+            $sequentialPattern = '/(?:12345|23456|34567|45678|56789|67890|78901|89012|90123|01234)/';
+            // Catch repeated digits like 00000, 55555, 99999, 11111, 77777
+            $repeatedPattern   = '/(.)\1{4,}/';
+
+            if (strlen($digits) < 7 || preg_match($sequentialPattern, $digits) || preg_match($repeatedPattern, $digits)) {
+                $phone = null; // Strip hallucinated phone
+            }
         }
 
         $lead = Lead::create([
@@ -897,21 +917,23 @@ class McpService
             config(["prism.providers.{$activeProvider}.api_key" => $apiKey]);
         }
 
-        $systemPrompt = "You are a web search intelligence engine simulating a search for business leads. " .
-                       "Your goal is to return a realistic list of 5-10 high-value target companies in the specified region/niche. " .
-                       "For each company, you must output a structured profile including: " .
-                       "Target Lead Candidate, Name (of a contact/decision maker), Company, Email, Phone, Expected Value, and Background Notes.";
+        $systemPrompt = "You are a web search intelligence engine identifying real target business prospects in specified regions/niches.\n" .
+                       "STRICT ANTI-FABRICATION DIRECTIVE:\n" .
+                       "1. Identify real companies, microfinance banks, logistics firms, cooperatives, and hotels operating in the target area.\n" .
+                       "2. NEVER generate, invent, or guess fake email domains (e.g. @abiamfib.com, @deltammb.com) or fake phone numbers (+234 704 567 8901).\n" .
+                       "3. If a direct email or phone number is NOT officially known or publicly listed, write 'Email: NULL' and 'Phone: NULL'.\n" .
+                       "4. It is far better to return NULL for contact details than to invent fake ones.";
 
         $prompt = "Query: \"{$query}\"\n\n" .
-                  "Please generate a realistic search results list of high-value prospects. Ensure the contact information, names, and business descriptions match the location and industries mentioned in the query. " .
-                  "Output the results in the following plain text format for each candidate:\n\n" .
+                  "Please analyze and return high-value target lead candidates matching this query.\n" .
+                  "Output the results in the following format for each candidate:\n\n" .
                   "Target Lead Candidate:\n" .
-                  "- Name: Contact Person Name\n" .
+                  "- Name: Contact Person Name (or 'Management' if unknown)\n" .
                   "- Company: Company Name\n" .
-                  "- Email: email@domain.com\n" .
-                  "- Phone: +234 ...\n" .
+                  "- Email: NULL (or real verified email only)\n" .
+                  "- Phone: NULL (or real verified phone only)\n" .
                   "- Expected Value: \$XXXXX\n" .
-                  "- Background Notes: A brief summary of their needs matching Rick Development services (web/mobile app development, fintech, agritech, etc.).";
+                  "- Background Notes: A brief summary of their operational needs matching Rick Development services (web/mobile app development, fintech, agritech, custom software).";
 
         try {
             $response = Prism::text()
@@ -925,8 +947,8 @@ class McpService
                           "Target Lead Candidate:\n" .
                           "- Name: Bamidele Johnson\n" .
                           "- Company: Eko Atlantic Hotels Group\n" .
-                          "- Email: gm@ekoatlanticgroup.com\n" .
-                          "- Phone: +234 705 555 7777\n" .
+                          "- Email: NULL\n" .
+                          "- Phone: NULL\n" .
                           "- Expected Value: $50000\n" .
                           "- Background Notes: Premium hotel property manager in Victoria Island. Seeking unified room booking portal and loyalty mobile app.";
         }

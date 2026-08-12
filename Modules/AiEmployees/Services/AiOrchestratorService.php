@@ -54,8 +54,9 @@ class AiOrchestratorService
             $cleanSystemPrompt = strip_tags($employee->system_prompt);
 
             // Force the LLM to invoke tool calls to save data (like BDM leads) instead of only responding with text.
-            $directive = "\n\nCRITICAL SYSTEM DIRECTIVE:\n" .
-                         "If your task involves finding, creating, updating, or generating any business leads, customers, projects, or tasks, you MUST invoke the appropriate tool (e.g. `bdm_create_lead` to save a lead) to save them in the database. Do NOT just print them in your text response. You must execute the tool calls to persist them.";
+            $directive = "\n\nCRITICAL SYSTEM DIRECTIVES:\n" .
+                         "1. If your task involves finding, creating, updating, or generating any business leads, customers, projects, or tasks, you MUST invoke the appropriate tool (e.g. `bdm_create_lead` to save a lead) to save them in the database. Do NOT just print them in your text response. You must execute the tool calls to persist them.\n" .
+                         "2. 🚨 ZERO-FABRICATION MANDATE FOR CONTACT INFORMATION: You are STRICTLY FORBIDDEN from generating or guessing fake email addresses (e.g. @abiamfib.com, @deltammb.com) or sequential fake phone numbers (+234 704 567 8901, +234 803 123 4567). If genuine, verified email or phone numbers are unlisted or unknown, pass `null` or omit the `email` and `phone` parameters when calling `bdm_create_lead`. It is required to save leads with NULL email/phone when contact details are unverified.";
 
             $prompt = "{$cleanSystemPrompt}{$directive}\n\n" .
                       "Your specific task is:\n{$task}{$contextStr}\n\n" .

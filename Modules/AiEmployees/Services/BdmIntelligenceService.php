@@ -123,16 +123,14 @@ class BdmIntelligenceService
                       "--------------------------------------------------\n\n" .
                       "Current Step Instructions:\n" .
                       "Analyze the context above, perform your specialized role, and invoke any required tools:\n" .
-                      "1. If you are discovering leads, call `bdm_search_web_for_leads` to search the web.\n" .
-                      "2. If you are sourcing contact details or finalizing leads, you MUST invoke `bdm_create_lead` to save them directly to the database. Do not skip this.\n" .
-                      "3. CRITICAL: In your text response, you MUST print the exact contact details (Email, Phone Number, Name, Company, Value) of every lead you find or save so the user has immediate visual confirmation in the UI logs. Do not omit the email or phone number.\n" .
-                      "4. ⚠️ ANTI-FABRICATION RULE — STRICTLY ENFORCED: You are FORBIDDEN from inventing, guessing, or hallucinating any contact information. This includes:\n" .
-                      "   - Do NOT generate fake emails like 'contact@companyname.com' or 'info@company.com' unless you have verified it exists.\n" .
-                      "   - Do NOT generate sequential or placeholder phone numbers like '+2348000000001', '+234800000002', etc.\n" .
-                      "   - If you do not have a verified, real email or phone number for a lead, leave those fields as null or omit them entirely.\n" .
-                      "   - Only save contact info you have genuinely sourced from real web search results or known public data.\n" .
-                      "   - It is far better to save a lead with no phone/email than to save a lead with a fabricated one.\n" .
-                      "5. 🏢 COMPANY DETAILS REQUIREMENT: When invoking `bdm_create_lead`, you MUST write a highly detailed summary of the company in the `company_details` parameter. Analyze their business model, identify their digital presence weaknesses, manual workflows, and explain exactly how Rick Development Ltd can help them upgrade or automate. Be as specific and thorough as possible.";
+                      "1. If discovering prospects, call `bdm_search_web_for_leads` to identify target companies.\n" .
+                      "2. If saving leads, invoke `bdm_create_lead` to persist them to the CRM database.\n" .
+                      "3. 🚨 STRICT ZERO-HALLUCINATION RULE FOR CONTACT DATA:\n" .
+                      "   - NEVER generate, synthesize, or pattern-guess emails (such as @abiamfib.com, @deltammb.com, @enmcb.com, @greenmoney.com) or phone numbers (+234 704 567 8901, +234 803 123 4567).\n" .
+                      "   - If an email or phone number is missing or unverified, pass `null` (or omit) `email` and `phone` when calling `bdm_create_lead`.\n" .
+                      "   - In your summary text response, report 'Email: Not publicly listed' or 'Phone: Not publicly listed'. DO NOT invent contact info under any circumstance.\n" .
+                      "   - Saving a lead with null email/phone is correct and required when contact details are private or unverified.\n" .
+                      "4. 🏢 COMPANY DETAILS REQUIREMENT: When invoking `bdm_create_lead`, you MUST write a highly detailed summary of the company in the `company_details` parameter. Analyze their business model, identify their digital presence weaknesses, manual workflows, and explain exactly how Rick Development Ltd can help them upgrade or automate. Be as specific and thorough as possible.";
 
             $response = $this->callModel($agent, $prompt, $tools);
             
