@@ -23,14 +23,29 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             cd /home/billway/rickdevelopment
+            
+            # Helper to run PHP and tolerate core dumps (exit status 134) on exit
+            run_php() {
+              php -d opcache.enable_cli=0 "$@"
+              local status=$?
+              if [ $status -eq 0 ] || [ $status -eq 134 ]; then
+                return 0
+              fi
+              return $status
+            }
+            
             git fetch origin main
             git reset --hard origin/main
-            composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-            php -d opcache.enable_cli=0 artisan package:discover --ansi
+            
+            run_php $(which composer) install --no-dev --optimize-autoloader --no-interaction --no-scripts
+            run_php artisan package:discover --ansi
+            
             rm -rf node_modules
             npm install
             npm run build
-            php -d opcache.enable_cli=0 artisan migrate --force
-            php -d opcache.enable_cli=0 artisan optimize:clear
-            php -d opcache.enable_cli=0 artisan optimize
-            php -d opcache.enable_cli=0 artisan queue:restart
+            
+            run_php artisan migrate --force
+            run_php artisan optimize:clear
+            run_php artisan optimize
+            run_php artisan queue:restart
+
