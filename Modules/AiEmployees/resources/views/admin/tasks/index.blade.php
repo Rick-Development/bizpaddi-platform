@@ -134,7 +134,7 @@
                             {{ $task->created_at->diffForHumans() }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-5 text-right text-sm font-medium pr-6">
-                            <div class="inline-flex gap-2">
+                            <div class="inline-flex gap-2 items-center">
                                 <a href="{{ route('admin.aiemployees.tasks.show', $task) }}" class="rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 text-xs font-bold transition-all">View</a>
                                 
                                 @if($task->status === 'failed')
@@ -142,6 +142,19 @@
                                         @csrf
                                         <button type="submit" class="rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 text-xs font-bold transition-all">Retry</button>
                                     </form>
+                                @endif
+
+                                @if(in_array($task->status, ['processing', 'pending']))
+                                    <button type="button"
+                                        class="inline-flex items-center gap-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 px-3 py-1.5 text-xs font-bold transition-all btn-stop-task"
+                                        data-id="{{ $task->id }}"
+                                        data-stop-url="{{ route('admin.aiemployees.tasks.stop', $task) }}"
+                                        title="Stop this running task">
+                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <rect x="4" y="4" width="12" height="12" rx="1"/>
+                                        </svg>
+                                        Stop
+                                    </button>
                                 @endif
                                 
                                 <a href="{{ route('admin.aiemployees.tasks.edit', $task) }}" class="rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 text-xs font-bold transition-all {{ $task->status === 'processing' ? 'pointer-events-none opacity-50' : '' }}">Edit</a>
@@ -206,7 +219,58 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.btn-delete-task').on('click', function() {
+        // ── Stop Task ─────────────────────────────────────────────────────────
+        $(document).on('click', '.btn-stop-task', function() {
+            const btn      = $(this);
+            const taskId   = btn.data('id');
+            const stopUrl  = btn.data('stop-url');
+            const row      = btn.closest('tr');
+
+            if (!confirm('Stop this running task? It will be marked as failed and the AI will no longer process it.')) return;
+
+            btn.prop('disabled', true).html(
+                `<svg class="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg> Stopping…`
+            );
+
+            $.ajax({
+                url: stopUrl,
+                method: 'POST',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    if (response.success) {
+                        // Update status badge in the row
+                        row.find('span.uppercase').css({ background: '#fee2e2', color: '#b91c1c' }).text('FAILED');
+                        // Remove stop + edit buttons, show retry instead
+                        btn.closest('.inline-flex')
+                           .find('.btn-stop-task').remove();
+                        btn.closest('.inline-flex')
+                           .find('a[href*="edit"]').removeClass('pointer-events-none opacity-50');
+                        btn.closest('.inline-flex')
+                           .find('.btn-delete-task').prop('disabled', false);
+
+                        // Insert Retry button before Edit
+                        const retryHtml = `
+                            <form action="${stopUrl.replace('/stop', '/retry')}" method="POST" class="inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 text-xs font-bold transition-all">Retry</button>
+                            </form>`;
+                        row.find('a[href*="edit"]').before(retryHtml);
+
+                        // Show brief toast
+                        const toast = $('<div class="fixed bottom-6 right-6 z-50 rounded-xl bg-orange-600 text-white px-5 py-3 text-sm font-semibold shadow-xl flex items-center gap-2">⏹ Task stopped successfully.</div>');
+                        $('body').append(toast);
+                        setTimeout(() => toast.fadeOut(400, function() { $(this).remove(); }), 3000);
+                    }
+                },
+                error: function(xhr) {
+                    btn.prop('disabled', false).html(`<svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="1"/></svg> Stop`);
+                    alert(xhr.responseJSON?.message || 'Failed to stop the task.');
+                }
+            });
+        });
+
+        // ── Delete Task ───────────────────────────────────────────────────────
+        $(document).on('click', '.btn-delete-task', function() {
             const taskId = $(this).data('id');
             const row = $(this).closest('tr');
             

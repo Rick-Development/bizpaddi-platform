@@ -180,4 +180,37 @@ class AiTaskController extends Controller
 
         return redirect()->route('admin.aiemployees.tasks.index')->with('success', 'Task has been re-queued.');
     }
+
+    /**
+     * Stop a currently processing or pending task — marks it as failed without deleting.
+     */
+    public function stop(Request $request, $id)
+    {
+        $task = AiTask::findOrFail($id);
+
+        if (!in_array($task->status, ['processing', 'pending'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Task is not currently running (status: ' . $task->status . ').'
+            ], 400);
+        }
+
+        $task->update([
+            'status' => 'failed',
+            'output' => json_encode([
+                'text'   => 'Task stopped by admin.',
+                'result' => null,
+            ]),
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Task has been stopped.',
+            ]);
+        }
+
+        return redirect()->route('admin.aiemployees.tasks.index')
+            ->with('success', 'Task has been stopped successfully.');
+    }
 }

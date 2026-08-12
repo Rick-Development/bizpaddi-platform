@@ -23,6 +23,7 @@ Route::prefix('admin/aiemployees')->name('admin.aiemployees.')->middleware(['web
     Route::resource('employees', AiEmployeeController::class);
     Route::post('/run-routines', [AiDashboardController::class, 'runRoutines'])->name('run-routines');
     Route::post('tasks/{task}/retry', [AiTaskController::class, 'retry'])->name('tasks.retry');
+    Route::post('tasks/{task}/stop', [AiTaskController::class, 'stop'])->name('tasks.stop');
     Route::resource('tasks', AiTaskController::class);
     Route::resource('knowledge', AiKnowledgeController::class);
 });
