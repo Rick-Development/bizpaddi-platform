@@ -128,9 +128,12 @@
     @if(!$employee->is_sub_agent)
     <!-- Sub-Intelligences Section -->
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 backdrop-blur-sm">
-            <h3 class="text-lg font-bold text-slate-900">Specialized Sub-Intelligences</h3>
-            <p class="text-xs text-slate-500 mt-1">Configure and train the specialized sub-intelligences that audit, check, and assist this Primary AI.</p>
+        <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 backdrop-blur-sm flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Specialized Sub-Intelligences</h3>
+                <p class="text-xs text-slate-500 mt-1">Configure and train the specialized sub-intelligences that audit, check, and assist this Primary AI.</p>
+            </div>
+            <a href="{{ route('admin.aiemployees.employees.create', ['parent_id' => $employee->id, 'is_sub_agent' => 1]) }}" class="rounded-lg bg-brand-primary hover:bg-brand-primary/95 text-white px-4 py-2 text-xs font-bold transition-all shadow-md shadow-brand-primary/20">Add Sub-Intelligence</a>
         </div>
         <div class="p-8">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -187,6 +190,18 @@
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['table', ['table']],
                 ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
+        $('#description').summernote({
+            placeholder: 'Internal notes about this AI...',
+            tabsize: 2,
+            height: 120,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['view', ['help']]
             ]
         });
 

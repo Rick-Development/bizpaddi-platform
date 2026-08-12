@@ -116,6 +116,13 @@
             </div>
         </div>
 
+        <!-- Company Details -->
+        <div class="border-t border-gray-200 pt-6">
+            <label for="company_details" class="block text-sm font-medium text-gray-700 mb-2">Company Details</label>
+            <textarea name="company_details" id="company_details" rows="5" placeholder="Add detailed information about the company (e.g. digital presence, tech stack gaps, opportunities)..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">{{ old('company_details', $lead->company_details) }}</textarea>
+        </div>
+
         <!-- Notes -->
         <div class="border-t border-gray-200 pt-6">
             <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>

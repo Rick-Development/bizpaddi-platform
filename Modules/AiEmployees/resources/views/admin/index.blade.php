@@ -3,6 +3,52 @@
 @section('title', 'AI Workforce')
 
 @section('content')
+<style>
+    #toast-container {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        pointer-events: none;
+    }
+    .toast-message {
+        background: #1e293b;
+        border: 1px solid #475569;
+        color: #f8fafc;
+        padding: 0.875rem 1.25rem;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        opacity: 0;
+        transform: translateY(-1rem);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 300px;
+    }
+    .toast-success {
+        border-color: #10b981;
+        background: #064e3b;
+        color: #d1fae5;
+    }
+    .toast-error {
+        border-color: #ef4444;
+        background: #7f1d1d;
+        color: #fee2e2;
+    }
+    .toast-show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+<div id="toast-container"></div>
+
 <!-- Header Section -->
 <div class="relative overflow-hidden rounded-2xl bg-white px-6 py-10 shadow-sm border border-gray-200 sm:px-12 sm:py-16 mb-8">
     <!-- Background glow effect -->
@@ -53,7 +99,7 @@
 <!-- AI Employee Cards Grid -->
 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     @forelse($employees as $employee)
-        <div class="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <div id="employee-card-{{ $employee->id }}" class="employee-card group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
             <!-- Glassmorphism Header -->
             <div class="relative px-6 py-5 border-b border-slate-100 bg-slate-50/50 backdrop-blur-sm">
                 <div class="flex items-center justify-between">
@@ -98,7 +144,7 @@
                     <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </a>
                 
-                <form action="{{ route('admin.aiemployees.employees.destroy', $employee) }}" method="POST" class="inline-block form-delete-employee" data-confirm="Are you sure you want to terminate this AI Employee? This action cannot be undone.">
+                <form action="{{ route('admin.aiemployees.employees.destroy', $employee) }}" method="POST" class="inline-block form-delete-employee" data-id="{{ $employee->id }}" data-confirm="Are you sure you want to terminate this AI Employee? This action cannot be undone.">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-slate-400 hover:text-red-500 transition-colors rounded-md p-1 hover:bg-red-50" title="Terminate Employee">
@@ -132,10 +178,71 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const container = $('#toast-container');
+            if (container.length === 0) {
+                $('body').append('<div id="toast-container"></div>');
+            }
+            const toast = $('<div class="toast-message"></div>');
+            toast.addClass(type === 'success' ? 'toast-success' : 'toast-error');
+            toast.text(message);
+            $('#toast-container').append(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.addClass('toast-show'), 10);
+            
+            // Remove after 3.5s
+            setTimeout(() => {
+                toast.removeClass('toast-show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Run Routines form AJAX handler
+        $('.form-run-routines').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const button = form.find('button[type="submit"]');
+            const originalHtml = button.html();
+
+            button.prop('disabled', true).addClass('opacity-50 cursor-not-allowed').html(`
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Running...
+            `);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    button.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed').html(originalHtml);
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                    } else {
+                        showToast(response.message || 'Error triggering routines.', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    button.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed').html(originalHtml);
+                    let message = 'Error triggering routines.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    showToast(message, 'error');
+                }
+            });
+        });
+
+        // Delete Employee form AJAX handler
         $('.form-delete-employee').on('submit', function(e) {
             e.preventDefault();
-            
             const form = $(this);
+            const employeeId = form.data('id');
+            const card = $(`#employee-card-${employeeId}`);
             const confirmMessage = form.data('confirm');
             
             if (confirm(confirmMessage)) {
@@ -144,17 +251,31 @@
                     method: 'POST',
                     data: form.serialize(),
                     success: function(response) {
-                        if (response.success && response.redirect) {
-                            window.location.href = response.redirect;
+                        if (response.success) {
+                            showToast(response.message || 'AI Employee terminated successfully.', 'success');
+                            card.fadeOut(400, function() {
+                                card.remove();
+                                // If list is now empty, reload to show empty state
+                                if ($('.employee-card').length === 0) {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            showToast('Failed to delete the AI employee.', 'error');
                         }
                     },
-                    error: function() {
-                        alert('Failed to delete the AI employee.');
+                    error: function(xhr) {
+                        let message = 'Failed to delete the AI employee.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        showToast(message, 'error');
                     }
                 });
             }
         });
 
+        // Status Toggle AJAX handler
         $('.employee-status-toggle').on('change', function() {
             const employeeId = $(this).data('id');
             const isChecked = $(this).is(':checked');
@@ -166,12 +287,14 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    if (!response.success) {
-                        alert('Failed to update status.');
+                    if (response.success) {
+                        showToast(response.message || 'Status updated successfully.', 'success');
+                    } else {
+                        showToast('Failed to update status.', 'error');
                     }
                 },
                 error: function() {
-                    alert('Error updating status.');
+                    showToast('Error updating status.', 'error');
                 }
             });
         });

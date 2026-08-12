@@ -105,6 +105,14 @@
         </div>
         @endif
 
+        <!-- Company Details -->
+        @if($lead->company_details)
+            <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-brand-primary">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Company Details & Research</h2>
+                <p class="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{{ $lead->company_details }}</p>
+            </div>
+        @endif
+
         <!-- Notes -->
         @if($lead->notes)
             <div class="bg-white rounded-lg shadow-sm p-6">

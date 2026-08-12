@@ -3,6 +3,52 @@
 @section('title', 'Executive Command Center')
 
 @section('content')
+<style>
+    #toast-container {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        pointer-events: none;
+    }
+    .toast-message {
+        background: #1e293b;
+        border: 1px solid #475569;
+        color: #f8fafc;
+        padding: 0.875rem 1.25rem;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        opacity: 0;
+        transform: translateY(-1rem);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 300px;
+    }
+    .toast-success {
+        border-color: #10b981;
+        background: #064e3b;
+        color: #d1fae5;
+    }
+    .toast-error {
+        border-color: #ef4444;
+        background: #7f1d1d;
+        color: #fee2e2;
+    }
+    .toast-show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+<div id="toast-container"></div>
+
 <!-- Header Section -->
 <div class="relative overflow-hidden rounded-2xl bg-white px-6 py-10 shadow-sm border border-gray-200 sm:px-12 sm:py-16 mb-8">
     <div class="absolute inset-0">
@@ -140,7 +186,7 @@
                     <dl>
                         <dt class="text-sm font-medium text-gray-500 truncate">Human Reviews Req.</dt>
                         <dd class="flex items-baseline">
-                            <div class="text-2xl font-bold text-gray-900">{{ $stats['pending_reviews'] ?? 0 }}</div>
+                            <div id="pendingReviewsCount" class="text-2xl font-bold text-gray-900">{{ $stats['pending_reviews'] ?? 0 }}</div>
                             <div class="ml-2 flex items-baseline text-sm font-semibold text-red-600">
                                 Pending Action
                             </div>
@@ -250,7 +296,7 @@
 
 <!-- Pending Approvals Queue -->
 @if(count($pendingActions) > 0)
-<div class="mt-8 bg-white overflow-hidden rounded-2xl shadow-sm border border-amber-200">
+<div id="pendingActionsContainer" class="mt-8 bg-white overflow-hidden rounded-2xl shadow-sm border border-amber-200">
     <div class="border-b border-amber-200 bg-amber-50 px-6 py-4 flex items-center justify-between">
         <h3 class="text-base font-semibold leading-6 text-amber-900 flex items-center gap-2">
             <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,7 +304,7 @@
             </svg>
             Pending Actions Requiring Approval
         </h3>
-        <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+        <span id="pendingActionsBadge" class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
             {{ count($pendingActions) }} pending
         </span>
     </div>
@@ -275,7 +321,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($pendingActions as $action)
-                <tr>
+                <tr id="pending-action-{{ $action->id }}" class="pending-action-row">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-8 w-8 bg-brand-primary/10 rounded-full flex items-center justify-center">
@@ -398,13 +444,13 @@
                         {{ $action->created_at->diffForHumans() }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <form action="{{ route('admin.aiemployees.dashboard.actions.approve', $action->id) }}" method="POST" class="inline-block">
+                        <form action="{{ route('admin.aiemployees.dashboard.actions.approve', $action->id) }}" method="POST" class="inline-block form-approve-action" data-id="{{ $action->id }}">
                             @csrf
-                            <button type="submit" class="text-green-600 hover:text-green-900 mr-3">Approve</button>
+                            <button type="submit" class="text-green-600 hover:text-green-900 mr-3 font-semibold">Approve</button>
                         </form>
-                        <form action="{{ route('admin.aiemployees.dashboard.actions.reject', $action->id) }}" method="POST" class="inline-block">
+                        <form action="{{ route('admin.aiemployees.dashboard.actions.reject', $action->id) }}" method="POST" class="inline-block form-reject-action" data-id="{{ $action->id }}">
                             @csrf
-                            <button type="submit" class="text-red-600 hover:text-red-900">Reject</button>
+                            <button type="submit" class="text-red-600 hover:text-red-900 font-semibold">Reject</button>
                         </form>
                     </td>
                 </tr>
@@ -715,6 +761,158 @@
                         errorMsg = xhr.responseJSON.text;
                     }
                     alert(errorMsg);
+                }
+            });
+        });
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const container = $('#toast-container');
+            if (container.length === 0) {
+                $('body').append('<div id="toast-container"></div>');
+            }
+            const toast = $('<div class="toast-message"></div>');
+            toast.addClass(type === 'success' ? 'toast-success' : 'toast-error');
+            toast.text(message);
+            $('#toast-container').append(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.addClass('toast-show'), 10);
+            
+            // Remove after 3.5s
+            setTimeout(() => {
+                toast.removeClass('toast-show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Run Routines form AJAX handler
+        $('.form-run-routines').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const button = form.find('button[type="submit"]');
+            const originalHtml = button.html();
+
+            button.prop('disabled', true).addClass('opacity-50 cursor-not-allowed').html(`
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Running...
+            `);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    button.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed').html(originalHtml);
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                    } else {
+                        showToast(response.message || 'Error triggering routines.', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    button.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed').html(originalHtml);
+                    let message = 'Error triggering routines.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    showToast(message, 'error');
+                }
+            });
+        });
+
+        // Helper to update Pending Actions counters
+        function decrementPendingCounters() {
+            const countEl = $('#pendingReviewsCount');
+            const badgeEl = $('#pendingActionsBadge');
+            
+            let count = parseInt(countEl.text()) || 0;
+            if (count > 0) {
+                count--;
+                countEl.text(count);
+                badgeEl.text(`${count} pending`);
+            }
+            
+            if (count === 0) {
+                $('#pendingActionsContainer').slideUp(300, function() {
+                    $(this).remove();
+                });
+            }
+        }
+
+        // Approve Action AJAX handler
+        $(document).on('submit', '.form-approve-action', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const actionId = form.data('id');
+            const row = $(`#pending-action-${actionId}`);
+            const buttons = row.find('button');
+
+            buttons.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                        row.fadeOut(300, function() {
+                            row.remove();
+                            decrementPendingCounters();
+                        });
+                    } else {
+                        buttons.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                        showToast(response.message || 'Error executing action.', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    buttons.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    let message = 'Failed to execute action.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    showToast(message, 'error');
+                }
+            });
+        });
+
+        // Reject Action AJAX handler
+        $(document).on('submit', '.form-reject-action', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const actionId = form.data('id');
+            const row = $(`#pending-action-${actionId}`);
+            const buttons = row.find('button');
+
+            buttons.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                        row.fadeOut(300, function() {
+                            row.remove();
+                            decrementPendingCounters();
+                        });
+                    } else {
+                        buttons.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                        showToast(response.message || 'Error rejecting action.', 'error');
+                    }
+                },
+                error: function(xhr) {
+                    buttons.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    let message = 'Failed to reject action.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    showToast(message, 'error');
                 }
             });
         });

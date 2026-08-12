@@ -105,9 +105,10 @@
                             @if($task->status === 'completed' && $task->output)
                                 @php $out = json_decode($task->output, true); @endphp
                                 @if(isset($out['result']))
-                                    <div class="mt-2 text-xs font-semibold text-brand-primary bg-brand-primary/5 px-2.5 py-1.5 rounded-lg border border-brand-primary/10 inline-block line-clamp-1 max-w-md">
-                                        📄 {{ Str::limit($out['result'], 80) }}
-                                    </div>
+                                    <button type="button" class="mt-2 text-xs font-semibold text-brand-primary bg-brand-primary/5 px-2.5 py-1.5 rounded-lg border border-brand-primary/10 inline-flex items-center gap-1 hover:bg-brand-primary/10 transition-all btn-view-output" data-id="{{ $task->id }}" data-agent="{{ $task->employee->name ?? 'AI' }}" data-role="{{ str_replace('_', ' ', Str::title($task->employee->role ?? '')) }}" data-task="{{ $task->task }}">
+                                        📄 View Complete Response
+                                    </button>
+                                    <div class="hidden" id="full-output-{{ $task->id }}">{{ $out['result'] }}</div>
                                 @endif
                             @elseif($task->status === 'failed' && $task->output)
                                 @php $out = json_decode($task->output, true); @endphp
@@ -134,6 +135,8 @@
                         </td>
                         <td class="whitespace-nowrap px-6 py-5 text-right text-sm font-medium pr-6">
                             <div class="inline-flex gap-2">
+                                <a href="{{ route('admin.aiemployees.tasks.show', $task) }}" class="rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1.5 text-xs font-bold transition-all">View</a>
+                                
                                 @if($task->status === 'failed')
                                     <form action="{{ route('admin.aiemployees.tasks.retry', $task) }}" method="POST" class="inline">
                                         @csrf
@@ -167,6 +170,38 @@
     @endif
 </div>
 
+<!-- View Output Modal -->
+<div id="outputModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex min-h-screen items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity" id="closeModalBackdrop"></div>
+        
+        <!-- Modal Content Box -->
+        <div class="relative transform overflow-hidden rounded-2xl bg-white border border-slate-200 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="border-b border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900" id="modalAgentName">AI Employee Task Output</h3>
+                    <p class="text-xs text-slate-500 font-medium" id="modalTaskMeta"></p>
+                </div>
+                <button type="button" class="text-slate-400 hover:text-slate-600 transition-colors" id="closeModalX">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto flex-1 font-sans text-sm text-slate-700 leading-relaxed" id="modalOutputContent">
+                <!-- Content gets dynamically loaded here -->
+            </div>
+            <!-- Footer -->
+            <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-end">
+                <button type="button" class="rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 px-5 py-2.5 text-sm font-semibold transition-all" id="closeModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
@@ -195,6 +230,57 @@
                     }
                 });
             }
+        });
+
+        // Modal Event Handlers
+        $(document).on('click', '.btn-view-output', function() {
+            const taskId = $(this).data('id');
+            const agentName = $(this).data('agent');
+            const agentRole = $(this).data('role');
+            const taskText = $(this).data('task');
+            
+            const statusLabel = $(this).closest('tr').find('span.uppercase').text().trim() || 'Pending';
+            const rawContent = $(`#full-output-${taskId}`).html() || '';
+            
+            let formatted = '';
+            if (!rawContent) {
+                formatted = `
+                    <div class="py-8 text-center text-slate-500">
+                        <div class="text-4xl mb-3">⏳</div>
+                        <p class="font-bold text-base text-slate-700">No output generated yet.</p>
+                        <p class="text-sm text-slate-400 mt-1">This task is currently in state: <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600 uppercase tracking-wider">${statusLabel}</span>.</p>
+                    </div>
+                `;
+            } else {
+                // Format text (convert markdown-style format to HTML)
+                formatted = rawContent
+                    .replace(/\\n/g, '\n')
+                    .replace(/\n\n/g, '<br><br>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/- \*\*(.*?)\*\*(.*?)(<br>|$)/g, '<li class="ml-4"><strong class="text-brand-primary">$1</strong>$2</li>')
+                    .replace(/- (.*?)(<br>|$)/g, '<li class="ml-4 text-slate-600">$1</li>');
+
+                if (formatted.includes('<li')) {
+                    formatted = `<ul class="list-disc mb-4 space-y-1 pl-4">${formatted}</ul>`;
+                }
+            }
+
+            $('#modalAgentName').text(agentName);
+            $('#modalTaskMeta').text(`${agentRole} | Task: "${taskText.substring(0, 60)}..."`);
+            $('#modalOutputContent').html(formatted);
+            
+            $('#outputModal').removeClass('hidden').addClass('flex');
+            $('body').addClass('overflow-hidden');
+        });
+
+        function closeModal() {
+            $('#outputModal').addClass('hidden').removeClass('flex');
+            $('body').removeClass('overflow-hidden');
+        }
+
+        $('#closeModalBtn, #closeModalX, #closeModalBackdrop').on('click', closeModal);
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
         });
     });
 </script>

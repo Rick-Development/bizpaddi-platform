@@ -47,6 +47,14 @@ class AiKnowledgeController extends Controller
 
         AiKnowledgeDocument::create($validated);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Training document added successfully. The AI employees will now search and utilize this knowledge during execution.',
+                'redirect' => route('admin.aiemployees.knowledge.index')
+            ]);
+        }
+
         return redirect()->route('admin.aiemployees.knowledge.index')
             ->with('success', 'Training document added successfully. The AI employees will now search and utilize this knowledge during execution.');
     }
@@ -73,6 +81,14 @@ class AiKnowledgeController extends Controller
 
         $document = AiKnowledgeDocument::findOrFail($id);
         $document->update($validated);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Training document updated successfully.',
+                'redirect' => route('admin.aiemployees.knowledge.index')
+            ]);
+        }
 
         return redirect()->route('admin.aiemployees.knowledge.index')
             ->with('success', 'Training document updated successfully.');

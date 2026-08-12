@@ -36,7 +36,11 @@ class AiTaskController extends Controller
      */
     public function create()
     {
-        $employees = AiEmployee::where('is_active', true)->get();
+        $employees = AiEmployee::where('is_active', true)
+            ->whereNull('parent_id')
+            ->where('is_sub_agent', false)
+            ->get();
+            
         return view('aiemployees::admin.tasks.create', compact('employees'));
     }
 
@@ -72,7 +76,16 @@ class AiTaskController extends Controller
     public function show($id)
     {
         $task = AiTask::with('employee')->findOrFail($id);
-        return view('aiemployees::admin.tasks.show', compact('task'));
+        
+        $leads = [];
+        if (class_exists('\Modules\Contact\Models\Lead') && $task->employee_id) {
+            $leads = \Modules\Contact\Models\Lead::where('ai_employee_id', $task->employee_id)
+                ->latest()
+                ->limit(10)
+                ->get();
+        }
+        
+        return view('aiemployees::admin.tasks.show', compact('task', 'leads'));
     }
 
     /**
@@ -81,7 +94,10 @@ class AiTaskController extends Controller
     public function edit($id)
     {
         $task = AiTask::findOrFail($id);
-        $employees = AiEmployee::where('is_active', true)->get();
+        $employees = AiEmployee::where('is_active', true)
+            ->whereNull('parent_id')
+            ->where('is_sub_agent', false)
+            ->get();
         return view('aiemployees::admin.tasks.edit', compact('task', 'employees'));
     }
 
@@ -93,19 +109,36 @@ class AiTaskController extends Controller
         $validated = $request->validate([
             'employee_id' => 'required|exists:ai_employees,id',
             'task' => 'required|string',
+            'status' => 'required|in:pending,processing,completed,failed',
+            'output' => 'nullable|string',
         ]);
 
         $task = AiTask::findOrFail($id);
 
-        if ($task->status === 'processing') {
+        if ($task->status === 'processing' && $validated['status'] !== 'pending') {
             return redirect()->back()->with('error', 'Cannot update task while it is being processed by the AI.');
+        }
+
+        $oldStatus = $task->status;
+
+        $outputVal = $validated['output'];
+        if ($outputVal) {
+            $jsonDecoded = json_decode($outputVal, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $outputVal = json_encode(['result' => $outputVal]);
+            }
         }
 
         $task->update([
             'employee_id' => $validated['employee_id'],
             'task' => $validated['task'],
-            'status' => 'pending' // Reset status to pending so it can be re-run if desired
+            'status' => $validated['status'],
+            'output' => $outputVal,
         ]);
+
+        if ($validated['status'] === 'pending' && $oldStatus !== 'pending') {
+            ProcessAiTaskJob::dispatch($task);
+        }
 
         return redirect()->route('admin.aiemployees.tasks.index')->with('success', 'Task details updated successfully.');
     }
@@ -132,11 +165,18 @@ class AiTaskController extends Controller
     /**
      * Dispatch the task job again.
      */
-    public function retry($id)
+    public function retry(Request $request, $id)
     {
         $task = AiTask::findOrFail($id);
         $task->update(['status' => 'pending', 'output' => null]);
         ProcessAiTaskJob::dispatch($task);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Task has been re-queued.'
+            ]);
+        }
 
         return redirect()->route('admin.aiemployees.tasks.index')->with('success', 'Task has been re-queued.');
     }

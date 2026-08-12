@@ -175,6 +175,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('leads/{lead}/status', [\Modules\Admin\Http\Controllers\LeadController::class, 'updateStatus'])->name('leads.update-status');
         Route::post('leads/{lead}/contact', [\Modules\Admin\Http\Controllers\LeadController::class, 'markAsContacted'])->name('leads.mark-contacted');
         Route::post('leads/{lead}/convert', [\Modules\Admin\Http\Controllers\LeadController::class, 'convertToContact'])->name('leads.convert');
+        Route::get('leads/export/csv', [\Modules\Admin\Http\Controllers\LeadController::class, 'exportCsv'])->name('leads.export-csv');
+        Route::get('leads/export/pdf', [\Modules\Admin\Http\Controllers\LeadController::class, 'exportPdf'])->name('leads.export-pdf');
+        Route::post('leads/import/csv', [\Modules\Admin\Http\Controllers\LeadController::class, 'importCsv'])->name('leads.import-csv');
         
         // Communications Management
         // Support Tickets

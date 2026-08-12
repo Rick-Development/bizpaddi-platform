@@ -97,7 +97,7 @@
                                 $pendingCount = \Modules\AiEmployees\Models\AiPendingAction::where('status', 'pending')->count();
                             @endphp
                             <li>
-                                <a href="{{ route('admin.aiemployees.dashboard') }}#pending-actions" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 flex justify-between items-center rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                <a href="{{ route('admin.aiemployees.pending-actions.index') }}" class="{{ request()->routeIs('admin.aiemployees.pending-actions.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex justify-between items-center rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
                                     <span>Pending Actions</span>
                                     @if($pendingCount > 0)
                                     <span class="ml-2 inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-white">{{ $pendingCount }}</span>

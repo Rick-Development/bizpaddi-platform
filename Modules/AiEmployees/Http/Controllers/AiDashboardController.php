@@ -15,14 +15,26 @@ class AiDashboardController extends Controller
 {
     public function index()
     {
+        $tasksProcessed = AiTask::count();
+        $completedTasks = AiTask::where('status', 'completed')->count();
+        $failedTasks = AiTask::where('status', 'failed')->count();
+        $totalFinished = $completedTasks + $failedTasks;
+        
+        $successRate = $totalFinished > 0 
+            ? round(($completedTasks / $totalFinished) * 100, 1) 
+            : 100.0;
+
         $stats = [
             'total_agents' => AiEmployee::count(),
             'active_agents' => AiEmployee::where('is_active', true)->count(),
-            'tasks_processed' => rand(120, 500), // Mock for now
-            'success_rate' => 98.5,
+            'tasks_processed' => $tasksProcessed,
+            'success_rate' => $successRate,
         ];
         
-        $agents = AiEmployee::where('is_active', true)->get();
+        $agents = AiEmployee::where('is_active', true)
+            ->whereNull('parent_id')
+            ->where('is_sub_agent', false)
+            ->get();
         $pendingActions = AiPendingAction::with('employee')->where('status', 'pending')->latest()->get();
         
         // Update stats
@@ -80,6 +92,9 @@ class AiDashboardController extends Controller
         $action = AiPendingAction::findOrFail($id);
         
         if ($action->status !== 'pending') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Action is no longer pending.'], 422);
+            }
             return back()->with('error', 'Action is no longer pending.');
         }
 
@@ -91,12 +106,18 @@ class AiDashboardController extends Controller
                 'result' => is_array($result) ? json_encode($result) : $result
             ]);
             
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'Action approved and executed successfully.']);
+            }
             return back()->with('success', 'Action approved and executed successfully.');
         } catch (\Exception $e) {
             $action->update([
                 'status' => 'failed',
                 'result' => $e->getMessage()
             ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Action failed during execution: ' . $e->getMessage()], 500);
+            }
             return back()->with('error', 'Action failed during execution: ' . $e->getMessage());
         }
     }
@@ -106,11 +127,17 @@ class AiDashboardController extends Controller
         $action = AiPendingAction::findOrFail($id);
         
         if ($action->status !== 'pending') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Action is no longer pending.'], 422);
+            }
             return back()->with('error', 'Action is no longer pending.');
         }
 
         $action->update(['status' => 'rejected']);
         
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Action has been rejected.']);
+        }
         return back()->with('success', 'Action has been rejected.');
     }
 
@@ -144,5 +171,88 @@ class AiDashboardController extends Controller
 
             return back()->with('error', 'Error running routines: ' . $e->getMessage());
         }
+    }
+
+    public function pendingActions(Request $request)
+    {
+        $pendingActions = AiPendingAction::with('employee')
+            ->where('status', 'pending')
+            ->latest()
+            ->paginate(20);
+            
+        return view('aiemployees::admin.pending_actions.index', compact('pendingActions'));
+    }
+
+    public function bulkApprove(Request $request, McpService $mcpService)
+    {
+        // Support both JSON body and form-encoded input
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            $json = json_decode($request->getContent(), true);
+            $ids = $json['ids'] ?? [];
+        }
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json(['success' => false, 'message' => 'No actions selected.'], 422);
+        }
+
+        $actions = AiPendingAction::whereIn('id', $ids)->where('status', 'pending')->get();
+        if ($actions->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'No pending actions found to approve.'], 422);
+        }
+
+        $successCount = 0;
+        $failCount = 0;
+        $errors = [];
+
+        foreach ($actions as $action) {
+            try {
+                $result = $mcpService->executeTool($action->tool_name, $action->tool_arguments);
+                $action->update([
+                    'status' => 'executed',
+                    'result' => is_array($result) ? json_encode($result) : $result
+                ]);
+                $successCount++;
+            } catch (\Exception $e) {
+                $action->update([
+                    'status' => 'failed',
+                    'result' => $e->getMessage()
+                ]);
+                $failCount++;
+                $errors[] = "Action #{$action->id} failed: " . $e->getMessage();
+            }
+        }
+
+        $msg = "Successfully approved and executed {$successCount} actions.";
+        if ($failCount > 0) {
+            $msg .= " Failed to execute {$failCount} actions.";
+        }
+
+        return response()->json([
+            'success' => $successCount > 0,
+            'message' => $msg,
+            'errors' => $errors
+        ]);
+    }
+
+    public function bulkReject(Request $request)
+    {
+        // Support both JSON body and form-encoded input
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            $json = json_decode($request->getContent(), true);
+            $ids = $json['ids'] ?? [];
+        }
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json(['success' => false, 'message' => 'No actions selected.'], 422);
+        }
+
+        $count = AiPendingAction::whereIn('id', $ids)
+            ->where('status', 'pending')
+            ->update(['status' => 'rejected']);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully rejected {$count} actions."
+        ]);
     }
 }

@@ -13,6 +13,12 @@ Route::prefix('admin/aiemployees')->name('admin.aiemployees.')->middleware(['web
     Route::get('/dashboard/task/{id}/poll', [AiDashboardController::class, 'pollTask'])->name('dashboard.task.poll');
     Route::post('/dashboard/actions/{id}/approve', [AiDashboardController::class, 'approveAction'])->name('dashboard.actions.approve');
     Route::post('/dashboard/actions/{id}/reject', [AiDashboardController::class, 'rejectAction'])->name('dashboard.actions.reject');
+    
+    // Dedicated Pending Actions and Bulk Operations
+    Route::get('/pending-actions', [AiDashboardController::class, 'pendingActions'])->name('pending-actions.index');
+    Route::post('/pending-actions/bulk-approve', [AiDashboardController::class, 'bulkApprove'])->name('pending-actions.bulk-approve');
+    Route::post('/pending-actions/bulk-reject', [AiDashboardController::class, 'bulkReject'])->name('pending-actions.bulk-reject');
+
     Route::post('employees/{employee}/toggle-status', [AiEmployeeController::class, 'toggleStatus'])->name('employees.toggle-status');
     Route::resource('employees', AiEmployeeController::class);
     Route::post('/run-routines', [AiDashboardController::class, 'runRoutines'])->name('run-routines');

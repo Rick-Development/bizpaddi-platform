@@ -7,13 +7,17 @@ use Prism\Prism\Facades\Prism;
 use Prism\Prism\Tool;
 use Modules\Mcp\Services\McpService;
 
+use Modules\AiEmployees\Services\BdmIntelligenceService;
+
 class AiOrchestratorService
 {
     protected $mcpService;
+    protected $bdmService;
 
-    public function __construct(McpService $mcpService)
+    public function __construct(McpService $mcpService, BdmIntelligenceService $bdmService)
     {
         $this->mcpService = $mcpService;
+        $this->bdmService = $bdmService;
     }
 
     /**
@@ -21,6 +25,13 @@ class AiOrchestratorService
      */
     public function processTask(AiEmployee $employee, string $task, array $context = [])
     {
+        // Route Business Development Manager (BDM) tasks to the dynamic multi-agent pipeline
+        if ($employee->role === 'business_development') {
+            return $this->bdmService->runChain($employee, $task, function($agent) {
+                return $this->buildPrismTools($agent);
+            });
+        }
+
         try {
             $activeProvider = \Modules\AI\Models\AISetting::getSetting('active_provider') ?? 'openai';
             $apiKey = \Modules\AI\Models\AISetting::getSetting('api_key', $activeProvider);
@@ -42,7 +53,11 @@ class AiOrchestratorService
             // We strip tags to provide clean text to the LLM.
             $cleanSystemPrompt = strip_tags($employee->system_prompt);
 
-            $prompt = "{$cleanSystemPrompt}\n\n" .
+            // Force the LLM to invoke tool calls to save data (like BDM leads) instead of only responding with text.
+            $directive = "\n\nCRITICAL SYSTEM DIRECTIVE:\n" .
+                         "If your task involves finding, creating, updating, or generating any business leads, customers, projects, or tasks, you MUST invoke the appropriate tool (e.g. `bdm_create_lead` to save a lead) to save them in the database. Do NOT just print them in your text response. You must execute the tool calls to persist them.";
+
+            $prompt = "{$cleanSystemPrompt}{$directive}\n\n" .
                       "Your specific task is:\n{$task}{$contextStr}\n\n" .
                       "Response (be concise and professional):";
 
@@ -184,7 +199,8 @@ class AiOrchestratorService
         }
 
         // 4. Social Media tools
-        if ($employee->role === 'social_media') {
+        $isSmm = ($employee->role === 'social_media' || ($employee->parent && $employee->parent->role === 'social_media'));
+        if ($isSmm) {
             $tools[] = (new Tool())->as('smm_create_campaign')
                 ->for($mcpTools['smm_create_campaign']['description'])
                 ->withStringParameter('name', 'Campaign name')
@@ -251,6 +267,57 @@ class AiOrchestratorService
                 ->withStringParameter('ai_analysis', 'Analysis')
                 ->using(function($title, $period_start, $period_end, $ai_analysis) use ($employee, $mcpTools) {
                     return $this->handleToolExecution('smm_generate_report', compact('title', 'period_start', 'period_end', 'ai_analysis'), $employee, $mcpTools);
+                });
+        }
+
+        // 5. Business Development tools (Available to Business Development AI and its sub-agents)
+        $isBdm = ($employee->role === 'business_development' || ($employee->parent && $employee->parent->role === 'business_development'));
+        if ($isBdm) {
+            $tools[] = (new Tool())->as('bdm_create_lead')
+                ->for($mcpTools['bdm_create_lead']['description'])
+                ->withStringParameter('name', 'Name of the lead decision maker')
+                ->withStringParameter('company', 'Name of the company/organization')
+                ->withStringParameter('email', 'Contact email address')
+                ->withStringParameter('phone', 'Contact phone number')
+                ->withStringParameter('notes', 'Detailed background notes and lead context')
+                ->withNumberParameter('value', 'Expected deal value in USD')
+                ->using(function($name, $company, $email = null, $phone = null, $notes = '', $value = null) use ($employee, $mcpTools) {
+                    return $this->handleToolExecution('bdm_create_lead', [
+                        'name' => $name,
+                        'company' => $company,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'notes' => $notes,
+                        'value' => $value,
+                        'ai_employee_id' => $employee->id
+                    ], $employee, $mcpTools);
+                });
+
+            $tools[] = (new Tool())->as('bdm_list_leads')
+                ->for($mcpTools['bdm_list_leads']['description'])
+                ->withStringParameter('status', 'Filter status')
+                ->using(function($status = null) use ($employee, $mcpTools) {
+                    return $this->handleToolExecution('bdm_list_leads', compact('status'), $employee, $mcpTools);
+                });
+
+            $tools[] = (new Tool())->as('bdm_update_lead_status')
+                ->for($mcpTools['bdm_update_lead_status']['description'])
+                ->withNumberParameter('lead_id', 'Lead ID')
+                ->withStringParameter('status', 'New status')
+                ->withStringParameter('notes', 'Status notes')
+                ->using(function($lead_id, $status, $notes = '') use ($employee, $mcpTools) {
+                    return $this->handleToolExecution('bdm_update_lead_status', [
+                        'lead_id' => (int)$lead_id,
+                        'status' => $status,
+                        'notes' => $notes
+                    ], $employee, $mcpTools);
+                });
+
+            $tools[] = (new Tool())->as('bdm_search_web_for_leads')
+                ->for($mcpTools['bdm_search_web_for_leads']['description'])
+                ->withStringParameter('query', 'The search query to find leads')
+                ->using(function($query) use ($employee, $mcpTools) {
+                    return $this->handleToolExecution('bdm_search_web_for_leads', compact('query'), $employee, $mcpTools);
                 });
         }
 

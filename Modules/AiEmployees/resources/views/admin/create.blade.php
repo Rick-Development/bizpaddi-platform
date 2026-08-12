@@ -23,8 +23,13 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Hire New AI Employee</h1>
-                    <p class="text-sm text-gray-600 mt-1">Configure a new intelligent agent for your workforce.</p>
+                    @if($parent)
+                        <h1 class="text-2xl font-bold text-gray-900">Hire Sub-Intelligence</h1>
+                        <p class="text-sm text-gray-600 mt-1">Creating a specialized sub-intelligence for <strong>{{ $parent->name }}</strong>.</p>
+                    @else
+                        <h1 class="text-2xl font-bold text-gray-900">Hire New AI Employee</h1>
+                        <p class="text-sm text-gray-600 mt-1">Configure a new intelligent agent for your workforce.</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -33,6 +38,24 @@
         <div class="p-8">
             <form id="aiEmployeeForm" action="{{ route('admin.aiemployees.employees.store') }}" method="POST" class="space-y-8">
                 @csrf
+                <input type="hidden" name="parent_id" value="{{ $parent->id ?? '' }}">
+                <input type="hidden" name="is_sub_agent" value="{{ $parent ? '1' : '0' }}">
+                @if($parent)
+                    <input type="hidden" name="role" id="role_value" value="{{ old('role', $parent->role . '_sub_agent') }}">
+                @endif
+
+                @if(!empty($subAgentTemplates))
+                    <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl mb-6">
+                        <label for="template_select" class="block text-sm font-semibold text-slate-900">Pre-configured Blueprint Template</label>
+                        <p class="text-xs text-slate-500 mt-1 mb-3">Load a default blueprint sub-intelligence model. This will automatically fill the designations, department role parameters, and system prompts.</p>
+                        <select id="template_select" class="block w-full rounded-lg border-0 py-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-brand-primary sm:text-sm sm:leading-6 cursor-pointer">
+                            <option value="" selected>-- Select a pre-configured template (Optional) --</option>
+                            @foreach($subAgentTemplates as $tpl)
+                                <option value="{{ $tpl['role'] }}" data-name="{{ $tpl['name'] }}" data-prompt="{{ $tpl['prompt'] }}">{{ $tpl['name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
 
                 <div class="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2">
                     <div class="sm:col-span-1">
@@ -46,16 +69,22 @@
                     <div class="sm:col-span-1">
                         <label for="role" class="block text-sm font-semibold text-slate-900">Assigned Role</label>
                         <div class="mt-2">
-                            <select id="role" name="role" class="block w-full rounded-lg border-0 py-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-brand-primary sm:text-sm sm:leading-6 transition-all cursor-pointer" required>
-                                <option value="" disabled selected>Select a structural role...</option>
-                                <option value="general_manager">General Manager</option>
-                                <option value="operations_manager">Operations Manager</option>
-                                <option value="business_development">Business Development</option>
-                                <option value="sales_marketing">Sales & Marketing</option>
-                                <option value="social_media">Social Media & Growth</option>
-                                <option value="engineering">Engineering</option>
-                                <option value="designer">AI Designer</option>
-                            </select>
+                            @if($parent)
+                                <select id="role_disabled" class="block w-full rounded-lg border-0 py-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 sm:text-sm sm:leading-6 bg-slate-50 cursor-not-allowed" disabled>
+                                    <option value="{{ $parent->role }}" selected>{{ str_replace('_', ' ', Str::title($parent->role)) }}</option>
+                                </select>
+                            @else
+                                <select id="role" name="role" class="block w-full rounded-lg border-0 py-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-brand-primary sm:text-sm sm:leading-6 transition-all cursor-pointer" required>
+                                    <option value="" disabled selected>Select a structural role...</option>
+                                    <option value="general_manager">General Manager</option>
+                                    <option value="operations_manager">Operations Manager</option>
+                                    <option value="business_development">Business Development</option>
+                                    <option value="sales_marketing">Sales & Marketing</option>
+                                    <option value="social_media">Social Media & Growth</option>
+                                    <option value="engineering">Engineering</option>
+                                    <option value="designer">AI Designer</option>
+                                </select>
+                            @endif
                         </div>
                         @error('role') <p class="mt-2 text-sm text-red-500 font-medium">{{ $message }}</p> @enderror
                     </div>
@@ -129,6 +158,34 @@
             ]
         });
 
+        $('#description').summernote({
+            placeholder: 'Internal notes about this AI...',
+            tabsize: 2,
+            height: 120,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['view', ['help']]
+            ]
+        });
+        $('#template_select').on('change', function() {
+            const selectedOpt = $(this).find(':selected');
+            if (selectedOpt.val()) {
+                const name = selectedOpt.data('name');
+                const prompt = selectedOpt.data('prompt');
+                const roleKey = selectedOpt.val();
+                
+                $('#name').val(name);
+                $('#role_value').val(roleKey);
+                $('#system_prompt').summernote('code', prompt);
+
+                if ($('#role_disabled').length) {
+                    const cleanRoleName = roleKey.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+                    $('#role_disabled').html('<option value="' + roleKey + '" selected>' + cleanRoleName + '</option>');
+                }
+            }
+        });
         $('#aiEmployeeForm').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);

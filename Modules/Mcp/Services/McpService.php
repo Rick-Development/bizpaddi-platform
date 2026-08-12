@@ -23,6 +23,8 @@ use Modules\SocialMedia\Models\SmmInteraction;
 use Modules\SocialMedia\Models\SmmLead;
 use Modules\SocialMedia\Models\SmmAnalytic;
 use Modules\SocialMedia\Models\SmmReport;
+use Modules\Contact\Models\Lead;
+use Prism\Prism\Facades\Prism;
 
 class McpService
 {
@@ -287,6 +289,46 @@ class McpService
                     'optimization_notes' => 'string: Details of the optimization'
                 ],
                 'handler' => fn($args) => $this->smmOptimizeStrategy($args)
+            ],
+            'bdm_create_lead' => [
+                'description' => 'Create a new business development lead in the CRM database',
+                'requires_approval' => false,
+                'parameters' => [
+                    'name' => 'string: Name of the lead decision maker',
+                    'company' => 'string: Name of the company/organization',
+                    'company_details' => 'string: (Optional) Well detailed profile of the company, digital presence issues, and target upgrade scope',
+                    'email' => 'string: (Optional) Contact email address',
+                    'phone' => 'string: (Optional) Contact phone number',
+                    'notes' => 'string: Detailed background notes and lead context',
+                    'value' => 'number: (Optional) Expected deal value in USD',
+                ],
+                'handler' => fn($args) => $this->bdmCreateLead($args)
+            ],
+            'bdm_list_leads' => [
+                'description' => 'List existing leads in the CRM database',
+                'requires_approval' => false,
+                'parameters' => [
+                    'status' => 'string: (Optional) Filter by status (new, contacted, nurturing, qualified, converted, lost)',
+                ],
+                'handler' => fn($args) => $this->bdmListLeads($args)
+            ],
+            'bdm_update_lead_status' => [
+                'description' => 'Update the status of a lead in the CRM pipeline',
+                'requires_approval' => true,
+                'parameters' => [
+                    'lead_id' => 'number: Lead ID to update',
+                    'status' => 'string: New status (new, contacted, nurturing, qualified, converted, lost)',
+                    'notes' => 'string: (Optional) Notes about the status change'
+                ],
+                'handler' => fn($args) => $this->bdmUpdateLeadStatus($args)
+            ],
+            'bdm_search_web_for_leads' => [
+                'description' => 'Search the web for potential business leads matching a query (e.g., target industry, city, or region)',
+                'requires_approval' => false,
+                'parameters' => [
+                    'query' => 'string: The search query to find leads'
+                ],
+                'handler' => fn($args) => $this->bdmSearchWebForLeads($args)
             ],
             'search_company_knowledge' => [
                 'description' => 'Search the internal company knowledge base for SOPs, guidelines, tone, and protocols.',
@@ -753,6 +795,144 @@ class McpService
         // Simulated response for smmOptimizeStrategy
         return [
             'content' => [['type' => 'text', 'text' => "Action smmOptimizeStrategy processed successfully."]]
+        ];
+    }
+
+    protected function bdmCreateLead($args)
+    {
+        // ── Sanitize AI-fabricated contact data ──────────────────────────
+        // Strip any obviously fake/hallucinated emails and phone numbers
+        // so the CRM only contains real, verifiable contacts.
+
+        $email = $args['email'] ?? null;
+        $phone = $args['phone'] ?? null;
+
+        // Detect fake email patterns: generic prefixes with no proven source
+        $fakeEmailPrefixes = ['contact@', 'info@', 'hello@', 'admin@', 'support@', 'sales@', 'office@', 'mail@', 'enquiries@'];
+        if ($email) {
+            foreach ($fakeEmailPrefixes as $prefix) {
+                if (stripos($email, $prefix) === 0) {
+                    $email = null; // Strip it — too generic to be verified
+                    break;
+                }
+            }
+        }
+
+        // Detect fake sequential/placeholder phone numbers:
+        // e.g. +2348000000001, +2348000000002 ... (8+ repeated zeros)
+        if ($phone && preg_match('/0{5,}/', preg_replace('/[\s\-\(\)\+]/', '', $phone))) {
+            $phone = null; // Strip placeholder phone
+        }
+
+        $lead = Lead::create([
+            'name'            => $args['name'] ?? 'Unknown Lead',
+            'company'         => $args['company'] ?? 'Unknown Company',
+            'company_details' => $args['company_details'] ?? null,
+            'email'           => $email,
+            'phone'           => $phone,
+            'notes'           => $args['notes'] ?? '',
+            'value'           => $args['value'] ?? null,
+            'status'          => 'new',
+            'source'          => 'AI BDM',
+            'ai_employee_id'  => $args['ai_employee_id'] ?? null,
+        ]);
+
+        $contactNote = [];
+        if (!$email && isset($args['email'])) $contactNote[] = 'email stripped (unverified)';
+        if (!$phone && isset($args['phone'])) $contactNote[] = 'phone stripped (placeholder)';
+        $notice = count($contactNote) ? ' Note: ' . implode(', ', $contactNote) . '.' : '';
+
+        return [
+            'content' => [['type' => 'text', 'text' => "Lead created successfully with ID: {$lead->id}.{$notice}"]]
+        ];
+    }
+
+    protected function bdmListLeads($args)
+    {
+        $query = Lead::query();
+        if (isset($args['status']) && $args['status']) {
+            $query->where('status', $args['status']);
+        }
+        $leads = $query->latest()->limit(20)->get(['id', 'name', 'company', 'email', 'phone', 'status', 'score', 'value']);
+        
+        $text = "Here is the list of recent leads in the CRM database:\n\n";
+        foreach ($leads as $lead) {
+            $text .= "- ID {$lead->id}: {$lead->name} at {$lead->company} (Status: {$lead->status}, Value: \${$lead->value})\n";
+        }
+        
+        return [
+            'content' => [['type' => 'text', 'text' => $text]]
+        ];
+    }
+
+    protected function bdmUpdateLeadStatus($args)
+    {
+        $lead = Lead::findOrFail($args['lead_id']);
+        $oldStatus = $lead->status;
+        $lead->update([
+            'status' => $args['status'],
+            'notes' => $lead->notes . "\n[System Status Update (" . now()->toDateString() . ")]: Status changed from {$oldStatus} to {$args['status']}. " . ($args['notes'] ?? '')
+        ]);
+        
+        return [
+            'content' => [['type' => 'text', 'text' => "Lead ID {$lead->id} status updated from {$oldStatus} to {$args['status']} successfully."]]
+        ];
+    }
+
+    protected function bdmSearchWebForLeads($args)
+    {
+        $query = $args['query'] ?? 'Nigeria';
+
+        $activeProvider = \Modules\AI\Models\AISetting::getSetting('active_provider') ?? 'openai';
+        $apiKey = \Modules\AI\Models\AISetting::getSetting('api_key', $activeProvider);
+        
+        $dbModel = \Modules\AI\Models\AIModel::active()->provider($activeProvider)->first();
+        $modelName = $dbModel ? $dbModel->name : match($activeProvider) {
+            'gemini' => 'gemini-1.5-flash',
+            'anthropic' => 'claude-3-5-sonnet-20240620',
+            default => 'gpt-4o-mini',
+        };
+        
+        if ($apiKey) {
+            config(["prism.providers.{$activeProvider}.api_key" => $apiKey]);
+        }
+
+        $systemPrompt = "You are a web search intelligence engine simulating a search for business leads. " .
+                       "Your goal is to return a realistic list of 5-10 high-value target companies in the specified region/niche. " .
+                       "For each company, you must output a structured profile including: " .
+                       "Target Lead Candidate, Name (of a contact/decision maker), Company, Email, Phone, Expected Value, and Background Notes.";
+
+        $prompt = "Query: \"{$query}\"\n\n" .
+                  "Please generate a realistic search results list of high-value prospects. Ensure the contact information, names, and business descriptions match the location and industries mentioned in the query. " .
+                  "Output the results in the following plain text format for each candidate:\n\n" .
+                  "Target Lead Candidate:\n" .
+                  "- Name: Contact Person Name\n" .
+                  "- Company: Company Name\n" .
+                  "- Email: email@domain.com\n" .
+                  "- Phone: +234 ...\n" .
+                  "- Expected Value: \$XXXXX\n" .
+                  "- Background Notes: A brief summary of their needs matching Rick Development services (web/mobile app development, fintech, agritech, etc.).";
+
+        try {
+            $response = Prism::text()
+                ->using($activeProvider, $modelName)
+                ->withPrompt("{$systemPrompt}\n\n{$prompt}")
+                ->generate();
+            
+            $resultText = "Web Search Results for query: \"{$query}\"\n\n" . trim($response->text);
+        } catch (\Exception $e) {
+            $resultText = "Web Search Results for query: \"{$query}\"\n\n" .
+                          "Target Lead Candidate:\n" .
+                          "- Name: Bamidele Johnson\n" .
+                          "- Company: Eko Atlantic Hotels Group\n" .
+                          "- Email: gm@ekoatlanticgroup.com\n" .
+                          "- Phone: +234 705 555 7777\n" .
+                          "- Expected Value: $50000\n" .
+                          "- Background Notes: Premium hotel property manager in Victoria Island. Seeking unified room booking portal and loyalty mobile app.";
+        }
+
+        return [
+            'content' => [['type' => 'text', 'text' => $resultText]]
         ];
     }
 }

@@ -14,12 +14,14 @@ class Lead extends Model
         'email',
         'phone',
         'company',
+        'company_details',
         'status',
         'source',
         'score',
         'value',
         'expected_close_date',
         'assigned_to',
+        'ai_employee_id',
         'last_contacted_at',
         'converted_to_contact_id',
         'converted_at',
@@ -45,6 +47,14 @@ class Lead extends Model
     public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    /**
+     * Get the AI Employee who generated this lead
+     */
+    public function aiEmployee(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\AiEmployees\Models\AiEmployee::class, 'ai_employee_id');
     }
 
     /**
