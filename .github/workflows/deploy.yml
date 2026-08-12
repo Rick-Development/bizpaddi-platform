@@ -25,7 +25,8 @@ jobs:
             cd /home/billway/rickdevelopment
             git fetch origin main
             git reset --hard origin/main
-            composer install --no-dev --optimize-autoloader --no-interaction
+            composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+            php -d opcache.enable_cli=0 artisan package:discover --ansi
             rm -rf node_modules
             npm install
             npm run build
