@@ -277,14 +277,16 @@ class AiOrchestratorService
                 ->for($mcpTools['bdm_create_lead']['description'])
                 ->withStringParameter('name', 'Name of the lead decision maker')
                 ->withStringParameter('company', 'Name of the company/organization')
+                ->withStringParameter('company_details', 'Detailed profile of the company, digital presence issues, and target upgrade scope')
                 ->withStringParameter('email', 'Contact email address')
                 ->withStringParameter('phone', 'Contact phone number')
                 ->withStringParameter('notes', 'Detailed background notes and lead context')
                 ->withNumberParameter('value', 'Expected deal value in USD')
-                ->using(function($name, $company, $email = null, $phone = null, $notes = '', $value = null) use ($employee, $mcpTools) {
+                ->using(function($name, $company, $company_details = null, $email = null, $phone = null, $notes = '', $value = null) use ($employee, $mcpTools) {
                     return $this->handleToolExecution('bdm_create_lead', [
                         'name' => $name,
                         'company' => $company,
+                        'company_details' => $company_details,
                         'email' => $email,
                         'phone' => $phone,
                         'notes' => $notes,
