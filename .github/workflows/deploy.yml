@@ -22,4 +22,13 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            bash /home/billway/rickdevelopment/deploy.sh
+            cd /home/billway/rickdevelopment
+            git fetch origin main
+            git reset --hard origin/main
+            composer install --no-dev --optimize-autoloader --no-interaction
+            npm install
+            npm run build
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan optimize
+            php artisan queue:restart
