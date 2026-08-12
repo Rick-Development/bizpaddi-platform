@@ -85,6 +85,15 @@
             async sendMessage() {
                 if (!this.userInput.trim()) return;
 
+                if (!this.sessionId) {
+                    await this.startSession();
+                    if (!this.sessionId) {
+                        this.messages.push({ role: 'assistant', message: 'Unable to start chat session. Please refresh the page and try again.' });
+                        this.$nextTick(() => this.scrollToBottom());
+                        return;
+                    }
+                }
+
                 const userMsg = this.userInput;
                 this.messages.push({ role: 'user', message: userMsg });
                 this.userInput = '';

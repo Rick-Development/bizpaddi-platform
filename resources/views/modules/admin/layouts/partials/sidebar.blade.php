@@ -63,11 +63,64 @@
                                     AI Models
                                 </a>
                             </li>
+                        </ul>
+                    </li>
+
+                    <!-- AI Workforce -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.aiemployees.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.aiemployees.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm leading-6 font-semibold" aria-controls="sub-menu-aiworkforce" aria-expanded="false">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            <span class="flex-1 text-left">AI Workforce</span>
+                            <svg :class="open ? 'rotate-90 text-gray-500' : 'text-gray-400'" class="ml-auto h-5 w-5 shrink-0 transform transition-transform duration-150 ease-in-out" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul class="mt-1 space-y-1 px-2" id="sub-menu-aiworkforce" x-show="open" style="display: none;">
                             <li>
-                                <a href="{{ route('admin.ai.chats.index') }}" class="{{ request()->routeIs('admin.ai.chats.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    Chat History
+                                <a href="{{ route('admin.aiemployees.dashboard') }}" class="{{ request()->routeIs('admin.aiemployees.dashboard') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Command Center
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.aiemployees.tasks.index') }}" class="{{ request()->routeIs('admin.aiemployees.tasks.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Task Assignments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.aiemployees.knowledge.index') }}" class="{{ request()->routeIs('admin.aiemployees.knowledge.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Training & Knowledge
+                                </a>
+                            </li>
+                            @php
+                                $pendingCount = \Modules\AiEmployees\Models\AiPendingAction::where('status', 'pending')->count();
+                            @endphp
+                            <li>
+                                <a href="{{ route('admin.aiemployees.dashboard') }}#pending-actions" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 flex justify-between items-center rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    <span>Pending Actions</span>
+                                    @if($pendingCount > 0)
+                                    <span class="ml-2 inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-white">{{ $pendingCount }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                            @php
+                                $sidebarRoles = \Modules\AiEmployees\Models\AiEmployee::where('is_sub_agent', false)
+                                    ->select('role')
+                                    ->distinct()
+                                    ->orderBy('role')
+                                    ->pluck('role');
+                            @endphp
+                            @foreach($sidebarRoles as $roleKey)
+                            @php
+                                $roleLabel = ucwords(str_replace('_', ' ', $roleKey));
+                            @endphp
+                            <li>
+                                <a href="{{ route('admin.aiemployees.employees.index', ['role' => $roleKey]) }}" class="{{ request()->get('role') == $roleKey ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    {{ $roleLabel }}
+                                </a>
+                            </li>
+                            @endforeach
                         </ul>
                     </li>
 
@@ -127,6 +180,46 @@
                     </li>
 
 
+                    <!-- Social Media -->
+                    <li>
+                        <div x-data="{ open: {{ request()->routeIs('admin.social-media.*') ? 'true' : 'false' }} }">
+                            <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.social-media.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex w-full items-center justify-between gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                                <div class="flex items-center gap-x-3">
+                                    <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                                    </svg>
+                                    Social Media
+                                </div>
+                                <svg :class="{ 'rotate-90': open }" class="h-5 w-5 shrink-0 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <ul x-show="open" x-collapse class="mt-1 space-y-1">
+                                <li>
+                                    <a href="{{ route('admin.social-media.index') }}" class="{{ request()->routeIs('admin.social-media.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.inbox') }}" class="{{ request()->routeIs('admin.social-media.inbox') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Social Inbox
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.calendar') }}" class="{{ request()->routeIs('admin.social-media.calendar') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Content Calendar
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.analytics') }}" class="{{ request()->routeIs('admin.social-media.analytics') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Analytics
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
                     <!-- Service Orders -->
                     <li>
                         <a href="{{ route('admin.accounting.service-orders.index') }}" 
@@ -135,6 +228,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                             </svg>
                             Service Orders
+                        </a>
+                    </li>
+
+                    <!-- Leads -->
+                    <li>
+                        <a href="{{ route('admin.leads.index') }}" 
+                           class="{{ request()->routeIs('admin.leads.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            Leads
                         </a>
                     </li>
 
@@ -610,6 +714,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                             Settings
+                        </a>
+                    </li>
+                    
+                    <!-- Lead Settings -->
+                    <li>
+                        <a href="{{ route('admin.lead-settings.index') }}" 
+                           class="{{ request()->routeIs('admin.lead-settings.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            </svg>
+                            Lead Form Settings
                         </a>
                     </li>
 

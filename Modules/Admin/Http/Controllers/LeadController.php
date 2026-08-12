@@ -47,14 +47,14 @@ class LeadController extends Controller
         }
 
         $leads = $query->latest()->paginate(25);
-        $teamMembers = User::role(['admin', 'sales'])->get();
+        $teamMembers = User::all();
 
         return view('admin::leads.index', compact('leads', 'teamMembers'));
     }
 
     public function create()
     {
-        $teamMembers = User::role(['admin', 'sales'])->get();
+        $teamMembers = User::all();
         return view('admin::leads.create', compact('teamMembers'));
     }
 
@@ -62,7 +62,7 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:leads,email',
+            'email' => 'nullable|email|unique:leads,email',
             'phone' => 'nullable|string|max:20',
             'company' => 'nullable|string|max:255',
             'source' => 'nullable|string|max:255',
@@ -86,7 +86,7 @@ class LeadController extends Controller
 
     public function edit(Lead $lead)
     {
-        $teamMembers = User::role(['admin', 'sales'])->get();
+        $teamMembers = User::all();
         return view('admin::leads.edit', compact('lead', 'teamMembers'));
     }
 
@@ -94,7 +94,7 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:leads,email,' . $lead->id,
+            'email' => 'nullable|email|unique:leads,email,' . $lead->id,
             'phone' => 'nullable|string|max:20',
             'company' => 'nullable|string|max:255',
             'source' => 'nullable|string|max:255',

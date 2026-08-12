@@ -4,9 +4,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @php
+        $ga4Id = \Modules\Settings\Models\Setting::get('google_analytics_id', env('GOOGLE_ANALYTICS_ID'));
+    @endphp
+    @if($ga4Id)
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $ga4Id }}');
+    </script>
+    @endif
+    <!-- Sentry Error Logging -->
+    <script
+      src="https://js.sentry-cdn.com/YOUR_SENTRY_KEY.min.js"
+      crossorigin="anonymous"
+    ></script>
     @inject('seo', 'Modules\SEO\Services\SeoService')
     {!! $seo->render(isset($seoModel) ? $seoModel : null) !!}
-    <link rel="icon" href="/logo.png" type="image/png">
+    @php
+        $favicon = \Modules\Settings\Models\Setting::get('favicon');
+    @endphp
+    @if($favicon)
+        <link rel="icon" href="{{ asset('storage/' . $favicon) }}" type="image/x-icon">
+    @else
+        <link rel="icon" href="/logo.png" type="image/png">
+    @endif
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,29 +45,6 @@
             localStorage.theme = 'light';
         }
     </script>
-    <style>
-        /* Hide Google Translate Bar */
-        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
-            display: none !important;
-        }
-        body {
-            top: 0px !important;
-        }
-        .goog-te-menu-value img {
-            display: none !important;
-        }
-        .goog-te-menu-frame {
-            box-shadow: none !important;
-        }
-        #google_translate_element {
-            display: none !important;
-        }
-        .skiptranslate {
-            display: none !important;
-        }
-        body > .skiptranslate {
-            display: none !important;
-        }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-900 bg-white dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300" x-data="{ mobileMenuOpen: false }">
@@ -56,7 +59,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex sm:items-center">
                         @if(isset($headerMenu))
                             @foreach($headerMenu as $item)
                                 <a href="{{ $item->route_name ? route($item->route_name) : $item->url }}" 
@@ -65,56 +68,87 @@
                                 </a>
                             @endforeach
                         @endif
+                        <a href="{{ route('lead.create') }}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-full text-white bg-gradient-to-r from-brand-primary to-purple-600 hover:from-brand-primary hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary shadow-lg transform hover:-translate-y-0.5 transition-all">
+                            {{ __('Start a Project') }}
+                        </a>
                     </div>
                     <!-- Language Switcher -->
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 text-gray-200 hover:text-white focus:outline-none transition-colors duration-200">
-                            <span class="uppercase font-semibold">{{ app()->getLocale() }}</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                    <div class="relative" x-data="{ langOpen: false }">
+                        <button @click="langOpen = !langOpen" type="button" class="flex items-center gap-1.5 text-gray-200 hover:text-white hover:bg-white/10 focus:outline-none rounded-lg text-sm px-3 py-2 transition-colors duration-200">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
+                            <span class="hidden sm:inline text-xs font-medium">Language</span>
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
-                        
-                        <div x-show="open" 
+                        <div x-show="langOpen" @click.outside="langOpen = false"
                              x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
                              x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50" 
-                             style="display: none;">
-                            <div class="py-1 max-h-96 overflow-y-auto">
-                                <a href="javascript:void(0)" onclick="translateLanguage('en')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇬🇧 English
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('es')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇪🇸 Español
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('fr')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇫🇷 Français
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('de')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇩🇪 Deutsch
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('zh-CN')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇨🇳 中文
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('ar')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇸🇦 العربية
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('pt')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇵🇹 Português
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('ru')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇷🇺 Русский
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('ja')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇯🇵 日本語
-                                </a>
-                                <a href="javascript:void(0)" onclick="translateLanguage('hi')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    🇮🇳 हिन्दी
-                                </a>
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="fixed sm:absolute left-0 sm:left-auto sm:right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden" style="display:none; top: 64px; right: 0; width: calc(100vw - 0px); max-width: 440px; max-height: 80vh;">
+                            <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Select Language</p>
+                            </div>
+                            <div class="overflow-y-auto" style="max-height: calc(80vh - 50px);">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-0 p-2">
+                                    <button onclick="translateLanguage('en')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇬🇧 English</button>
+                                    <button onclick="translateLanguage('fr')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇫🇷 Français</button>
+                                    <button onclick="translateLanguage('es')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇪🇸 Español</button>
+                                    <button onclick="translateLanguage('de')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇩🇪 Deutsch</button>
+                                    <button onclick="translateLanguage('ar')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇸🇦 العربية</button>
+                                    <button onclick="translateLanguage('zh-CN')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇨🇳 中文 (简体)</button>
+                                    <button onclick="translateLanguage('zh-TW')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇹🇼 中文 (繁體)</button>
+                                    <button onclick="translateLanguage('pt')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇧🇷 Português</button>
+                                    <button onclick="translateLanguage('ru')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇷🇺 Русский</button>
+                                    <button onclick="translateLanguage('ja')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇯🇵 日本語</button>
+                                    <button onclick="translateLanguage('hi')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 हिन्दी</button>
+                                    <button onclick="translateLanguage('ko')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇰🇷 한국어</button>
+                                    <button onclick="translateLanguage('it')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇹 Italiano</button>
+                                    <button onclick="translateLanguage('nl')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇳🇱 Nederlands</button>
+                                    <button onclick="translateLanguage('tr')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇹🇷 Türkçe</button>
+                                    <button onclick="translateLanguage('pl')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇵🇱 Polski</button>
+                                    <button onclick="translateLanguage('sv')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇸🇪 Svenska</button>
+                                    <button onclick="translateLanguage('da')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇩🇰 Dansk</button>
+                                    <button onclick="translateLanguage('fi')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇫🇮 Suomi</button>
+                                    <button onclick="translateLanguage('no')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇳🇴 Norsk</button>
+                                    <button onclick="translateLanguage('el')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇬🇷 Ελληνικά</button>
+                                    <button onclick="translateLanguage('cs')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇨🇿 Čeština</button>
+                                    <button onclick="translateLanguage('ro')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇷🇴 Română</button>
+                                    <button onclick="translateLanguage('hu')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇭🇺 Magyar</button>
+                                    <button onclick="translateLanguage('uk')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇺🇦 Українська</button>
+                                    <button onclick="translateLanguage('id')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇩 Indonesia</button>
+                                    <button onclick="translateLanguage('ms')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇲🇾 Melayu</button>
+                                    <button onclick="translateLanguage('th')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇹🇭 ภาษาไทย</button>
+                                    <button onclick="translateLanguage('vi')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇻🇳 Tiếng Việt</button>
+                                    <button onclick="translateLanguage('fa')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇷 فارسی</button>
+                                    <button onclick="translateLanguage('he')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇱 עברית</button>
+                                    <button onclick="translateLanguage('bn')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇧🇩 বাংলা</button>
+                                    <button onclick="translateLanguage('ur')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇵🇰 اردو</button>
+                                    <button onclick="translateLanguage('sw')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇰🇪 Kiswahili</button>
+                                    <button onclick="translateLanguage('yo')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇳🇬 Yorùbá</button>
+                                    <button onclick="translateLanguage('ig')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇳🇬 Igbo</button>
+                                    <button onclick="translateLanguage('ha')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇳🇬 Hausa</button>
+                                    <button onclick="translateLanguage('am')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇪🇹 አማርኛ</button>
+                                    <button onclick="translateLanguage('so')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇸🇴 Soomaali</button>
+                                    <button onclick="translateLanguage('tl')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇵🇭 Filipino</button>
+                                    <button onclick="translateLanguage('af')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇿🇦 Afrikaans</button>
+                                    <button onclick="translateLanguage('zu')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇿🇦 isiZulu</button>
+                                    <button onclick="translateLanguage('ta')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 தமிழ்</button>
+                                    <button onclick="translateLanguage('te')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 తెలుగు</button>
+                                    <button onclick="translateLanguage('ml')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 മലയാളം</button>
+                                    <button onclick="translateLanguage('kn')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 ಕನ್ನಡ</button>
+                                    <button onclick="translateLanguage('mr')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 मराठी</button>
+                                    <button onclick="translateLanguage('gu')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 ગુજરાતી</button>
+                                    <button onclick="translateLanguage('pa')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇮🇳 ਪੰਜਾਬੀ</button>
+                                    <button onclick="translateLanguage('bg')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇧🇬 Български</button>
+                                    <button onclick="translateLanguage('hr')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇭🇷 Hrvatski</button>
+                                    <button onclick="translateLanguage('sk')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇸🇰 Slovenčina</button>
+                                    <button onclick="translateLanguage('lt')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇱🇹 Lietuvių</button>
+                                    <button onclick="translateLanguage('lv')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇱🇻 Latviešu</button>
+                                    <button onclick="translateLanguage('et')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇪🇪 Eesti</button>
+                                    <button onclick="translateLanguage('sl')" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-brand-primary/10 rounded-lg transition-colors">🇸🇮 Slovenščina</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -158,20 +192,11 @@
                     @endforeach
                 @endif
             </div>
+
             <div class="px-2 pt-2 pb-3 border-t border-white/10">
-                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ __('Language') }}</p>
-                <div class="mt-2 grid grid-cols-2 gap-2">
-                    <a href="javascript:void(0)" onclick="translateLanguage('en')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇬🇧 English</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('es')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇪🇸 Español</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('fr')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇫🇷 Français</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('de')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇩🇪 Deutsch</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('zh-CN')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇨🇳 中文</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('ar')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇸🇦 العربية</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('pt')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇵🇹 Português</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('ru')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇷🇺 Русский</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('ja')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇯🇵 日本語</a>
-                    <a href="javascript:void(0)" onclick="translateLanguage('hi')" class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:bg-white/10">🇮🇳 हिन्दी</a>
-                </div>
+                <a href="{{ route('lead.create') }}" class="block w-full text-center px-3 py-3 rounded-md text-base font-bold text-white bg-gradient-to-r from-brand-primary to-purple-600 hover:from-brand-primary hover:to-purple-700">
+                    {{ __('Start a Project') }}
+                </a>
             </div>
         </div>
     </nav>
@@ -202,13 +227,9 @@
                 <div>
                     <h3 class="text-sm font-bold text-white tracking-wider uppercase">{{ __('Legal') }}</h3>
                     <ul class="mt-4 space-y-4">
-                        @foreach(\Modules\Legal\Models\LegalPage::orderBy('title')->get() as $legalPage)
-                            <li>
-                                <a href="{{ in_array($legalPage->slug, ['privacy-policy', 'terms-conditions']) ? url('/' . $legalPage->slug) : route('legal.page', $legalPage->slug) }}" class="text-base text-gray-300 hover:text-white transition-colors">
-                                    {{ __($legalPage->title) }}
-                                </a>
-                            </li>
-                        @endforeach
+                        <li><a href="/privacy-policy" class="text-base text-gray-300 hover:text-white transition-colors">{{ __('Privacy Policy') }}</a></li>
+                        <li><a href="/terms-conditions" class="text-base text-gray-300 hover:text-white transition-colors">{{ __('Terms & Conditions') }}</a></li>
+                        <li><a href="/legal/limitation-of-liability" class="text-base text-gray-300 hover:text-white transition-colors">{{ __('Limitation of Liability') }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -260,266 +281,43 @@
             }
         });
     </script>
-    <!-- Chat Widget Inline -->
-    <script>
-        function chatWidget() {
-            return {
-                isOpen: false,
-                messages: [],
-                userInput: '',
-                isTyping: false,
-                sessionId: localStorage.getItem('chat_session_id'),
-    
-                initChat() {
-                    console.log('Chat Widget Initialized');
-                    if (this.sessionId) {
-                        this.fetchHistory();
-                    }
-                },
-    
-                toggleChat() {
-                    this.isOpen = !this.isOpen;
-                    if (this.isOpen && !this.sessionId && this.messages.length === 0) {
-                        this.startSession();
-                    }
-                    this.$nextTick(() => this.scrollToBottom());
-                },
-    
-                async startSession() {
-                    try {
-                        const response = await fetch('{{ route("ai.chat.start") }}', { 
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        });
-                        const data = await response.json();
-                        if (data.status === 'success') {
-                            this.sessionId = data.session_id;
-                            localStorage.setItem('chat_session_id', this.sessionId);
-                            // Add welcome message if new session
-                            if (this.messages.length === 0) {
-                                this.messages.push({
-                                    role: 'assistant',
-                                    message: 'Hello! How can I help you today?'
-                                });
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Failed to start chat session:', error);
-                    }
-                },
-    
-                async fetchHistory() {
-                    try {
-                        const response = await fetch('{{ route("ai.chat.start") }}', { 
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ session_id: this.sessionId })
-                        });
-                        const data = await response.json();
-                        if (data.status === 'success' && data.history) {
-                            this.messages = data.history;
-                            this.$nextTick(() => this.scrollToBottom());
-                        } else if (!data.session_id) {
-                            localStorage.removeItem('chat_session_id');
-                            this.sessionId = null;
-                            this.messages = [];
-                        }
-                    } catch (error) {
-                        console.error('Failed to fetch history:', error);
-                    }
-                },
-    
-                async sendMessage() {
-                    if (!this.userInput.trim()) return;
-    
-                    // Ensure we have a session before sending
-                    if (!this.sessionId) {
-                        await this.startSession();
-                        if (!this.sessionId) {
-                            console.error('Failed to create session');
-                            this.messages.push({ role: 'assistant', message: 'Error: Could not start chat session.' });
-                            return;
-                        }
-                    }
-
-                    const userMsg = this.userInput;
-                    this.messages.push({ role: 'user', message: userMsg });
-                    this.userInput = '';
-                    this.isTyping = true;
-                    this.$nextTick(() => this.scrollToBottom());
-    
-                    try {
-                        const response = await fetch('{{ route("ai.chat.send") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                session_id: this.sessionId,
-                                message: userMsg
-                            })
-                        });
-                        const data = await response.json();
-                        
-                        this.isTyping = false;
-                        
-                        if (data.status === 'success') {
-                            this.messages.push({ role: 'assistant', message: data.message });
-                        } else {
-                            this.messages.push({ role: 'assistant', message: 'Something went wrong. Please try again.' });
-                        }
-                        this.$nextTick(() => this.scrollToBottom());
-    
-                    } catch (error) {
-                        console.error('Message send failed:', error);
-                        this.isTyping = false;
-                        this.messages.push({ role: 'assistant', message: 'Error connecting to server.' });
-                    }
-                },
-    
-                scrollToBottom() {
-                    const container = this.$refs.messagesContainer;
-                    container.scrollTop = container.scrollHeight;
-                },
-
-                renderMessage(content) {
-                    if (typeof window.marked !== 'undefined') {
-                        return window.marked.parse(content);
-                    }
-                    return content.replace(/\n/g, '<br>');
-                }
-            }
-        }
-    </script>
-    
-    <!-- Chat Toggle Button - Simplified -->
-    <button 
-        onclick="var widget = document.getElementById('chatWidget'); widget.style.display = widget.style.display === 'none' ? 'flex' : 'none';"
-        style="position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background-color: #FB4C4B; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 9999; border: none; cursor: pointer;">
-        <svg style="width: 28px; height: 28px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+    <!-- Floating WhatsApp Button -->
+    @php
+        $whatsapp = \Modules\Settings\Models\Setting::get('support_whatsapp', '1234567890');
+    @endphp
+    @if($whatsapp)
+    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $whatsapp) }}" target="_blank" rel="noopener noreferrer"
+       style="position: fixed; bottom: 24px; left: 24px; width: 56px; height: 56px; background-color: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 9999; transition: transform 0.3s ease;"
+       onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
+        <svg style="width: 32px; height: 32px; color: white;" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
         </svg>
-    </button>
+    </a>
+    @endif
 
-    <!-- Chat Widget Window -->
-    <div id="chatWidget" x-data="chatWidget()" x-init="initChat()" 
-         style="display: none; position: fixed; bottom: 90px; right: 24px; width: 384px; max-width: calc(100vw - 48px); height: 500px; max-height: 80vh; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 9999; flex-direction: column; overflow: hidden;">
-        
-        <!-- Header -->
-        <div style="background-color: #FB4C4B; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                    <svg style="width: 20px; height: 20px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 style="color: white; font-weight: bold; font-size: 14px; margin: 0;">Support Chat</h3>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 12px; margin: 0;">AI Assistant</p>
-                </div>
-            </div>
-            <button onclick="document.getElementById('chatWidget').style.display='none';" style="background: none; border: none; color: rgba(255,255,255,0.8); cursor: pointer; padding: 4px;">
-                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
-        </div>
-
-        <!-- Messages Area -->
-        <div x-ref="messagesContainer" style="flex: 1; overflow-y: auto; padding: 16px; background: #f9fafb; display: flex; flex-direction: column; gap: 16px;">
-            <style>
-                @keyframes typing {
-                    0%, 80%, 100% { transform: scale(0); }
-                    40% { transform: scale(1); }
-                }
-                .chat-msg-content ul { list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-                .chat-msg-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-                .chat-msg-content li { margin-bottom: 0.25rem; }
-                .chat-msg-content p { margin-bottom: 0.5rem; }
-                .chat-msg-content p:last-child { margin-bottom: 0; }
-                .chat-msg-content strong { font-weight: 600; }
-                .chat-msg-content a { text-decoration: underline; }
-                .chat-msg-content h1, .chat-msg-content h2, .chat-msg-content h3 { font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.25rem; }
-            </style>
-            <template x-for="(msg, index) in messages" :key="index">
-                <div :style="msg.role === 'user' ? 'display: flex; flex-direction: column; align-items: flex-end;' : 'display: flex; flex-direction: column; align-items: flex-start;'">
-                    <div :style="(msg.role === 'user' ? 'background-color: #FB4C4B; color: white;' : 'background-color: white; color: #1f2937; border: 1px solid #e5e7eb;') + ' max-width: 85%; border-radius: 16px; padding: 10px 16px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);'">
-                        <div x-html="renderMessage(msg.message)" class="chat-msg-content" style="line-height: 1.6;"></div>
-                    </div>
-                </div>
-            </template>
-
-            <!-- Typing Indicator -->
-            <div x-show="isTyping" style="display: none;" :style="isTyping ? 'display: flex; flex-direction: column; align-items: flex-start;' : 'display: none'">
-                <div style="background-color: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 12px 16px; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                    <div style="display: flex; gap: 4px; align-items: center; height: 12px;">
-                        <div style="width: 6px; height: 6px; background-color: #9ca3af; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both;"></div>
-                        <div style="width: 6px; height: 6px; background-color: #9ca3af; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; animation-delay: 0.2s;"></div>
-                        <div style="width: 6px; height: 6px; background-color: #9ca3af; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; animation-delay: 0.4s;"></div>
-                    </div>
-                </div>
-                <span style="font-size: 11px; color: #6b7280; margin-top: 4px; margin-left: 4px;">AI is thinking...</span>
-            </div>
-        </div>
-
-        <!-- Input Area -->
-        <div style="padding: 16px; background: white; border-top: 1px solid #e5e7eb;">
-            <form @submit.prevent="sendMessage" style="display: flex; align-items: center; gap: 8px;">
-                <input type="text" x-model="userInput" :disabled="isTyping" placeholder="Type your message..." 
-                       style="flex: 1; border: 1px solid #d1d5db; border-radius: 24px; padding: 8px 16px; font-size: 14px; outline: none;">
-                <button type="submit" :disabled="!userInput.trim() || isTyping"
-                        style="background-color: #FB4C4B; color: white; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                    <svg style="width: 20px; height: 20px; transform: rotate(90deg);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
-                </button>
-            </form>
-        </div>
-    </div>
-    <div id="google_translate_element"></div>
+    <div id="google_translate_element" style="display:none; position:absolute; visibility:hidden;"></div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
-                includedLanguages: 'en,es,fr,de,zh-CN,ar,pt,ru,ja,hi',
                 autoDisplay: false
             }, 'google_translate_element');
         }
 
         function translateLanguage(lang) {
-            // Update UI immediately for better UX
             const langText = {
-                'en': 'English',
-                'es': 'Español',
-                'fr': 'Français',
-                'de': 'Deutsch',
-                'zh-CN': '中文',
-                'ar': 'العربية',
-                'pt': 'Português',
-                'ru': 'Русский',
-                'ja': '日本語',
-                'hi': 'हिन्दी'
+                'en': 'English', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch',
+                'zh-CN': '中文', 'ar': 'العربية', 'pt': 'Português', 'ru': 'Русский',
+                'ja': '日本語', 'hi': 'हिन्दी'
             };
-            
             if (langText[lang]) {
-                const langSpan = document.querySelector('nav .uppercase.font-semibold');
-                if (langSpan) langSpan.textContent = lang;
                 localStorage.setItem('user_lang', lang);
             }
-
             var select = document.querySelector('select.goog-te-combo');
             if (select) {
                 select.value = lang;
                 select.dispatchEvent(new Event('change'));
             } else {
-                // Widget might not be loaded yet, retry a few times
                 let retries = 0;
                 const interval = setInterval(() => {
                     select = document.querySelector('select.goog-te-combo');
@@ -533,7 +331,6 @@
             }
         }
 
-        // Auto-detect browser language on first visit
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 const supportedLangs = ['en', 'es', 'fr', 'de', 'zh-CN', 'ar', 'pt', 'ru', 'ja', 'hi'];
@@ -542,19 +339,15 @@
 
                 if (!storedLang && !hasGoogTrans) {
                     let browserLang = navigator.language || navigator.userLanguage;
-                    browserLang = browserLang.split('-')[0]; // Get 'en' from 'en-US'
-                    
-                    // Special case for Chinese
+                    browserLang = browserLang.split('-')[0];
                     if (navigator.language === 'zh-CN' || navigator.language === 'zh-TW') {
                         browserLang = 'zh-CN';
                     }
-
                     if (supportedLangs.includes(browserLang) && browserLang !== 'en') {
-                        console.log('Auto-detected language:', browserLang);
                         translateLanguage(browserLang);
                     }
                 }
-            }, 1000); // Wait for widget to potentialy load
+            }, 1000);
         });
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>

@@ -4,6 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Sentry Error Logging -->
+    <script
+      src="https://js.sentry-cdn.com/YOUR_SENTRY_KEY.min.js"
+      crossorigin="anonymous"
+    ></script>
     @inject('seo', 'Modules\SEO\Services\SeoService')
     {!! $seo->render(isset($seoModel) ? $seoModel : null) !!}
     @php
@@ -40,7 +55,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex sm:items-center">
                         @if(isset($headerMenu))
                             @foreach($headerMenu as $item)
                                 <a href="{{ $item->route_name ? route($item->route_name) : $item->url }}" 
@@ -49,6 +64,9 @@
                                 </a>
                             @endforeach
                         @endif
+                        <a href="{{ route('lead.create') }}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-full text-white bg-gradient-to-r from-brand-primary to-purple-600 hover:from-brand-primary hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary shadow-lg transform hover:-translate-y-0.5 transition-all">
+                            {{ __('Start a Project') }}
+                        </a>
                     </div>
                     <!-- Language Switcher Removed -->
 
@@ -91,8 +109,11 @@
                     @endforeach
                 @endif
             </div>
+
             <div class="px-2 pt-2 pb-3 border-t border-white/10">
-                <!-- Mobile Language Removed -->
+                <a href="{{ route('lead.create') }}" class="block w-full text-center px-3 py-3 rounded-md text-base font-bold text-white bg-gradient-to-r from-brand-primary to-purple-600 hover:from-brand-primary hover:to-purple-700">
+                    {{ __('Start a Project') }}
+                </a>
             </div>
         </div>
     </nav>

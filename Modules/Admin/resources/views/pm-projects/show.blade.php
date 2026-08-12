@@ -297,7 +297,7 @@
                                 @if($comment->hasMedia('comment_attachments'))
                                 <div class="mt-2 text-xs">
                                     @foreach($comment->getMedia('comment_attachments') as $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank" class="inline-flex items-center text-gray-500 hover:text-gray-700 mr-3">
+                                    <a href="{{ route('pm.attachments.download', $media) }}" target="_blank" class="inline-flex items-center text-gray-500 hover:text-gray-700 mr-3">
                                         📎 {{ $media->file_name }}
                                     </a>
                                     @endforeach
@@ -342,7 +342,7 @@
                                             @if($media->getCustomProperty('is_internal'))
                                             <span class="mr-2 px-1 py-0.5 rounded text-[8px] bg-yellow-100 text-yellow-800 font-bold uppercase">Internal</span>
                                             @endif
-                                            <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-600">⬇️</a>
+                                            <a href="{{ route('pm.attachments.download', $media) }}" download class="text-gray-400 hover:text-gray-600">⬇️</a>
                                         </div>
                                     </div>
                                     @endforeach
@@ -382,7 +382,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center ml-4 space-x-3">
-                                <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-600 transition-colors">⬇️</a>
+                                <a href="{{ route('pm.attachments.download', $media) }}" download class="text-gray-400 hover:text-gray-600 transition-colors">⬇️</a>
                                 <form action="{{ route('pm.attachments.destroy', $media->id) }}" method="POST" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-red-400 hover:text-red-600 transition-colors" onclick="return confirm('Remove document?')">🗑️</button>

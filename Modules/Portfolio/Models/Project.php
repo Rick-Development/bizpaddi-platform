@@ -2,7 +2,7 @@
 namespace Modules\Portfolio\Models;
 use Illuminate\Database\Eloquent\Model;
 class Project extends Model {
-    protected $fillable = ['industry_id', 'title', 'client', 'description', 'impact_metrics', 'year', 'is_featured', 'featured_image', 'gallery'];
+    protected $fillable = ['industry_id', 'title', 'client', 'description', 'problem_solved', 'solution', 'impact_metrics', 'year', 'is_featured', 'featured_image', 'gallery'];
     protected $casts = [
         'is_featured' => 'boolean',
         'gallery' => 'array',

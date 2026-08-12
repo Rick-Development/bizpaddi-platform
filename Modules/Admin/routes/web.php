@@ -206,6 +206,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('contacts', \Modules\Admin\Http\Controllers\ContactController::class);
         
+        // Lead Form Settings
+        Route::prefix('lead-settings')->name('lead-settings.')->group(function () {
+            Route::get('/', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'index'])->name('index');
+            Route::post('types', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'storeType'])->name('types.store');
+            Route::put('types/{type}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'updateType'])->name('types.update');
+            Route::delete('types/{type}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'destroyType'])->name('types.destroy');
+            
+            Route::post('budgets', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'storeBudget'])->name('budgets.store');
+            Route::put('budgets/{budget}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'updateBudget'])->name('budgets.update');
+            Route::delete('budgets/{budget}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'destroyBudget'])->name('budgets.destroy');
+            
+            Route::post('timelines', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'storeTimeline'])->name('timelines.store');
+            Route::put('timelines/{timeline}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'updateTimeline'])->name('timelines.update');
+            Route::delete('timelines/{timeline}', [\Modules\Admin\Http\Controllers\LeadSettingsController::class, 'destroyTimeline'])->name('timelines.destroy');
+        });
+        
         // Cold Calling Management
         // Communication Scripts & Channels
         Route::resource('communication-channels', \Modules\Admin\Http\Controllers\CommunicationChannelController::class);
@@ -270,6 +286,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('features', \Modules\Admin\Http\Controllers\HomeFeaturesController::class);
             Route::resource('processes', \Modules\Admin\Http\Controllers\HomeProcessesController::class);
             Route::resource('ctas', \Modules\Admin\Http\Controllers\HomeCtaController::class);
+            Route::resource('client-logos', \Modules\Admin\Http\Controllers\ClientLogoController::class);
+            Route::resource('trust-badges', \Modules\Admin\Http\Controllers\TrustBadgeController::class);
         });
         
         // Investor Relations

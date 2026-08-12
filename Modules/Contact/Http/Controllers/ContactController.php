@@ -12,7 +12,11 @@ class ContactController extends Controller
      */
     public function index()
     {
-        return view('contact::index');
+        $projectTypes = \Modules\Contact\Models\ProjectType::where('is_active', true)->orderBy('sort_order')->get();
+        $budgets = \Modules\Contact\Models\BudgetRange::where('is_active', true)->orderBy('sort_order')->get();
+        $timelines = \Modules\Contact\Models\ProjectTimeline::where('is_active', true)->orderBy('sort_order')->get();
+
+        return view('contact::index', compact('projectTypes', 'budgets', 'timelines'));
     }
 
     /**
@@ -34,9 +38,29 @@ class ContactController extends Controller
             'phone' => 'nullable|string|max:20',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
+            'project_type' => 'nullable|string',
+            'budget' => 'nullable|string',
+            'timeline' => 'nullable|string',
         ]);
 
-        \Modules\Contact\Models\ContactSubmission::create($validated);
+        $notes = [];
+        if (!empty($validated['project_type'])) $notes[] = 'Project Type: ' . $validated['project_type'];
+        if (!empty($validated['budget'])) $notes[] = 'Budget: ' . $validated['budget'];
+        if (!empty($validated['timeline'])) $notes[] = 'Timeline: ' . $validated['timeline'];
+        
+        $submissionData = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+        ];
+
+        if (!empty($notes)) {
+            $submissionData['notes'] = implode("\n", $notes);
+        }
+
+        \Modules\Contact\Models\ContactSubmission::create($submissionData);
 
         return back()->with('success', 'Thank you for contacting us! We will get back to you soon.');
     }

@@ -1,0 +1,11 @@
+{
+    "name": "AiEmployees",
+    "alias": "aiemployees",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AiEmployees\\Providers\\AiEmployeesServiceProvider"
+    ],
+    "files": []
+}

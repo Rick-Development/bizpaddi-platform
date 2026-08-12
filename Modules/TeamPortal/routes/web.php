@@ -81,6 +81,80 @@ Route::prefix('team')->name('team.')->group(function () {
     });
 });
 
+// BDM Routes
+Route::prefix('team/bdm')->name('team.bdm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])->group(function () {
+    // We can add a middleware to ensure they are actually a BDM if we want:
+    // Route::middleware([\Modules\TeamPortal\Http\Middleware\CheckBdm::class])
+    
+    // BDM Dashboard
+    Route::get('dashboard', [\Modules\TeamPortal\Http\Controllers\BDM\DashboardController::class, 'index'])->name('dashboard');
+    
+    // BDM CRM & Sales Features
+    Route::resource('clients', \Modules\TeamPortal\Http\Controllers\BDM\ClientController::class);
+    Route::post('quotes/{quote}/send', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\QuoteController::class, 'send'])->name('quotes.send');
+    Route::post('quotes/{quote}/approve', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\QuoteController::class, 'approve'])->name('quotes.approve');
+    Route::post('quotes/{quote}/convert-invoice', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\QuoteController::class, 'convertToInvoice'])->name('quotes.convert-invoice');
+    Route::get('quotes/{quote}/pdf', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\QuoteController::class, 'downloadPDF'])->name('quotes.pdf');
+    Route::resource('quotes', \Modules\TeamPortal\Http\Controllers\BDM\Accounting\QuoteController::class);
+    
+    Route::post('invoices/{invoice}/send', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\InvoiceController::class, 'send'])->name('invoices.send');
+    Route::post('invoices/{invoice}/mark-paid', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\InvoiceController::class, 'markPaid'])->name('invoices.mark-paid');
+    Route::get('invoices/{invoice}/pdf', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\InvoiceController::class, 'downloadPDF'])->name('invoices.pdf');
+    Route::resource('invoices', \Modules\TeamPortal\Http\Controllers\BDM\Accounting\InvoiceController::class);
+    
+    Route::post('service-orders/{service_order}/convert-quote', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\ServiceOrderController::class, 'convertToQuote'])->name('service-orders.convert-quote');
+    Route::post('service-orders/{service_order}/convert-invoice', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\ServiceOrderController::class, 'convertToInvoice'])->name('service-orders.convert-invoice');
+    Route::post('service-orders/{service_order}/convert-contract', [\Modules\TeamPortal\Http\Controllers\BDM\Accounting\ServiceOrderController::class, 'convertToContract'])->name('service-orders.convert-contract');
+    Route::resource('service-orders', \Modules\TeamPortal\Http\Controllers\BDM\Accounting\ServiceOrderController::class);
+    Route::get('contracts/expiring-soon', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'expiringSoon'])->name('contracts.expiring-soon');
+    Route::get('contracts/load-template', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'loadTemplate'])->name('contracts.load-template');
+    Route::get('contracts/{contract}/pdf', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'downloadPDF'])->name('contracts.pdf');
+    Route::get('contracts/{contract}/docx', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'downloadDocx'])->name('contracts.docx');
+    Route::post('contracts/{contract}/signature', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'uploadSignature'])->name('contracts.signature');
+    Route::patch('contracts/{contract}/status', [\Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class, 'updateStatus'])->name('contracts.status');
+    Route::resource('contracts', \Modules\TeamPortal\Http\Controllers\BDM\Contracts\ContractController::class);
+    Route::resource('projects', \Modules\TeamPortal\Http\Controllers\BDM\Portfolio\ProjectController::class);
+    Route::resource('services', \Modules\TeamPortal\Http\Controllers\BDM\Portfolio\ServiceController::class);
+    Route::post('tickets/{ticket}/reply', [\Modules\TeamPortal\Http\Controllers\BDM\Support\TicketController::class, 'reply'])->name('tickets.reply');
+    Route::resource('tickets', \Modules\TeamPortal\Http\Controllers\BDM\Support\TicketController::class)->except(['create', 'store', 'edit']);
+    
+    // BDM Leads & Kanban
+    Route::get('leads', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'index'])->name('leads.index');
+    Route::get('leads/create', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'create'])->name('leads.create');
+    Route::post('leads', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'store'])->name('leads.store');
+    Route::get('leads/{lead}', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'show'])->name('leads.show');
+    Route::get('leads/{lead}/edit', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'edit'])->name('leads.edit');
+    Route::put('leads/{lead}', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'update'])->name('leads.update');
+    Route::delete('leads/{lead}', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'destroy'])->name('leads.destroy');
+    Route::get('deals', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'kanban'])->name('deals.kanban');
+    Route::post('leads/{lead}/status', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'updateStatus'])->name('leads.update-status');
+    Route::post('leads/{lead}/log-activity', [\Modules\TeamPortal\Http\Controllers\BDM\LeadController::class, 'logActivity'])->name('leads.log-activity');
+
+    // BDM Lead Sources
+    Route::resource('lead-sources', \Modules\TeamPortal\Http\Controllers\BDM\LeadSourceController::class)->except(['show']);
+
+    // BDM Communications (Ported from Admin)
+    Route::prefix('communications')->group(function () {
+        Route::get('contacts/export', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'export'])->name('contacts.export');
+        Route::get('contacts/export-pdf', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'exportPdf'])->name('contacts.export-pdf');
+        Route::post('contacts/import', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'import'])->name('contacts.import');
+        Route::get('contacts/{contact}/send-email', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'sendEmail'])->name('contacts.send-email');
+        Route::get('contacts/{contact}/send-sms', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'sendSms'])->name('contacts.send-sms');
+        Route::post('contacts/{contact}/process-email', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'processEmail'])->name('contacts.process-email');
+        Route::post('contacts/{contact}/process-sms', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'processSms'])->name('contacts.process-sms');
+        Route::get('contacts/bulk-send-email', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'bulkSendEmail'])->name('contacts.bulk-send-email');
+        Route::get('contacts/bulk-send-sms', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'bulkSendSms'])->name('contacts.bulk-send-sms');
+        Route::post('contacts/bulk-delete', [\Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class, 'bulkDelete'])->name('contacts.bulk-delete');
+        
+        Route::resource('campaigns', \Modules\TeamPortal\Http\Controllers\BDM\Communications\CampaignController::class);
+        Route::resource('contact-lists', \Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactListController::class);
+        Route::resource('contacts', \Modules\TeamPortal\Http\Controllers\BDM\Communications\ContactController::class);
+        Route::resource('communication-scripts', \Modules\TeamPortal\Http\Controllers\BDM\Communications\CommunicationScriptController::class);
+        Route::resource('email-templates', \Modules\TeamPortal\Http\Controllers\BDM\Communications\EmailTemplateController::class);
+        Route::resource('sms-templates', \Modules\TeamPortal\Http\Controllers\BDM\Communications\SmsTemplateController::class);
+    });
+});
+
 // Project Manager Routes
 Route::prefix('team/pm')->name('team.pm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class, \Modules\TeamPortal\Http\Middleware\CheckProjectManager::class])->group(function () {
     // PM Dashboard

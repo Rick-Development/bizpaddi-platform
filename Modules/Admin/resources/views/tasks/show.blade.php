@@ -102,7 +102,7 @@
                                 @if($comment->hasMedia('comment_attachments'))
                                 <div class="mt-2 flex flex-wrap gap-2">
                                     @foreach($comment->getMedia('comment_attachments') as $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank" class="text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded px-2 py-1 bg-gray-50">
+                                    <a href="{{ route('pm.attachments.download', $media) }}" target="_blank" class="text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded px-2 py-1 bg-gray-50">
                                         📎 {{ $media->file_name }}
                                     </a>
                                     @endforeach
@@ -171,8 +171,8 @@
                                 @endif
                             </div>
                             <div class="flex items-center space-x-3">
-                                <a href="{{ $media->getUrl() }}" target="_blank" class="text-brand-primary hover:text-brand-primary/80">View</a>
-                                <a href="{{ $media->getUrl() }}" download class="text-blue-500 hover:text-blue-700">Download</a>
+                                <a href="{{ route('pm.attachments.download', $media) }}" target="_blank" class="text-brand-primary hover:text-brand-primary/80">View</a>
+                                <a href="{{ route('pm.attachments.download', $media) }}" download class="text-blue-500 hover:text-blue-700">Download</a>
                                 <form action="{{ route('pm.attachments.destroy', $media) }}" method="POST" onsubmit="return confirm('Delete this file?')">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 text-xs">Delete</button>

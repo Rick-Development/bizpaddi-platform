@@ -62,6 +62,24 @@
                     <p class="mt-3 text-sm leading-6 text-gray-600">Detailed overview of the project.</p>
                 </div>
 
+                <!-- Problem Solved -->
+                <div class="col-span-full">
+                    <label for="problem_solved" class="block text-sm font-medium leading-6 text-gray-900">Problem Solved</label>
+                    <div class="mt-2">
+                        <textarea id="problem_solved" name="problem_solved" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-primary sm:text-sm sm:leading-6">{{ old('problem_solved') }}</textarea>
+                    </div>
+                    <p class="mt-3 text-sm leading-6 text-gray-600">The core problem the client faced before this project.</p>
+                </div>
+
+                <!-- Solution -->
+                <div class="col-span-full">
+                    <label for="solution" class="block text-sm font-medium leading-6 text-gray-900">Solution</label>
+                    <div class="mt-2">
+                        <textarea id="solution" name="solution" rows="4" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-brand-primary sm:text-sm sm:leading-6">{{ old('solution') }}</textarea>
+                    </div>
+                    <p class="mt-3 text-sm leading-6 text-gray-600">How you solved the problem (technologies, strategy, etc).</p>
+                </div>
+
                 <!-- Impact Metrics -->
                 <div class="col-span-full">
                     <label for="impact_metrics" class="block text-sm font-medium leading-6 text-gray-900">Impact Metrics</label>

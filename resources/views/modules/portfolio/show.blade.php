@@ -57,6 +57,49 @@
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">About the Project</h2>
                         {!! $project->description !!}
                     </div>
+
+                    @if($project->problem_solved)
+                    <div class="mt-12 bg-white rounded-2xl p-8 border-l-4 border-red-500 shadow-sm">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            The Challenge
+                        </h2>
+                        <div class="prose prose-lg prose-red max-w-none text-gray-700">
+                            {!! nl2br(e($project->problem_solved)) !!}
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($project->solution)
+                    <div class="mt-8 bg-white rounded-2xl p-8 border-l-4 border-green-500 shadow-sm">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-6 h-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Our Solution
+                        </h2>
+                        <div class="prose prose-lg prose-red max-w-none text-gray-700">
+                            {!! nl2br(e($project->solution)) !!}
+                        </div>
+                    </div>
+                    @endif
+
+
+                    @if($project->impact_metrics)
+                    <div class="mt-12 bg-gray-50 rounded-2xl p-8 border border-gray-100 shadow-inner">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <svg class="w-6 h-6 text-brand-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                            Results & Impact
+                        </h2>
+                        <div class="prose prose-lg prose-red max-w-none">
+                            {!! $project->impact_metrics !!}
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 <!-- Sidebar -->
@@ -71,55 +114,31 @@
                                 </div>
                             @endif
                             
-                            @if($project->completion_date)
+                            @if($project->year)
                                 <div>
-                                    <dt class="text-sm font-medium text-gray-500">Completion Date</dt>
-                                    <dd class="mt-1 text-base font-semibold text-gray-900">{{ \Carbon\Carbon::parse($project->completion_date)->format('M d, Y') }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500">Year</dt>
+                                    <dd class="mt-1 text-base font-semibold text-gray-900">{{ $project->year }}</dd>
                                 </div>
                             @endif
 
-                            @if($project->website_url)
+                            @if($project->industry)
                                 <div>
-                                    <dt class="text-sm font-medium text-gray-500">Website</dt>
-                                    <dd class="mt-1">
-                                        <a href="{{ $project->website_url }}" target="_blank" rel="noopener noreferrer" class="text-brand-primary hover:text-red-700 font-medium break-all">
-                                            {{ parse_url($project->website_url, PHP_URL_HOST) }} ↗
-                                        </a>
-                                    </dd>
-                                </div>
-                            @endif
-
-                            @if($project->technologies)
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500 mb-2">Technologies</dt>
-                                    <dd class="flex flex-wrap gap-2">
-                                        @foreach(explode(',', $project->technologies) as $tech)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-gray-200 text-gray-800">
-                                                {{ trim($tech) }}
-                                            </span>
-                                        @endforeach
+                                    <dt class="text-sm font-medium text-gray-500 mb-2">Industry</dt>
+                                    <dd>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-gray-200 text-gray-800">
+                                            {{ $project->industry->name }}
+                                        </span>
                                     </dd>
                                 </div>
                             @endif
                         </dl>
-
-                        @if($project->website_url)
-                            <div class="mt-8">
-                                <a href="{{ $project->website_url }}" target="_blank" class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-brand-primary hover:bg-red-700 transition-colors shadow-lg shadow-brand-primary/30">
-                                    Visit Live Site
-                                    <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
-                            </div>
-                        @endif
                     </div>
 
-                    <div class="bg-gradient-to-br from-brand-primary to-purple-900 rounded-2xl p-8 text-white text-center">
-                        <h3 class="text-xl font-bold mb-4">Have a similar project?</h3>
-                        <p class="text-gray-100 mb-8">Let's discuss how we can bring your vision to life.</p>
-                        <a href="{{ route('contact.index') }}" class="inline-block bg-white text-brand-primary font-bold py-3 px-8 rounded-full hover:bg-gray-50 transition-colors shadow-lg">
-                            Get in Touch
+                    <div class="bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl p-8 text-white text-center shadow-xl">
+                        <h3 class="text-xl font-bold mb-4">Start Your Next Big Idea</h3>
+                        <p class="text-gray-100 mb-8">Ready to achieve similar results? Let's build something extraordinary together.</p>
+                        <a href="/start-project" class="inline-block bg-white text-brand-primary font-bold py-3 px-8 rounded-full hover:bg-gray-50 hover:-translate-y-1 transition-all duration-300 shadow-lg">
+                            Start a Project
                         </a>
                     </div>
                 </div>

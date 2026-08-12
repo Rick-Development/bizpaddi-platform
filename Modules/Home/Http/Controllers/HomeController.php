@@ -91,7 +91,12 @@ class HomeController extends Controller
 
         // Fetch home CTA
         $homeCta = \Modules\Home\Models\HomeCta::where('is_active', true)->first();
-        
+
+        // Fetch client logos
+        $clientLogos = \App\Models\ClientLogo::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+            
         return view('home::index', compact(
             'heroSliders',
             'serviceCategories',
@@ -103,7 +108,8 @@ class HomeController extends Controller
             'homeStats',
             'homeFeatures',
             'homeProcesses',
-            'homeCta'
+            'homeCta',
+            'clientLogos'
         ));
     }
 

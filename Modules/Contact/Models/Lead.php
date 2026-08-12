@@ -17,12 +17,19 @@ class Lead extends Model
         'status',
         'source',
         'score',
+        'value',
+        'expected_close_date',
         'assigned_to',
         'last_contacted_at',
         'converted_to_contact_id',
         'converted_at',
         'metadata',
         'notes',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
     ];
 
     protected $casts = [

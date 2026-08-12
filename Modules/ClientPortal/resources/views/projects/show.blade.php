@@ -183,7 +183,7 @@
                                             <p class="text-[10px] text-gray-500">{{ $media->human_readable_size }}</p>
                                         </div>
                                     </div>
-                                    <a href="{{ $media->getUrl() }}" download class="ml-4 text-gray-400 hover:text-brand-primary transition-colors">
+                                    <a href="{{ route('pm.attachments.download', $media) }}" download class="ml-4 text-gray-400 hover:text-brand-primary transition-colors">
                                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor font-medium">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
@@ -218,7 +218,7 @@
                                             <p class="text-[10px] text-gray-500">{{ $media->human_readable_size }}</p>
                                         </div>
                                     </div>
-                                    <a href="{{ $media->getUrl() }}" download class="ml-4 text-gray-400 hover:text-black transition-colors">
+                                    <a href="{{ route('pm.attachments.download', $media) }}" download class="ml-4 text-gray-400 hover:text-black transition-colors">
                                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor font-medium">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>

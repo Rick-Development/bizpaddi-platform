@@ -66,8 +66,8 @@
 
             <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($leaders as $leader)
-                    <div class="group">
-                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <div class="group" x-data="{ expanded: false }">
+                        <div class="relative overflow-hidden rounded-2xl shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer" @click="expanded = !expanded">
                             @if($leader->getFirstMediaUrl('photo'))
                                 <img class="w-full h-80 object-cover" src="{{ $leader->getFirstMediaUrl('photo') }}" alt="{{ $leader->name }}">
                             @else
@@ -76,13 +76,25 @@
                                 </div>
                             @endif
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-6">
-                                <h3 class="text-2xl font-bold text-white">{{ $leader->name }}</h3>
-                                <p class="text-yellow-300 font-semibold mt-1">{{ $leader->position }}</p>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 flex justify-between items-end">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-white">{{ $leader->name }}</h3>
+                                    <p class="text-yellow-300 font-semibold mt-1">{{ $leader->position }}</p>
+                                </div>
+                                <div class="text-white bg-white/20 p-2 rounded-full backdrop-blur-sm transform transition-transform" :class="expanded ? 'rotate-180' : ''">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <p class="text-gray-600">{{ $leader->bio }}</p>
+                        <div class="mt-4 text-gray-600 overflow-hidden transition-all duration-300" 
+                             :style="expanded ? 'max-height: 500px; opacity: 1;' : 'max-height: 0px; opacity: 0;'">
+                            <p class="pt-2">{{ $leader->bio }}</p>
+                            @if($leader->linkedin)
+                                <a href="{{ $leader->linkedin }}" target="_blank" class="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                    LinkedIn Profile
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @endforeach

@@ -50,8 +50,42 @@
         </div>
     </div>
 
+    <!-- Case Studies Section -->
+    @if(isset($service->caseStudies) && $service->caseStudies->count() > 0)
+    <div class="py-20 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-base text-brand-primary font-semibold tracking-wide uppercase">Proven Results</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    {{ $service->name }} Case Studies
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($service->caseStudies as $caseStudy)
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="p-8 border-t-4 border-brand-primary">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $caseStudy->title }}</h3>
+                        <p class="text-sm text-brand-primary font-semibold mb-4">{{ $caseStudy->client_name }}</p>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-1">Challenge</h4>
+                            <p class="text-gray-600 text-sm line-clamp-2">{{ $caseStudy->challenge }}</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-1">Results</h4>
+                            <p class="text-gray-600 text-sm line-clamp-3">{{ $caseStudy->results }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- CTA Section -->
-    <div class="bg-gradient-to-r from-brand-primary to-purple-600 py-16">
+    <div class="bg-gradient-to-r from-brand-primary to-brand-secondary py-16">
         <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
                 Ready to get started with {{ $service->name }}?
@@ -60,8 +94,8 @@
                 Let's discuss how we can tailor this solution to your business needs.
             </p>
             <div class="mt-8 flex justify-center gap-4">
-                <a href="{{ route('contact.index') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-brand-primary bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white shadow-xl transform hover:-translate-y-1 transition-all duration-200">
-                    Get in Touch
+                <a href="/start-project" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-brand-primary bg-white rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white shadow-xl transform hover:-translate-y-1 transition-all duration-200">
+                    Start Your Project
                 </a>
                 <a href="{{ url('/services') }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-transparent border-2 border-white rounded-full hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transform hover:-translate-y-1 transition-all duration-200">
                     Back to Services

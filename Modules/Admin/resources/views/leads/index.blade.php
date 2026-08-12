@@ -122,8 +122,13 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
-                            {{ $lead->source ?? '-' }}
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">{{ $lead->source ?? '-' }}</div>
+                            @if($lead->utm_source)
+                                <div class="text-xs text-brand-primary mt-1 font-semibold uppercase tracking-wider">
+                                    UTM: {{ $lead->utm_source }}
+                                </div>
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ $lead->assignedTo->name ?? 'Unassigned' }}

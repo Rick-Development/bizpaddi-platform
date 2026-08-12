@@ -146,7 +146,38 @@
                         </div>
 
                         <div>
-                            <label for="message" class="block text-sm font-bold text-gray-700 mb-2">{{ __('Message') }}</label>
+                            <label for="project_type" class="block text-sm font-bold text-gray-700 mb-2">{{ __('Project Type (Optional)') }}</label>
+                            <select name="project_type" id="project_type" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all">
+                                <option value="">Select Project Type</option>
+                                @foreach($projectTypes as $type)
+                                    <option value="{{ $type->name }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="budget" class="block text-sm font-bold text-gray-700 mb-2">{{ __('Budget (Optional)') }}</label>
+                                <select name="budget" id="budget" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all">
+                                    <option value="">Select Budget</option>
+                                    @foreach($budgets as $budget)
+                                        <option value="{{ $budget->name }}">{{ $budget->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="timeline" class="block text-sm font-bold text-gray-700 mb-2">{{ __('Timeline (Optional)') }}</label>
+                                <select name="timeline" id="timeline" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all">
+                                    <option value="">Select Timeline</option>
+                                    @foreach($timelines as $timeline)
+                                        <option value="{{ $timeline->name }}">{{ $timeline->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-bold text-gray-700 mb-2">{{ __('Message') }} <span class="text-red-500">*</span></label>
                             <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"></textarea>
                         </div>
 

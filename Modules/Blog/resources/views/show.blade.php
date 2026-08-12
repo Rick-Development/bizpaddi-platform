@@ -63,6 +63,22 @@
                 {!! $post->content !!}
             </div>
 
+            <!-- CTA Block -->
+            <div class="mt-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl p-10 sm:p-12 text-center text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+                <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-2xl"></div>
+                <h3 class="text-3xl font-extrabold mb-4 relative z-10">Ready to transform your ideas into reality?</h3>
+                <p class="text-lg text-gray-200 mb-8 max-w-2xl mx-auto relative z-10">
+                    Join the innovative companies that trust Rick Development to build their future. Let's discuss your next project.
+                </p>
+                <a href="/start-project" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-brand-primary bg-white rounded-full hover:bg-gray-50 transform hover:-translate-y-1 transition-all duration-300 shadow-xl relative z-10">
+                    Start Your Project
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+
             <!-- Share & Tags -->
             <div class="mt-16 pt-8 border-t border-gray-200">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-6">

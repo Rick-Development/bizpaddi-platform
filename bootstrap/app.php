@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
             'webhooks/*',
+            'ai/chat/*',
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,

@@ -59,9 +59,15 @@ class TeamMemberController extends Controller
             'airtime_phone' => 'nullable|string|max:20',
             'data_phone' => 'nullable|string|max:20',
             'status' => 'required|in:active,suspended,inactive',
+            'bio' => 'nullable|string',
+            'avatar' => 'nullable|image|max:5120',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+
+        if ($request->hasFile('avatar')) {
+            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
 
         $user = User::create($validated);
         
@@ -136,12 +142,21 @@ class TeamMemberController extends Controller
             'airtime_phone' => 'nullable|string|max:20',
             'data_phone' => 'nullable|string|max:20',
             'status' => 'required|in:active,suspended,inactive',
+            'bio' => 'nullable|string',
+            'avatar' => 'nullable|image|max:5120',
         ]);
 
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
+        }
+
+        if ($request->hasFile('avatar')) {
+            if ($teamMember->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($teamMember->avatar)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($teamMember->avatar);
+            }
+            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
         $teamMember->update($validated);

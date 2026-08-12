@@ -20,18 +20,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        
+
         .sidebar-gradient {
             background: linear-gradient(180deg, #191C47 0%, #0F1229 100%);
         }
-        
+
         .stat-card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .stat-card-hover:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* ── Critical layout overrides (supplement compiled Tailwind) ── */
+        @media (min-width: 1024px) {
+            .lg\:pl-72 { padding-left: 18rem !important; }
+            .lg\:fixed  { position: fixed !important; }
+            .lg\:inset-y-0 { top: 0; bottom: 0; }
+            .lg\:z-50  { z-index: 50 !important; }
+            .lg\:flex  { display: flex !important; }
+            .lg\:w-72  { width: 18rem !important; }
+            .lg\:flex-col { flex-direction: column !important; }
+            .lg\:hidden { display: none !important; }
+        }
+        .grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        @media (min-width: 640px) {
+            .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .lg\:col-span-2  { grid-column: span 2 / span 2; }
+            .lg\:flex-row    { flex-direction: row !important; }
+            .lg\:w-1\/3      { width: 33.333333% !important; }
+            .lg\:w-2\/3      { width: 66.666667% !important; }
         }
     </style>
     @stack('styles')

@@ -66,6 +66,45 @@
             </dl>
         </div>
 
+        <!-- Tracking Data -->
+        @if($lead->utm_source || $lead->utm_medium || $lead->utm_campaign || $lead->utm_term || $lead->utm_content)
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Tracking Data (UTM)</h2>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @if($lead->utm_source)
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">UTM Source</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $lead->utm_source }}</dd>
+                </div>
+                @endif
+                @if($lead->utm_medium)
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">UTM Medium</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $lead->utm_medium }}</dd>
+                </div>
+                @endif
+                @if($lead->utm_campaign)
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">UTM Campaign</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $lead->utm_campaign }}</dd>
+                </div>
+                @endif
+                @if($lead->utm_term)
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">UTM Term</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $lead->utm_term }}</dd>
+                </div>
+                @endif
+                @if($lead->utm_content)
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">UTM Content</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ $lead->utm_content }}</dd>
+                </div>
+                @endif
+            </dl>
+        </div>
+        @endif
+
         <!-- Notes -->
         @if($lead->notes)
             <div class="bg-white rounded-lg shadow-sm p-6">

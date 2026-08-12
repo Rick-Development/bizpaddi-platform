@@ -22,5 +22,7 @@
     "TeamPortal": true,
     "ProjectManagement": true,
     "KYC": true,
-    "Mcp": true
+    "Mcp": true,
+    "AiEmployees": true,
+    "SocialMedia": true
 }

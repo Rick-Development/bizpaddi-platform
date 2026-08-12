@@ -73,6 +73,32 @@
         @endif
     </div>
 
+    <!-- Client Logos & Trust Badges -->
+    <div class="bg-white py-12 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm font-semibold uppercase text-gray-500 tracking-wider mb-8">
+                {{ __('Trusted by innovative companies worldwide') }}
+            </p>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-gray-400">TechCorp</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-gray-400">Innovate LLC</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-gray-400">GlobalNet</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-gray-400">NextGen Solutions</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <span class="text-2xl font-bold text-gray-400">Alpha Systems</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Featured Content Section (Service Categories) -->
     @if($serviceCategories && $serviceCategories->count() > 0)
     <div class="py-20 bg-white">
@@ -473,6 +499,65 @@
         </div>
     </div>
     @endif
+
+    <!-- FAQ Section -->
+    <div class="bg-white py-20 border-t border-gray-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-base text-brand-primary font-semibold tracking-wide uppercase">{{ __('FAQ') }}</h2>
+                <p class="mt-2 text-4xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl">
+                    {{ __('Common Questions') }}
+                </p>
+                <p class="mt-4 text-xl text-gray-600">Everything you need to know about working with us.</p>
+            </div>
+            
+            <div class="space-y-6" x-data="{ active: null }">
+                <!-- FAQ 1 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <button class="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center focus:outline-none" @click="active = active === 1 ? null : 1">
+                        <span>How much does a typical project cost?</span>
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" :class="active === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-gray-600 border-t border-gray-100" x-show="active === 1" x-collapse x-cloak>
+                        <p class="pt-4">Project costs vary widely depending on scope, complexity, and timeline. After our initial free consultation, we provide a detailed proposal with transparent pricing tailored to your specific needs. We offer options for both fixed-price projects and dedicated team retainers.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <button class="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center focus:outline-none" @click="active = active === 2 ? null : 2">
+                        <span>How long does it take to complete a project?</span>
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" :class="active === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-gray-600 border-t border-gray-100" x-show="active === 2" x-collapse x-cloak>
+                        <p class="pt-4">Timelines depend entirely on the project scope. A simple landing page might take a few weeks, while a complex custom web application could take 3-6 months. We emphasize agile methodologies, meaning we deliver working software in sprints so you see progress early and often.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <button class="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center focus:outline-none" @click="active = active === 3 ? null : 3">
+                        <span>Do you provide post-launch support and maintenance?</span>
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" :class="active === 3 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-gray-600 border-t border-gray-100" x-show="active === 3" x-collapse x-cloak>
+                        <p class="pt-4">Yes! We believe launch is just the beginning. We offer flexible post-launch support and maintenance retainers to ensure your application remains secure, up-to-date, and optimized as your business grows.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                    <button class="w-full px-6 py-5 text-left font-bold text-gray-900 flex justify-between items-center focus:outline-none" @click="active = active === 4 ? null : 4">
+                        <span>What is your development process like?</span>
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" :class="active === 4 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="px-6 pb-5 text-gray-600 border-t border-gray-100" x-show="active === 4" x-collapse x-cloak>
+                        <p class="pt-4">We follow a transparent, agile process: Discovery & Strategy -> UI/UX Design -> Development (in sprints) -> QA & Testing -> Launch. You'll have regular check-ins, access to a staging environment, and a dedicated project manager keeping you in the loop every step of the way.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- CTA Section -->
     @if($homeCta)

@@ -34,6 +34,8 @@ class User extends Authenticatable implements HasMedia
         'airtime_phone',
         'data_phone',
         'department',
+        'bio',
+        'avatar',
     ];
 
     /**
@@ -79,6 +81,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(\Modules\ProjectManagement\Models\Task::class, 'assigned_to');
     }
 
+    public function assignedLeads()
+    {
+        return $this->hasMany(\Modules\Contact\Models\Lead::class, 'assigned_to');
+    }
+
     public function assignedTasks()
     {
         return $this->hasMany(\Modules\ProjectManagement\Models\Task::class, 'assigned_to');
@@ -108,5 +115,14 @@ class User extends Authenticatable implements HasMedia
                $this->role === 'Project Manager' ||
                $this->hasRole('project_manager') || 
                $this->hasPermissionTo('pm.manage-projects');
+    }
+
+    public function isBdm()
+    {
+        $role = strtolower($this->role ?? '');
+        return $role === 'bdm' || 
+               $role === 'business_development' || 
+               $this->hasRole('bdm') || 
+               $this->hasRole('Bdm');
     }
 }
