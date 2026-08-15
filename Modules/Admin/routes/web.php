@@ -272,6 +272,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('chat-api/conversations/{conversation}/read', [\Modules\Admin\Http\Controllers\ChatController::class, 'markAsRead'])->name('chat.messages.read');
         Route::post('chat-api/conversations/start', [\Modules\Admin\Http\Controllers\ChatController::class, 'startConversation'])->name('chat.conversations.start');
         Route::get('chat-api/unread-count', [\Modules\Admin\Http\Controllers\ChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+        Route::post('chat-api/groups', [\Modules\Admin\Http\Controllers\ChatController::class, 'createGroup'])->name('chat.groups.create');
+        Route::post('chat-api/conversations/{conversation}/members/add', [\Modules\Admin\Http\Controllers\ChatController::class, 'addGroupMember'])->name('chat.groups.members.add');
+        Route::post('chat-api/conversations/{conversation}/members/remove', [\Modules\Admin\Http\Controllers\ChatController::class, 'removeGroupMember'])->name('chat.groups.members.remove');
 
 
         // Admin Centralized Comment Feed

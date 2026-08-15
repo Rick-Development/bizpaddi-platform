@@ -65,7 +65,29 @@ class ChatController extends Controller
 
         $selectedConversationId = $conversation ?? $request->query('conversation');
 
-        return view('admin::chat.index', compact('contacts', 'conversations', 'selectedConversationId'));
+        $allContacts = User::where('status', 'active')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($u) {
+                $u->type_label = 'Team Member';
+                $u->type = get_class($u);
+                $u->key = 'User_' . $u->id;
+                return $u;
+            })
+            ->concat(
+                Admin::orderBy('name')
+                    ->get()
+                    ->map(function ($a) {
+                        $a->type_label = 'Admin';
+                        $a->type = get_class($a);
+                        $a->key = 'Admin_' . $a->id;
+                        return $a;
+                    })
+            )->values();
+
+        $projects = \Modules\ProjectManagement\Models\Project::orderBy('name')->get(['id', 'name']);
+
+        return view('admin::chat.index', compact('contacts', 'conversations', 'selectedConversationId', 'allContacts', 'projects'));
     }
 
 
@@ -141,7 +163,7 @@ class ChatController extends Controller
             ->max('created_at');
 
         $messages = $conversation->messages()
-            ->with(['sender', 'reads'])
+            ->with(['sender', 'reads', 'media'])
             ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($message) use ($currentUser, $latestPartnerMessageTime) {
@@ -156,13 +178,24 @@ class ChatController extends Controller
                     $isRead = $hasPartnerRead || $hasPartnerReplied;
                 }
 
-
                 $avatarUrl = null;
                 if ($message->sender) {
                     if (method_exists($message->sender, 'getFirstMediaUrl') && $message->sender->getFirstMediaUrl('avatar')) {
                         $avatarUrl = $message->sender->getFirstMediaUrl('avatar');
                     }
                 }
+
+                $attachments = $message->getMedia('attachments')->map(function ($media) {
+                    return [
+                        'id' => $media->id,
+                        'name' => $media->file_name,
+                        'url' => $media->getUrl(),
+                        'mime_type' => $media->mime_type,
+                        'size' => $media->human_readable_size,
+                        'is_image' => str_contains($media->mime_type, 'image'),
+                        'is_video' => str_contains($media->mime_type, 'video'),
+                    ];
+                })->toArray();
 
                 return [
                     'id' => $message->id,
@@ -174,10 +207,36 @@ class ChatController extends Controller
                     'is_me' => $isMe,
                     'is_read' => $isRead,
                     'formatted_time' => $message->created_at->format('g:i A'),
+                    'attachments' => $attachments,
                 ];
             });
 
         $partnerIsOnline = $partnerUser ? \Illuminate\Support\Facades\Cache::has('online-' . $partner->user_type . '-' . $partner->user_id) : false;
+
+        $isGroup = $conversation->type === 'group';
+        $members = [];
+        if ($isGroup) {
+            $partnerName = $conversation->name ?? 'Group Chat';
+            $partnerAvatar = null;
+            $partnerKey = null;
+            
+            $project = $conversation->project_id ? \Modules\ProjectManagement\Models\Project::find($conversation->project_id) : null;
+            $partnerRole = $project ? 'Project: ' . $project->name : 'General Group';
+            $partnerIsOnline = false;
+
+            $members = $conversation->participants()->with('user')->get()->map(function ($p) {
+                $u = $p->user;
+                if (!$u) return null;
+                $short = str_contains(get_class($u), 'Admin') ? 'Admin' : 'User';
+                return [
+                    'id' => $u->id,
+                    'name' => $u->name,
+                    'key' => $short . '_' . $u->id,
+                    'type_label' => $short === 'Admin' ? 'Admin' : 'Team Member',
+                    'is_online' => \Illuminate\Support\Facades\Cache::has('online-' . get_class($u) . '-' . $u->id),
+                ];
+            })->filter()->values()->toArray();
+        }
 
         return response()->json([
             'partner_name' => $partnerName,
@@ -185,6 +244,8 @@ class ChatController extends Controller
             'partner_key' => $partnerKey,
             'partner_role' => $partnerRole,
             'partner_is_online' => $partnerIsOnline,
+            'is_group' => $isGroup,
+            'members' => $members,
             'messages' => $messages
         ]);
     }
@@ -203,7 +264,9 @@ class ChatController extends Controller
         }
 
         $request->validate([
-            'content' => 'required|string|max:2000',
+            'content' => 'nullable|string|max:2000',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'file|max:51200', // 50MB max per attachment
         ]);
 
         // Mark all incoming messages in this conversation as read since sender is actively replying
@@ -227,8 +290,15 @@ class ChatController extends Controller
             'conversation_id' => $conversation->id,
             'sender_id' => $currentUser->id,
             'sender_type' => get_class($currentUser),
-            'content' => $request->content,
+            'content' => $request->input('content') ?? '',
         ]);
+
+        // Save attachments if any
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $message->addMedia($file)->toMediaCollection('attachments');
+            }
+        }
 
         // Touch conversation to update updated_at timestamp
         $conversation->touch();
@@ -241,6 +311,18 @@ class ChatController extends Controller
             $avatarUrl = $currentUser->getFirstMediaUrl('avatar');
         }
 
+        $attachments = $message->getMedia('attachments')->map(function ($media) {
+            return [
+                'id' => $media->id,
+                'name' => $media->file_name,
+                'url' => $media->getUrl(),
+                'mime_type' => $media->mime_type,
+                'size' => $media->human_readable_size,
+                'is_image' => str_contains($media->mime_type, 'image'),
+                'is_video' => str_contains($media->mime_type, 'video'),
+            ];
+        })->toArray();
+
         return response()->json([
             'message' => [
                 'id' => $message->id,
@@ -252,8 +334,166 @@ class ChatController extends Controller
                 'is_me' => true,
                 'is_read' => false,
                 'formatted_time' => $message->created_at->format('g:i A'),
+                'attachments' => $attachments,
             ]
         ]);
+    }
+
+    /**
+     * Create a group chat conversation.
+     */
+    public function createGroup(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'project_id' => 'nullable|integer',
+            'participant_keys' => 'nullable|array',
+            'participant_keys.*' => 'string',
+        ]);
+
+        $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
+
+        // Create group conversation
+        $conversation = ProjectConversation::create([
+            'type' => 'group',
+            'status' => 'active',
+            'name' => $request->name,
+            'project_id' => $request->project_id,
+        ]);
+
+        // Add creator (admin)
+        ChatParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $currentUser->id,
+            'user_type' => get_class($currentUser),
+        ]);
+
+        // Add selected participants
+        if ($request->has('participant_keys')) {
+            foreach ($request->participant_keys as $key) {
+                $parts = explode('_', $key);
+                if (count($parts) < 2) continue;
+
+                $type = $parts[0] === 'Admin' ? Admin::class : User::class;
+                $id = (int)$parts[1];
+
+                if ($id === $currentUser->id && $type === get_class($currentUser)) {
+                    continue;
+                }
+
+                ChatParticipant::create([
+                    'conversation_id' => $conversation->id,
+                    'user_id' => $id,
+                    'user_type' => $type,
+                ]);
+            }
+        }
+
+        // Add system message
+        ProjectMessage::create([
+            'conversation_id' => $conversation->id,
+            'sender_id' => $currentUser->id,
+            'sender_type' => get_class($currentUser),
+            'content' => "created the group chat.",
+        ]);
+
+        return response()->json([
+            'conversation_id' => $conversation->id,
+        ]);
+    }
+
+    /**
+     * Add a member to a group chat.
+     */
+    public function addGroupMember(Request $request, ProjectConversation $conversation)
+    {
+        $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
+
+        if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'contact_key' => 'required|string',
+        ]);
+
+        $parts = explode('_', $request->contact_key);
+        if (count($parts) < 2) {
+            return response()->json(['error' => 'Invalid member key'], 422);
+        }
+
+        $type = $parts[0] === 'Admin' ? Admin::class : User::class;
+        $id = (int)$parts[1];
+
+        $exists = $conversation->participants()->where('user_id', $id)->where('user_type', $type)->exists();
+        if (!$exists) {
+            ChatParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $id,
+                'user_type' => $type,
+            ]);
+
+            $member = $type::find($id);
+            $memberName = $member ? $member->name : 'New Member';
+
+            ProjectMessage::create([
+                'conversation_id' => $conversation->id,
+                'sender_id' => $currentUser->id,
+                'sender_type' => get_class($currentUser),
+                'content' => "added {$memberName} to the group.",
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Remove a member from a group chat.
+     */
+    public function removeGroupMember(Request $request, ProjectConversation $conversation)
+    {
+        $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
+
+        if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'contact_key' => 'required|string',
+        ]);
+
+        $parts = explode('_', $request->contact_key);
+        if (count($parts) < 2) {
+            return response()->json(['error' => 'Invalid member key'], 422);
+        }
+
+        $type = $parts[0] === 'Admin' ? Admin::class : User::class;
+        $id = (int)$parts[1];
+
+        $adminCount = $conversation->participants()->where('user_type', Admin::class)->count();
+        if ($type === Admin::class && $adminCount <= 1) {
+            return response()->json(['error' => 'Cannot remove the last administrator from the group.'], 400);
+        }
+
+        $participant = $conversation->participants()->where('user_id', $id)->where('user_type', $type)->first();
+        if ($participant) {
+            $member = $type::find($id);
+            $memberName = $member ? $member->name : 'Member';
+
+            $participant->delete();
+
+            ProjectMessage::create([
+                'conversation_id' => $conversation->id,
+                'sender_id' => $currentUser->id,
+                'sender_type' => get_class($currentUser),
+                'content' => "removed {$memberName} from the group.",
+            ]);
+        }
+
+        return response()->json(['success' => true]);
     }
 
     /**

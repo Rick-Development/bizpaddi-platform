@@ -83,9 +83,16 @@
                         <div class="h-2.5 w-2.5 rounded-full bg-[#FB4C4B]"></div>
                         <h2 class="text-sm font-bold text-gray-900 tracking-wide uppercase">Conversations</h2>
                     </div>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 text-gray-600">
-                        {{ count($conversations) }} Active
-                    </span>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            </svg>
+                        </button>
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 text-gray-600">
+                            {{ count($conversations) }} Active
+                        </span>
+                    </div>
                 </div>
 
                 {{-- Search Box --}}
@@ -235,6 +242,14 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div id="group-actions-container" class="hidden">
+                        <button onclick="openManageMembersModal()" class="h-9 w-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-[#FB4C4B] hover:text-white hover:border-[#FB4C4B] transition-all flex items-center justify-center shadow-xs" title="Manage Group Members">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Messages Canvas --}}
@@ -243,8 +258,22 @@
                 </div>
 
                 {{-- Input Composer --}}
-                <div class="p-4 border-t border-gray-200 bg-white">
-                    <form onsubmit="sendMessage(event)" class="flex items-center gap-3">
+                <div class="p-4 border-t border-gray-200 bg-white flex flex-col gap-2">
+                    
+                    {{-- Upload Preview Tray --}}
+                    <div id="upload-preview-container" class="hidden flex flex-wrap gap-2 p-2 bg-slate-55 rounded-2xl border border-gray-100">
+                    </div>
+
+                    <form onsubmit="sendMessage(event)" class="flex items-center gap-3" enctype="multipart/form-data">
+                        <button type="button" onclick="document.getElementById('attachment-input').click()" 
+                                class="h-11 w-11 flex items-center justify-center rounded-2xl bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all shadow-xs flex-shrink-0" 
+                                title="Attach files/images/videos">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.75m0-12.75a6 6 0 11-8.485 8.485L5.636 10.25a3.75 3.75 0 115.303 5.304L6.182 20.3a1.5 1.5 0 11-2.122-2.12L8.82 13.4" />
+                            </svg>
+                        </button>
+                        <input type="file" id="attachment-input" class="hidden" multiple onchange="handleFileSelect(event)">
+
                         <input type="text" id="message-input" placeholder="Type a message..." 
                                class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] focus:bg-white transition-all placeholder-gray-400"
                                autocomplete="off">
@@ -263,6 +292,111 @@
 
         </div>
 
+    </div>
+
+    <!-- Create Group Chat Modal -->
+    <div id="create-group-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl shadow-xl border border-gray-100 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-gray-900 font-display">Create New Group Chat</h3>
+                <button onclick="closeCreateGroupModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <form onsubmit="submitCreateGroup(event)" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-6 space-y-4 flex-1 overflow-y-auto chat-scroll">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Group Name</label>
+                        <input type="text" id="group-name" required placeholder="e.g. Design Team Sync" 
+                               class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
+                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-medium">
+                            <option value="">-- No Project Link --</option>
+                            @foreach($projects as $p)
+                                <option value="{{ $p->id }}">{{ $p->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Select Members</label>
+                        <input type="text" placeholder="Search members..." onkeyup="filterGroupModalMembers(this.value)"
+                               class="w-full px-3.5 py-2 mb-3 bg-gray-50 border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-[#FB4C4B]">
+                        
+                        <div class="space-y-2 max-h-48 overflow-y-auto chat-scroll pr-1" id="group-members-checklist">
+                            @foreach($allContacts as $c)
+                                <label class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl cursor-pointer group-modal-member-item transition-all" data-name="{{ strtolower($c['name']) }}">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                            {{ strtoupper(substr($c['name'], 0, 2)) }}
+                                        </div>
+                                        <div>
+                                            <span class="text-xs font-semibold text-gray-800 block leading-tight">{{ $c['name'] }}</span>
+                                            <span class="text-[9px] text-gray-400 font-medium">{{ $c['type_label'] }}</span>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" name="group_participants[]" value="{{ $c['key'] }}"
+                                           class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B] h-4 w-4">
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4 border-t border-gray-100 bg-slate-50/50 flex items-center justify-end gap-3 flex-shrink-0">
+                    <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 active:scale-95 transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manage Group Members Modal -->
+    <div id="manage-members-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl shadow-xl border border-gray-100 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900" id="manage-group-name">Manage Members</h3>
+                    <p class="text-[10px] text-gray-400 mt-0.5" id="manage-group-project">Project Group Chat</p>
+                </div>
+                <button onclick="closeManageMembersModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-5 flex-1 overflow-y-auto chat-scroll flex flex-col">
+                <div class="border-b border-gray-100 pb-4">
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Add New Member</label>
+                    <div class="flex gap-2">
+                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-semibold text-gray-800">
+                            <option value="">-- Choose Member to Add --</option>
+                            @foreach($allContacts as $c)
+                                <option value="{{ $c['key'] }}">{{ $c['name'] }} ({{ $c['type_label'] }})</option>
+                            @endforeach
+                        </select>
+                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 flex flex-col min-h-0">
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Current Members</label>
+                    <div class="space-y-2 overflow-y-auto chat-scroll flex-1 pr-1" id="current-members-list">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 py-3 border-t border-gray-100 bg-slate-50/50 flex items-center justify-end flex-shrink-0">
+                <button type="button" onclick="closeManageMembersModal()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 active:scale-95 transition-all">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -375,6 +509,20 @@
                 document.getElementById('active-partner-name').innerText = data.partner_name;
                 document.getElementById('active-partner-role').innerText = data.partner_role;
 
+                const isGroup = data.is_group || false;
+                const groupActions = document.getElementById('group-actions-container');
+                if (isGroup) {
+                    groupActions.classList.remove('hidden');
+                    window.activeMembersList = data.members || [];
+                    document.getElementById('active-partner-status').innerText = `${window.activeMembersList.length} Members`;
+                    document.getElementById('active-partner-dot').className = 'absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white status-dot-online';
+                } else {
+                    groupActions.classList.add('hidden');
+                    window.activeMembersList = [];
+                    document.getElementById('active-partner-status').innerText = window.activePartnerIsOnline ? 'Online' : 'Offline';
+                    document.getElementById('active-partner-dot').className = `absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${window.activePartnerIsOnline ? 'status-dot-online' : 'status-dot-offline'}`;
+                }
+
                 const avatarBox = document.getElementById('active-partner-avatar');
                 if (data.partner_avatar) {
                     avatarBox.innerHTML = `<img src="${data.partner_avatar}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">`;
@@ -382,12 +530,12 @@
                     avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
                 }
 
-                updatePresenceStatus(data.partner_key, window.activePartnerIsOnline);
+                if (!isGroup) {
+                    updatePresenceStatus(data.partner_key, window.activePartnerIsOnline);
+                }
 
                 // Render Messages
                 renderMessages(data.messages);
-
-                // Active Echo channel left blank - using 2s polling
             })
             .catch(err => {
                 console.error('Failed to load conversation messages:', err);
@@ -401,11 +549,17 @@
                 .then(res => {
                     const messages = res.data.messages || [];
                     const partnerIsOnline = res.data.partner_is_online || false;
+                    const isGroup = res.data.is_group || false;
                     
-                    // Update partner online header indicator
-                    window.activePartnerIsOnline = partnerIsOnline;
-                    if (window.activePartnerKey) {
-                        updatePresenceStatus(window.activePartnerKey, partnerIsOnline);
+                    if (isGroup) {
+                        window.activeMembersList = res.data.members || [];
+                        document.getElementById('active-partner-status').innerText = `${window.activeMembersList.length} Members`;
+                    } else {
+                        // Update partner online header indicator
+                        window.activePartnerIsOnline = partnerIsOnline;
+                        if (window.activePartnerKey) {
+                            updatePresenceStatus(window.activePartnerKey, partnerIsOnline);
+                        }
                     }
 
                     messages.forEach(msg => {
@@ -531,11 +685,60 @@
         const alignClass = isMe ? 'justify-end' : 'justify-start';
         const tickHtml = isMe ? getTickHtml(msg.is_read) : '';
 
+        // Generate attachments html
+        let attachmentsHtml = '';
+        if (msg.attachments && msg.attachments.length > 0) {
+            attachmentsHtml = `<div class="flex flex-col gap-2 mt-2 w-full">`;
+            msg.attachments.forEach(att => {
+                if (att.is_image) {
+                    attachmentsHtml += `
+                        <div class="relative rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-xs hover:scale-[1.02] transition-transform">
+                            <a href="${att.url}" target="_blank">
+                                <img src="${att.url}" class="w-full h-auto object-cover max-h-48" alt="${att.name}">
+                            </a>
+                        </div>`;
+                } else if (att.is_video) {
+                    attachmentsHtml += `
+                        <div class="relative rounded-2xl overflow-hidden border border-gray-100 max-w-[320px] shadow-xs">
+                            <video src="${att.url}" controls class="w-full h-auto max-h-48 bg-black"></video>
+                        </div>`;
+                } else {
+                    attachmentsHtml += `
+                        <a href="${att.url}" target="_blank" 
+                           class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-gray-200 text-slate-800 hover:bg-slate-100 transition-all max-w-[280px] shadow-xs">
+                            <div class="h-9 w-9 rounded-xl bg-gray-200 flex items-center justify-center text-gray-600 flex-shrink-0">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <span class="text-xs font-semibold truncate block">${att.name}</span>
+                                <span class="text-[9px] text-gray-400 block">${att.size}</span>
+                            </div>
+                        </a>`;
+                }
+            });
+            attachmentsHtml += '</div>';
+        }
+
+        // Render system messages
+        const isSystem = msg.sender_name && (msg.content.includes("created the group chat.") || msg.content.includes("added ") || msg.content.includes("removed "));
+        if (isSystem) {
+            return `
+                <div class="flex justify-center my-2.5">
+                    <div class="px-4 py-1.5 rounded-full bg-slate-100 border border-gray-200 text-gray-500 text-[10px] font-medium shadow-xs">
+                        <strong>${escapeHtml(msg.sender_name)}</strong> ${escapeHtml(msg.content)}
+                    </div>
+                </div>
+            `;
+        }
+
         return `
             <div class="flex ${alignClass} mb-3 msg-row" id="msg-${msg.id}">
                 <div class="max-w-[75%] md:max-w-[65%]">
                     <div class="px-4 py-3 rounded-2xl text-xs md:text-sm leading-relaxed ${bubbleClass}">
                         ${escapeHtml(msg.content)}
+                        ${attachmentsHtml}
                     </div>
                     <div class="flex items-center gap-1.5 mt-1 px-1 ${isMe ? 'justify-end' : 'justify-start'}">
                         <span class="text-[10px] text-gray-400 font-medium">${msg.formatted_time}</span>
@@ -596,17 +799,90 @@
         });
     }
 
+    let selectedFiles = [];
+
+    function handleFileSelect(e) {
+        const files = Array.from(e.target.files);
+        selectedFiles = [...selectedFiles, ...files];
+        renderUploadPreview();
+    }
+
+    function renderUploadPreview() {
+        const container = document.getElementById('upload-preview-container');
+        if (selectedFiles.length === 0) {
+            container.classList.add('hidden');
+            container.innerHTML = '';
+            return;
+        }
+
+        container.classList.remove('hidden');
+        container.innerHTML = '';
+
+        selectedFiles.forEach((file, index) => {
+            const isImage = file.type.startsWith('image/');
+            let previewHtml = '';
+
+            if (isImage) {
+                const url = URL.createObjectURL(file);
+                previewHtml = `
+                    <div class="relative h-14 w-14 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0 group">
+                        <img src="${url}" class="h-full w-full object-cover" alt="preview">
+                        <button type="button" onclick="removeSelectedFile(${index})" 
+                                class="absolute top-1 right-1 h-5 w-5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center focus:outline-none">
+                            <span class="text-[10px] font-bold">×</span>
+                        </button>
+                    </div>`;
+            } else {
+                previewHtml = `
+                    <div class="relative h-14 w-32 p-2 bg-white rounded-xl border border-gray-200 flex items-center gap-2 flex-shrink-0 group">
+                        <div class="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 flex-shrink-0">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] font-semibold truncate block text-gray-800 leading-tight">${file.name}</span>
+                            <span class="text-[8px] text-gray-400 block">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                        <button type="button" onclick="removeSelectedFile(${index})" 
+                                class="absolute top-1 right-1 h-5 w-5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center focus:outline-none">
+                            <span class="text-[10px] font-bold">×</span>
+                        </button>
+                    </div>`;
+            }
+
+            container.insertAdjacentHTML('beforeend', previewHtml);
+        });
+    }
+
+    function removeSelectedFile(index) {
+        selectedFiles.splice(index, 1);
+        renderUploadPreview();
+    }
+
     function sendMessage(e) {
         e.preventDefault();
         const input = document.getElementById('message-input');
         const content = input.value.trim();
 
-        if (!content || !activeConversationId) return;
+        if (!content && selectedFiles.length === 0) return;
+        if (!activeConversationId) return;
+
+        const formData = new FormData();
+        formData.append('content', content);
+        
+        selectedFiles.forEach((file, index) => {
+            formData.append(`attachments[${index}]`, file);
+        });
 
         input.value = '';
+        selectedFiles = [];
+        renderUploadPreview();
 
-        axios.post(`/admin/chat-api/conversations/${activeConversationId}/messages`, {
-            content: content
+        axios.post(`/admin/chat-api/conversations/${activeConversationId}/messages`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
         .then(res => {
             if (res.data.message) {
@@ -657,6 +933,132 @@
         const div = document.createElement('div');
         div.innerText = text;
         return div.innerHTML;
+    }
+
+    // Modal state handlers
+    function openCreateGroupModal() {
+        document.getElementById('create-group-modal').classList.remove('hidden');
+    }
+
+    function closeCreateGroupModal() {
+        document.getElementById('create-group-modal').classList.add('hidden');
+        document.getElementById('group-name').value = '';
+        document.getElementById('group-project').value = '';
+        document.querySelectorAll('#group-members-checklist input[type="checkbox"]').forEach(c => c.checked = false);
+    }
+
+    function filterGroupModalMembers(q) {
+        const query = q.toLowerCase();
+        document.querySelectorAll('.group-modal-member-item').forEach(el => {
+            const name = el.getAttribute('data-name');
+            if (name.includes(query)) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        });
+    }
+
+    function submitCreateGroup(e) {
+        e.preventDefault();
+        const name = document.getElementById('group-name').value.trim();
+        const projectId = document.getElementById('group-project').value;
+        const participantKeys = Array.from(document.querySelectorAll('#group-members-checklist input[type="checkbox"]:checked')).map(c => c.value);
+
+        if (!name) return;
+
+        axios.post('/admin/chat-api/groups', {
+            name: name,
+            project_id: projectId,
+            participant_keys: participantKeys
+        })
+        .then(res => {
+            if (res.data.conversation_id) {
+                closeCreateGroupModal();
+                window.location.href = `/admin/chat/${res.data.conversation_id}`;
+            }
+        })
+        .catch(err => {
+            console.error('Failed to create group:', err);
+        });
+    }
+
+    window.activeMembersList = [];
+
+    function openManageMembersModal() {
+        document.getElementById('manage-members-modal').classList.remove('hidden');
+        renderManageMembersList();
+    }
+
+    function closeManageMembersModal() {
+        document.getElementById('manage-members-modal').classList.add('hidden');
+    }
+
+    function renderManageMembersList() {
+        const container = document.getElementById('current-members-list');
+        container.innerHTML = '';
+
+        window.activeMembersList.forEach(m => {
+            const isMe = m.id === currentUserId && m.type_label.includes('Admin') === currentUserType.includes('Admin');
+            const deleteBtn = isMe ? '' : `
+                <button onclick="removeGroupMember('${m.key}')" class="text-xs text-red-500 hover:text-red-700 font-bold focus:outline-none">
+                    Remove
+                </button>`;
+
+            const html = `
+                <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-all">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                            ${m.name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold text-gray-800 block">${m.name} ${isMe ? '(You)' : ''}</span>
+                            <span class="text-[9px] text-gray-400 font-medium">${m.type_label}</span>
+                        </div>
+                    </div>
+                    ${deleteBtn}
+                </div>`;
+            
+            container.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function removeGroupMember(key) {
+        if (!activeConversationId) return;
+
+        axios.post(`/admin/chat-api/conversations/${activeConversationId}/members/remove`, {
+            contact_key: key
+        })
+        .then(() => {
+            window.activeMembersList = window.activeMembersList.filter(m => m.key !== key);
+            renderManageMembersList();
+            loadConversation(activeConversationId);
+        })
+        .catch(err => {
+            if (err.response && err.response.data && err.response.data.error) {
+                alert(err.response.data.error);
+            } else {
+                console.error('Failed to remove member:', err);
+            }
+        });
+    }
+
+    function submitAddMember() {
+        const select = document.getElementById('add-member-select');
+        const key = select.value;
+        if (!key || !activeConversationId) return;
+
+        axios.post(`/admin/chat-api/conversations/${activeConversationId}/members/add`, {
+            contact_key: key
+        })
+        .then(() => {
+            select.value = '';
+            loadConversation(activeConversationId);
+            closeManageMembersModal();
+        })
+        .catch(err => {
+            console.error('Failed to add member:', err);
+        });
     }
 </script>
 @endpush
