@@ -62,7 +62,7 @@
             <div class="relative flex gap-6 comment-row group" id="comment-row-{{ $comment->id }}">
                 {{-- Commenter Avatar Indicator --}}
                 <div class="relative z-10 flex-shrink-0">
-                    @if(method_exists($comment->user, 'getFirstMediaUrl') && $comment->user->getFirstMediaUrl('avatar'))
+                    @if($comment->user && method_exists($comment->user, 'getFirstMediaUrl') && $comment->user->getFirstMediaUrl('avatar'))
                         <img src="{{ $comment->user->getFirstMediaUrl('avatar') }}" class="h-10 w-10 rounded-full object-cover border-4 border-white shadow-sm" alt="">
                     @else
                         <div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs border-4 border-white shadow-sm" style="background: linear-gradient(135deg, #191C47, #FB4C4B);">
@@ -70,6 +70,7 @@
                         </div>
                     @endif
                 </div>
+
 
                 {{-- Comment Content Card (Clickable to navigate to task) --}}
                 <a href="{{ $taskUrl }}" 
