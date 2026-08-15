@@ -38,12 +38,14 @@ Broadcast::channel('task-comments', function ($user) {
 
 Broadcast::channel('online', function ($user) {
     if ($user) {
+        $shortType = str_contains(get_class($user), 'Admin') ? 'Admin' : 'User';
         return [
             'id' => $user->id,
             'name' => $user->name,
             'type' => get_class($user),
-            'key' => get_class($user) . '_' . $user->id,
+            'key' => $shortType . '_' . $user->id,
         ];
     }
     return false;
 });
+

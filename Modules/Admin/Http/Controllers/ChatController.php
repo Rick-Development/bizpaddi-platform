@@ -119,7 +119,11 @@ class ChatController extends Controller
         if ($partnerUser && method_exists($partnerUser, 'getFirstMediaUrl') && $partnerUser->getFirstMediaUrl('avatar')) {
             $partnerAvatar = $partnerUser->getFirstMediaUrl('avatar');
         }
-        $partnerKey = $partnerUser ? (get_class($partnerUser) . '_' . $partnerUser->id) : null;
+        $partnerKey = null;
+        if ($partnerUser) {
+            $shortType = str_contains(get_class($partnerUser), 'Admin') ? 'Admin' : 'User';
+            $partnerKey = $shortType . '_' . $partnerUser->id;
+        }
         $partnerRole = ($partnerUser && str_contains(get_class($partnerUser), 'Admin')) ? 'Admin' : 'Team Member';
 
         // Find latest message time sent by partner
@@ -135,7 +139,8 @@ class ChatController extends Controller
             ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($message) use ($currentUser, $latestPartnerMessageTime) {
-                $isMe = ($message->sender_id === $currentUser->id && $message->sender_type === get_class($currentUser));
+                $isMe = ((int)$message->sender_id === (int)$currentUser->id) && 
+                        (str_contains($message->sender_type, 'Admin') === str_contains(get_class($currentUser), 'Admin'));
                 
                 $isRead = false;
                 if ($isMe) {
@@ -144,6 +149,7 @@ class ChatController extends Controller
                     $hasPartnerReplied = $latestPartnerMessageTime && ($latestPartnerMessageTime >= $message->created_at);
                     $isRead = $hasPartnerRead || $hasPartnerReplied;
                 }
+
 
                 $avatarUrl = null;
                 if ($message->sender) {

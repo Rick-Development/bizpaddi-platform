@@ -427,7 +427,9 @@
                     let hasNew = false;
                     messages.forEach(msg => {
                         if (!document.getElementById(`msg-${msg.id}`)) {
-                            const isMe = (parseInt(msg.sender_id) === currentUserId) && (msg.sender_type === currentUserType);
+                            const isMe = (parseInt(msg.sender_id) === currentUserId) && 
+                         (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+
                             appendRealtimeMessage(msg);
                             hasNew = true;
                         }
@@ -464,7 +466,9 @@
         }
 
         messages.forEach(msg => {
-            const isMe = (parseInt(msg.sender_id) === currentUserId) && (msg.sender_type === currentUserType);
+            const isMe = (parseInt(msg.sender_id) === currentUserId) && 
+                         (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+
             const html = buildMessageBubble(msg, isMe);
             container.insertAdjacentHTML('beforeend', html);
         });
@@ -513,7 +517,9 @@
 
     function appendRealtimeMessage(msg) {
         const container = document.getElementById('messages-container');
-        const isMe = (parseInt(msg.sender_id) === currentUserId) && (msg.sender_type === currentUserType);
+        const isMe = (parseInt(msg.sender_id) === currentUserId) && 
+                     (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+
         
         if (container.querySelector('p')) {
             container.innerHTML = '';
