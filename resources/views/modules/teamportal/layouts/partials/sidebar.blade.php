@@ -349,7 +349,7 @@
                 <div class="text-xs font-semibold leading-6 text-brand-primary uppercase tracking-widest mb-2 font-mono ml-2">Settings</div>
                 <ul role="list" class="-mx-2 space-y-1">
                      <li>
-                        <a href="{{ route('team.profile.edit') }}" class="{{ request()->routeIs('team.profile.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
+                        <a href="{{ route('team.profile.index') }}" class="{{ request()->routeIs('team.profile.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
                              <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
