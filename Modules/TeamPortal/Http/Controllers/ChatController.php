@@ -27,7 +27,7 @@ class ChatController extends Controller
 
         // 2. Extract user IDs & types of contacts who already have active direct conversations
         $existingChatKeys = collect($conversations)->map(function ($convo) {
-            return $convo['other_user_key'] ?? null;
+            return $convo['partner_key'] ?? null;
         })->filter()->toArray();
 
         // 3. Fetch all potential contacts (Users & Admins) and exclude existing chat partners
@@ -246,6 +246,36 @@ class ChatController extends Controller
     }
 
     /**
+     * Mark all messages in a conversation as read.
+     */
+    public function markAsRead(Request $request, ProjectConversation $conversation)
+    {
+        $currentUser = auth()->user();
+
+        if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        if ($updatedCount > 0) {
+            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+                $conversation->id,
+                $currentUser->id,
+                get_class($currentUser)
+            ));
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
      * Start or fetch DM conversation with a user.
      */
     public function startConversation(Request $request)
@@ -353,7 +383,7 @@ class ChatController extends Controller
                 'avatar' => $avatar,
                 'type' => $convo->type,
                 'type_label' => $typeLabel,
-                'other_user_key' => $otherParticipant ? ($otherParticipant->user_type . '_' . $otherParticipant->user_id) : null,
+                'partner_key' => $otherParticipant ? ($otherParticipant->user_type . '_' . $otherParticipant->user_id) : null,
                 'unread_count' => $unreadCount,
                 'last_message' => $lastMessage ? substr($lastMessage->content, 0, 50) : 'No messages yet',
                 'last_message_time' => $lastMessage ? $lastMessage->created_at->diffForHumans() : '',

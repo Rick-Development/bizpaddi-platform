@@ -74,7 +74,7 @@
     <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden chat-card-height flex flex-col md:flex-row">
         
         {{-- ===== LEFT PANEL: CONVERSATIONS & CONTACTS ===== --}}
-        <div class="w-full md:w-80 lg:w-96 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col h-full bg-slate-50/60 flex-shrink-0">
+        <div id="chat-sidebar" class="w-full md:w-80 lg:w-96 border-r border-gray-200 flex flex-col h-full bg-slate-50/60 flex-shrink-0">
             
             {{-- Panel Header & Search --}}
             <div class="p-4 border-b border-gray-200 bg-white">
@@ -198,7 +198,7 @@
         </div>
 
         {{-- ===== RIGHT PANEL: CHAT CANVAS ===== --}}
-        <div class="flex-1 flex flex-col h-full bg-white relative">
+        <div id="chat-canvas" class="hidden md:flex flex-1 flex-col h-full bg-white relative">
             
             {{-- Default Placeholder View --}}
             <div id="chat-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/40">
@@ -217,6 +217,11 @@
                 {{-- Active Chat Header --}}
                 <div class="px-6 py-3.5 border-b border-gray-200 bg-white/90 backdrop-blur-md flex items-center justify-between shadow-xs">
                     <div class="flex items-center gap-3.5">
+                        <button onclick="goBackToSidebar()" class="md:hidden mr-1 p-1 text-gray-500 hover:text-gray-900 focus:outline-none" title="Back to chats">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
                         <div class="relative">
                             <div id="active-partner-avatar" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs"></div>
                             <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white status-dot-offline" id="active-partner-dot"></span>
@@ -303,6 +308,8 @@
         if (initialSelectedConvoId) {
             const btn = document.getElementById(`convo-btn-${initialSelectedConvoId}`);
             loadConversation(initialSelectedConvoId, btn);
+        } else {
+            showSidebarView();
         }
     });
 
@@ -353,6 +360,7 @@
 
     function loadConversation(conversationId, element = null) {
         activeConversationId = conversationId;
+        showChatView();
 
         // Update URL to /admin/chat/{id} seamlessly
         if (history.pushState) {
@@ -591,6 +599,34 @@
         const container = document.getElementById('messages-container');
         if (container) {
             container.scrollTop = container.scrollHeight;
+        }
+    }
+
+    function showChatView() {
+        if (window.innerWidth < 768) {
+            document.getElementById('chat-sidebar').classList.add('hidden');
+            const canvas = document.getElementById('chat-canvas');
+            canvas.classList.remove('hidden');
+            canvas.classList.add('flex');
+        }
+    }
+
+    function showSidebarView() {
+        if (window.innerWidth < 768) {
+            document.getElementById('chat-sidebar').classList.remove('hidden');
+            const canvas = document.getElementById('chat-canvas');
+            canvas.classList.add('hidden');
+            canvas.classList.remove('flex');
+        }
+    }
+
+    function goBackToSidebar() {
+        activeConversationId = null;
+        showSidebarView();
+        document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
+        if (history.pushState) {
+            const path = window.location.pathname.includes('/admin/') ? '/admin/chat' : '/team/chat';
+            history.pushState(null, null, path);
         }
     }
 
