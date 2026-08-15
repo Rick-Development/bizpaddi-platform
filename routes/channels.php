@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Auth;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
@@ -18,11 +19,11 @@ Broadcast::channel('conversation.{conversationId}', function ($user, $conversati
 });
 
 Broadcast::channel('task-comments', function ($user) {
-    return Auth::check() || Auth::guard('admin')->check();
+    return $user !== null;
 });
 
 Broadcast::channel('online', function ($user) {
-    if (Auth::check() || Auth::guard('admin')->check()) {
+    if ($user) {
         return [
             'id' => $user->id,
             'name' => $user->name,
@@ -32,4 +33,3 @@ Broadcast::channel('online', function ($user) {
     }
     return false;
 });
-

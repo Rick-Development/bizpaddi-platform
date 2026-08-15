@@ -37,6 +37,9 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
+            # Remove stale bootstrap cache files before running artisan commands
+            rm -f bootstrap/cache/*.php
+            
             run_php $(which composer) install --no-dev --optimize-autoloader --no-interaction --no-scripts
             run_php artisan package:discover --ansi
             
@@ -46,10 +49,8 @@ jobs:
             
             run_php artisan migrate --force
             run_php artisan optimize:clear
-            run_php artisan route:clear
-            run_php artisan view:clear
-            run_php artisan config:clear
             run_php artisan optimize
             run_php artisan queue:restart
             run_php artisan reverb:restart
+
 
