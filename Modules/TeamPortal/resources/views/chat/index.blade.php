@@ -418,7 +418,7 @@
             });
     }
 
-    // Smart 4-second background poll fallback to guarantee 100% real-time delivery
+    // Fast 2-second background poll fallback to guarantee instant delivery without page refresh
     setInterval(() => {
         if (activeConversationId) {
             axios.get(`/team/chat-api/conversations/${activeConversationId}/messages`)
@@ -435,7 +435,8 @@
                 })
                 .catch(() => {});
         }
-    }, 4000);
+    }, 2000);
+
 
 
     function startDirectChat(userId, userType) {
