@@ -498,18 +498,22 @@
             container.innerHTML = '';
         }
 
+        // If incoming message from counterpart, update all previous ticks to Double Primary Red Read ticks!
+        if (!isMe) {
+            updateAllTicksToRead();
+            if (activeConversationId) {
+                axios.post(`/team/chat-api/conversations/${activeConversationId}/read`).catch(() => {});
+            }
+        }
+
         // Don't duplicate message if already appended locally
         if (document.getElementById(`msg-${msg.id}`)) return;
 
         const html = buildMessageBubble(msg, isMe);
         container.insertAdjacentHTML('beforeend', html);
         scrollToBottom();
-
-        // If incoming message, trigger read API
-        if (!isMe && activeConversationId) {
-            axios.post(`/team/chat-api/conversations/${activeConversationId}/read`).catch(() => {});
-        }
     }
+
 
     function updateAllTicksToRead() {
         document.querySelectorAll('.tick-status').forEach(el => {

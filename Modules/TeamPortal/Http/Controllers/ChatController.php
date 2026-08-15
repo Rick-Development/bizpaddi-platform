@@ -121,19 +121,35 @@ class ChatController extends Controller
         $partnerKey = $partnerUser ? (get_class($partnerUser) . '_' . $partnerUser->id) : null;
         $partnerRole = ($partnerUser && str_contains(get_class($partnerUser), 'Admin')) ? 'Admin' : 'Team Member';
 
+        // Find latest message time sent by partner
+        $latestPartnerMessageTime = $conversation->messages()
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->max('created_at');
+
         $messages = $conversation->messages()
             ->with(['sender', 'reads'])
             ->orderBy('created_at', 'asc')
             ->get()
-            ->map(function ($message) use ($currentUser) {
+            ->map(function ($message) use ($currentUser, $latestPartnerMessageTime) {
+                $isMe = ($message->sender_id === $currentUser->id && $message->sender_type === get_class($currentUser));
+                
+                $isRead = false;
+                if ($isMe) {
+                    $hasPartnerRead = $message->read_at !== null || 
+                                      $message->reads->where('user_id', '!=', $currentUser->id)->count() > 0;
+                    $hasPartnerReplied = $latestPartnerMessageTime && ($latestPartnerMessageTime >= $message->created_at);
+                    $isRead = $hasPartnerRead || $hasPartnerReplied;
+                }
+
                 $avatarUrl = null;
                 if ($message->sender) {
                     if (method_exists($message->sender, 'getFirstMediaUrl') && $message->sender->getFirstMediaUrl('avatar')) {
                         $avatarUrl = $message->sender->getFirstMediaUrl('avatar');
                     }
                 }
-
-                $isRead = $message->read_at !== null || $message->reads->where('user_id', '!=', $message->sender_id)->count() > 0;
 
                 return [
                     'id' => $message->id,
@@ -142,7 +158,7 @@ class ChatController extends Controller
                     'sender_type' => $message->sender_type,
                     'sender_name' => $message->sender ? $message->sender->name : 'Unknown User',
                     'sender_avatar' => $avatarUrl,
-                    'is_me' => ($message->sender_id === $currentUser->id && $message->sender_type === get_class($currentUser)),
+                    'is_me' => $isMe,
                     'is_read' => $isRead,
                     'formatted_time' => $message->created_at->format('g:i A'),
                 ];
@@ -172,6 +188,23 @@ class ChatController extends Controller
         $request->validate([
             'content' => 'required|string|max:2000',
         ]);
+
+        // Mark all incoming messages in this conversation as read since sender is actively replying
+        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        if ($updatedCount > 0) {
+            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+                $conversation->id,
+                $currentUser->id,
+                get_class($currentUser)
+            ));
+        }
 
         $message = ProjectMessage::create([
             'conversation_id' => $conversation->id,
@@ -205,6 +238,7 @@ class ChatController extends Controller
             ]
         ]);
     }
+
 
 
         // Automatically mark read for sender
