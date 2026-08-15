@@ -239,41 +239,11 @@ class ChatController extends Controller
         ]);
     }
 
-
-
-        // Automatically mark read for sender
-        ChatMessageRead::create([
-            'message_id' => $message->id,
-            'user_id' => $currentUser->id,
-            'user_type' => get_class($currentUser),
-        ]);
-
-        // Broadcast event
-        broadcast(new MessageSent($message))->toOthers();
-
-        $avatarUrl = null;
-        if ($currentUser->getFirstMediaUrl('avatar')) {
-            $avatarUrl = $currentUser->getFirstMediaUrl('avatar');
-        }
-
-        return response()->json([
-            'message' => [
-                'id' => $message->id,
-                'content' => $message->content,
-                'sender_id' => $message->sender_id,
-                'sender_type' => $message->sender_type,
-                'sender_name' => $currentUser->name,
-                'sender_avatar' => $avatarUrl,
-                'is_me' => true,
-                'formatted_time' => $message->created_at->format('g:i A'),
-            ]
-        ]);
-    }
-
     /**
      * Start or fetch DM conversation with a user.
      */
     public function startConversation(Request $request)
+
     {
         $request->validate([
             'contact_id' => 'required|integer',
