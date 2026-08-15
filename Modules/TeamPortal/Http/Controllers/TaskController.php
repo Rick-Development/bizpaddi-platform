@@ -35,12 +35,16 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-
         $validated = $request->validate([
             'status' => 'required|in:todo,in_progress,review,done',
         ]);
 
-        $task->update(['status' => $validated['status']]);
+        $newStatus = $validated['status'];
+        if ($newStatus === 'done' && $task->status !== 'done' && !$user->isProjectManager()) {
+            return back()->with('error', 'Only Project Managers can mark tasks as Completed.');
+        }
+
+        $task->update(['status' => $newStatus]);
 
         return back()->with('success', 'Task status updated.');
     }

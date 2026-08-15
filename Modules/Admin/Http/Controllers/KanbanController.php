@@ -25,7 +25,7 @@ class KanbanController extends Controller
             'todo' => 'To Do',
             'in_progress' => 'In Progress',
             'review' => 'Review',
-            'done' => 'Done',
+            'done' => 'Completed',
         ];
 
         $groupedTasks = $tasks->groupBy('status');

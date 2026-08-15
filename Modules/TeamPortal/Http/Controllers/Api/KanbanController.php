@@ -54,13 +54,23 @@ class KanbanController extends ApiController
 
         $userId = $request->user()->id;
 
+        $user = $request->user();
         foreach ($request->tasks as $item) {
-            Task::where('id', $item['id'])
+            $task = Task::where('id', $item['id'])
                 ->where('assigned_to', $userId)
-                ->update([
-                    'status' => $item['status'],
+                ->first();
+
+            if ($task) {
+                $newStatus = $item['status'];
+                if ($newStatus === 'done' && $task->status !== 'done' && !$user->isProjectManager()) {
+                    return $this->sendError('Only Project Managers can mark tasks as Completed.', 403);
+                }
+
+                $task->update([
+                    'status' => $newStatus,
                     'order'  => $item['order'],
                 ]);
+            }
         }
 
         return $this->sendResponse([], 'Kanban order updated successfully.');

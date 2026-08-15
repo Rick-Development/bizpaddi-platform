@@ -119,7 +119,7 @@
                     <option value="todo" {{ old('status', $task->status) == 'todo' ? 'selected' : '' }}>To Do</option>
                     <option value="in_progress" {{ old('status', $task->status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                     <option value="review" {{ old('status', $task->status) == 'review' ? 'selected' : '' }}>Review</option>
-                    <option value="done" {{ old('status', $task->status) == 'done' ? 'selected' : '' }}>Done</option>
+                    <option value="done" {{ old('status', $task->status) == 'done' ? 'selected' : '' }}>Completed</option>
                 </select>
             </div>
 

@@ -54,7 +54,12 @@ class TaskController extends ApiController
             return $this->sendError('Task not found.', 404);
         }
 
-        $task->update(['status' => $request->status]);
+        $newStatus = $request->status;
+        if ($newStatus === 'done' && $task->status !== 'done' && !$request->user()->isProjectManager()) {
+            return $this->sendError('Only Project Managers can mark tasks as Completed.', 403);
+        }
+
+        $task->update(['status' => $newStatus]);
 
         return $this->sendResponse($task->only(['id', 'status']), 'Task status updated successfully.');
     }

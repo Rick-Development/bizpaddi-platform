@@ -147,11 +147,13 @@
                                         <p class="text-xs text-gray-500 truncate max-w-[180px] convo-last-message-text">
                                             {{ $convo['last_message'] ?? 'No messages yet' }}
                                         </p>
-                                        @if(($convo['unread_count'] ?? 0) > 0)
-                                            <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
-                                                {{ $convo['unread_count'] }}
-                                            </span>
-                                        @endif
+                                        <div class="convo-unread-badge-container">
+                                            @if(($convo['unread_count'] ?? 0) > 0)
+                                                <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">
+                                                    {{ $convo['unread_count'] }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </button>
@@ -602,18 +604,18 @@
                         if (timeEl) timeEl.innerText = convo.last_message_time;
 
                         // Update unread badge
-                        let badge = convoBtn.querySelector('.bg-\\[\\#FB4C4B\\]');
-                        if (convo.unread_count > 0) {
-                            if (!badge) {
-                                const badgeContainer = convoBtn.querySelector('.flex-1 > div:last-child');
-                                if (badgeContainer) {
-                                    badgeContainer.insertAdjacentHTML('beforeend', `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">${convo.unread_count}</span>`);
+                        const badgeContainer = convoBtn.querySelector('.convo-unread-badge-container');
+                        if (badgeContainer) {
+                            let badge = badgeContainer.querySelector('.convo-unread-badge');
+                            if (convo.unread_count > 0) {
+                                if (!badge) {
+                                    badgeContainer.innerHTML = `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">${convo.unread_count}</span>`;
+                                } else {
+                                    badge.innerText = convo.unread_count;
                                 }
                             } else {
-                                badge.innerText = convo.unread_count;
+                                badgeContainer.innerHTML = '';
                             }
-                        } else if (badge) {
-                            badge.remove();
                         }
 
                         // Update presence dot on conversations list
@@ -701,6 +703,11 @@
                     attachmentsHtml += `
                         <div class="relative rounded-2xl overflow-hidden border border-gray-100 max-w-[320px] shadow-xs">
                             <video src="${att.url}" controls class="w-full h-auto max-h-48 bg-black"></video>
+                        </div>`;
+                } else if (att.is_audio) {
+                    attachmentsHtml += `
+                        <div class="relative rounded-2xl overflow-hidden border border-gray-150 max-w-[280px] p-2 bg-slate-50 shadow-xs flex items-center justify-center">
+                            <audio src="${att.url}" controls class="w-full h-8 bg-transparent"></audio>
                         </div>`;
                 } else {
                     attachmentsHtml += `

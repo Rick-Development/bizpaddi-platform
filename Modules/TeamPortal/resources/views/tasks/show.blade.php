@@ -24,7 +24,15 @@
                         {{ $task->priority }}
                     </span>
                     <span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20 uppercase tracking-wider">
-                        {{ $task->status }}
+                        @php
+                            $statusLabels = [
+                                'todo' => 'To Do',
+                                'in_progress' => 'In Progress',
+                                'review' => 'Done (Waiting for Review)',
+                                'done' => 'Completed',
+                            ];
+                        @endphp
+                        {{ $statusLabels[$task->status] ?? $task->status }}
                     </span>
                     @if($task->project)
                     <span class="text-gray-500">{{ $task->project->name }}</span>
@@ -49,8 +57,10 @@
                     <select name="status" onchange="this.form.submit()" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500">
                         <option value="todo" {{ $task->status == 'todo' ? 'selected' : '' }}>To Do</option>
                         <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                        <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Review</option>
-                        <option value="done" {{ $task->status == 'done' ? 'selected' : '' }}>Done</option>
+                        <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Done (Waiting for Review)</option>
+                        @if(auth()->user()->isProjectManager() || $task->status == 'done')
+                            <option value="done" {{ $task->status == 'done' ? 'selected' : '' }} {{ !auth()->user()->isProjectManager() ? 'disabled' : '' }}>Completed</option>
+                        @endif
                     </select>
                 </form>
             </div>

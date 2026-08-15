@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
         // Chart 1: Task distribution by status
         $taskDistribution = [
-            'labels' => ['Todo', 'In Progress', 'Review', 'Done'],
+            'labels' => ['To Do', 'In Progress', 'Done (Waiting for Review)', 'Completed'],
             'data' => [
                 Task::where('assigned_to', $user->id)->where('status', 'todo')->count(),
                 Task::where('assigned_to', $user->id)->where('status', 'in_progress')->count(),

@@ -183,11 +183,19 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-4 self-end sm:self-auto">
+                        @php
+                            $statusLabels = [
+                                'todo' => 'To Do',
+                                'in_progress' => 'In Progress',
+                                'review' => 'Done (Waiting for Review)',
+                                'done' => 'Completed',
+                            ];
+                        @endphp
                         <span class="inline-flex rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest
                             {{ $task->status === 'done' ? 'bg-green-100 text-green-700' : 
                                ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
                                ($task->status === 'review' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600')) }}">
-                            {{ str_replace('_', ' ', $task->status) }}
+                            {{ $statusLabels[$task->status] ?? str_replace('_', ' ', $task->status) }}
                         </span>
                         <a href="{{ route('team.tasks.show', $task) }}" class="rounded-lg p-2 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-all">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>

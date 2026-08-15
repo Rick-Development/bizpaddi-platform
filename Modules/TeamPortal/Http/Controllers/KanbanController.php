@@ -33,8 +33,8 @@ class KanbanController extends Controller
         $columns = [
             'todo' => 'To Do',
             'in_progress' => 'In Progress',
-            'review' => 'Review',
-            'done' => 'Done',
+            'review' => 'Done (Waiting for Review)',
+            'done' => 'Completed',
         ];
 
         $groupedTasks = $tasks->groupBy('status');
@@ -56,8 +56,16 @@ class KanbanController extends Controller
             if ($task) {
                 // Allow update if assigned to user OR user manages the project
                 if ($task->assigned_to == auth()->id() || ($task->project && $task->project->manager_id == auth()->id())) {
+                    $newStatus = $taskData['status'];
+                    if ($newStatus === 'done' && $task->status !== 'done' && !auth()->user()->isProjectManager()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Only Project Managers can mark tasks as Completed.'
+                        ], 403);
+                    }
+
                     $task->update([
-                        'status' => $taskData['status'],
+                        'status' => $newStatus,
                         'order' => $taskData['order'],
                     ]);
                 }

@@ -48,6 +48,7 @@ jobs:
             npm run build
             
             run_php artisan migrate --force
+            run_php artisan storage:link
             run_php artisan optimize:clear
             run_php artisan optimize
             run_php artisan queue:restart

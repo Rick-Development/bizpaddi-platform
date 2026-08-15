@@ -80,8 +80,10 @@
                                    ($task->status === 'review' ? 'text-purple-700 bg-purple-50' : 'text-gray-700 bg-gray-50')) }}">
                                 <option value="todo" {{ $task->status === 'todo' ? 'selected' : '' }}>📋 To Do</option>
                                 <option value="in_progress" {{ $task->status === 'in_progress' ? 'selected' : '' }}>🚀 In Progress</option>
-                                <option value="review" {{ $task->status === 'review' ? 'selected' : '' }}>👀 Review</option>
-                                <option value="done" {{ $task->status === 'done' ? 'selected' : '' }}>✅ Done</option>
+                                <option value="review" {{ $task->status === 'review' ? 'selected' : '' }}>👀 Done (Waiting for Review)</option>
+                                @if(auth()->user()->isProjectManager() || $task->status === 'done')
+                                    <option value="done" {{ $task->status === 'done' ? 'selected' : '' }} {{ !auth()->user()->isProjectManager() ? 'disabled' : '' }}>✅ Completed</option>
+                                @endif
                             </select>
                         </form>
                     </div>

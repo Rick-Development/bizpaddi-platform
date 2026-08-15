@@ -119,21 +119,13 @@ class ChatController extends Controller
         }
 
         // Mark incoming messages as read
-        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
-            ->where(function ($q) use ($currentUser) {
-                $q->where('sender_id', '!=', $currentUser->id)
-                  ->orWhere('sender_type', '!=', get_class($currentUser));
-            })
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $this->markMessagesAsRead($conversation, $currentUser);
 
-        if ($updatedCount > 0) {
-            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
-                $conversation->id,
-                $currentUser->id,
-                get_class($currentUser)
-            ));
-        }
+        broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+            $conversation->id,
+            $currentUser->id,
+            get_class($currentUser)
+        ));
 
         $partner = $conversation->participants()
             ->where(function ($q) use ($currentUser) {
@@ -194,6 +186,7 @@ class ChatController extends Controller
                         'size' => $media->human_readable_size,
                         'is_image' => str_contains($media->mime_type, 'image'),
                         'is_video' => str_contains($media->mime_type, 'video'),
+                        'is_audio' => str_contains($media->mime_type, 'audio'),
                     ];
                 })->toArray();
 
@@ -258,6 +251,12 @@ class ChatController extends Controller
         $currentUser = Auth::guard('admin')->user();
         \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
 
+        \Illuminate\Support\Facades\Log::info('Chat upload request details:', [
+            'has_attachments' => $request->hasFile('attachments'),
+            'all_files' => array_keys($request->allFiles()),
+            'input' => $request->all()
+        ]);
+
         // Ensure admin is a participant
         if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
             return response()->json(['error' => 'Unauthorized'], 403);
@@ -270,21 +269,13 @@ class ChatController extends Controller
         ]);
 
         // Mark all incoming messages in this conversation as read since sender is actively replying
-        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
-            ->where(function ($q) use ($currentUser) {
-                $q->where('sender_id', '!=', $currentUser->id)
-                  ->orWhere('sender_type', '!=', get_class($currentUser));
-            })
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $this->markMessagesAsRead($conversation, $currentUser);
 
-        if ($updatedCount > 0) {
-            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
-                $conversation->id,
-                $currentUser->id,
-                get_class($currentUser)
-            ));
-        }
+        broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+            $conversation->id,
+            $currentUser->id,
+            get_class($currentUser)
+        ));
 
         $message = ProjectMessage::create([
             'conversation_id' => $conversation->id,
@@ -320,6 +311,7 @@ class ChatController extends Controller
                 'size' => $media->human_readable_size,
                 'is_image' => str_contains($media->mime_type, 'image'),
                 'is_video' => str_contains($media->mime_type, 'video'),
+                'is_audio' => str_contains($media->mime_type, 'audio'),
             ];
         })->toArray();
 
@@ -507,21 +499,13 @@ class ChatController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
-            ->where(function ($q) use ($currentUser) {
-                $q->where('sender_id', '!=', $currentUser->id)
-                  ->orWhere('sender_type', '!=', get_class($currentUser));
-            })
-            ->whereNull('read_at')
-            ->update(['read_at' => now()]);
+        $this->markMessagesAsRead($conversation, $currentUser);
 
-        if ($updatedCount > 0) {
-            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
-                $conversation->id,
-                $currentUser->id,
-                get_class($currentUser)
-            ));
-        }
+        broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+            $conversation->id,
+            $currentUser->id,
+            get_class($currentUser)
+        ));
 
         return response()->json(['success' => true]);
     }
@@ -569,7 +553,10 @@ class ChatController extends Controller
         $unreadCount = ProjectMessage::whereHas('conversation.participants', function ($query) use ($currentUser) {
             $query->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser));
         })
-        ->where('sender_id', '!=', $currentUser->id)
+        ->where(function ($q) use ($currentUser) {
+            $q->where('sender_id', '!=', $currentUser->id)
+              ->orWhere('sender_type', '!=', get_class($currentUser));
+        })
         ->whereDoesntHave('reads', function ($query) use ($currentUser) {
             $query->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser));
         })
@@ -623,7 +610,10 @@ class ChatController extends Controller
 
             // Calculate unread count
             $unreadCount = $convo->messages()
-                ->where('sender_id', '!=', $user->id)
+                ->where(function ($q) use ($user) {
+                    $q->where('sender_id', '!=', $user->id)
+                      ->orWhere('sender_type', '!=', get_class($user));
+                })
                 ->whereDoesntHave('reads', function ($query) use ($user) {
                     $query->where('user_id', $user->id)->where('user_type', get_class($user));
                 })
@@ -688,5 +678,37 @@ class ChatController extends Controller
         }
 
         return $conversation;
+    }
+
+    /**
+     * Helper to mark messages as read by writing to both read_at and chat_message_reads table.
+     */
+    protected function markMessagesAsRead($conversation, $currentUser)
+    {
+        ProjectMessage::where('conversation_id', $conversation->id)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        $unreadMessages = ProjectMessage::where('conversation_id', $conversation->id)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->whereDoesntHave('reads', function ($q) use ($currentUser) {
+                $q->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser));
+            })
+            ->get();
+
+        foreach ($unreadMessages as $msg) {
+            ChatMessageRead::firstOrCreate([
+                'message_id' => $msg->id,
+                'user_id' => $currentUser->id,
+                'user_type' => get_class($currentUser),
+            ]);
+        }
     }
 }

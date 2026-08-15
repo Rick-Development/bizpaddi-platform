@@ -91,9 +91,21 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+const isPM = @json(auth()->user()->isProjectManager());
+
 document.querySelectorAll('.kanban-column').forEach(column => {
+    const isDoneColumn = column.dataset.status === 'done';
     new Sortable(column, {
-        group: 'kanban',
+        group: {
+            name: 'kanban',
+            put: function (to, from, dragEl) {
+                // Prevent non-PMs from dropping tasks in the 'done' (Completed) column
+                if (isDoneColumn && !isPM) {
+                    return false;
+                }
+                return true;
+            }
+        },
         animation: 150,
         draggable: '.kanban-task',
         ghostClass: 'opacity-50',
@@ -129,13 +141,25 @@ function updateTaskOrder() {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             console.log('Order updated');
+        } else {
+            alert(data.message || 'Error updating task status');
+            window.location.reload();
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || 'Only Project Managers can mark tasks as Completed.');
+        window.location.reload();
+    });
 }
 </script>
 @endpush

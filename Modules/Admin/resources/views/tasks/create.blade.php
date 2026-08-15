@@ -91,7 +91,7 @@
                     <option value="todo" selected>To Do</option>
                     <option value="in_progress">In Progress</option>
                     <option value="review">Review</option>
-                    <option value="done">Done</option>
+                    <option value="done">Completed</option>
                 </select>
             </div>
 
