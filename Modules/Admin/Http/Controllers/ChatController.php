@@ -38,11 +38,11 @@ class ChatController extends Controller
             ->map(function ($u) {
                 $u->type_label = 'Team Member';
                 $u->morph_class = get_class($u);
-                $u->user_key = get_class($u) . '_' . $u->id;
+                $u->key = 'User_' . $u->id;
                 return $u;
             })
             ->reject(function ($u) use ($existingChatKeys) {
-                return in_array($u->user_key, $existingChatKeys);
+                return in_array($u->key, $existingChatKeys);
             });
 
         $admins = Admin::where('id', '!=', $currentUser->id)
@@ -51,11 +51,11 @@ class ChatController extends Controller
             ->map(function ($a) {
                 $a->type_label = 'Admin';
                 $a->morph_class = get_class($a);
-                $a->user_key = get_class($a) . '_' . $a->id;
+                $a->key = 'Admin_' . $a->id;
                 return $a;
             })
             ->reject(function ($a) use ($existingChatKeys) {
-                return in_array($a->user_key, $existingChatKeys);
+                return in_array($a->key, $existingChatKeys);
             });
 
         $contacts = $users->concat($admins)->values();
@@ -379,13 +379,15 @@ class ChatController extends Controller
                 })
                 ->count();
 
+            $shortType = $otherParticipant ? (str_contains($otherParticipant->user_type, 'Admin') ? 'Admin' : 'User') : null;
+
             return [
                 'id' => $convo->id,
                 'name' => $name ?? 'General Room',
                 'avatar' => $avatar,
                 'type' => $convo->type,
                 'type_label' => $typeLabel,
-                'partner_key' => $otherParticipant ? ($otherParticipant->user_type . '_' . $otherParticipant->user_id) : null,
+                'partner_key' => $otherParticipant ? ($shortType . '_' . $otherParticipant->user_id) : null,
                 'unread_count' => $unreadCount,
                 'last_message' => $lastMessage ? substr($lastMessage->content, 0, 50) : 'No messages yet',
                 'last_message_time' => $lastMessage ? $lastMessage->created_at->diffForHumans() : '',
