@@ -56,7 +56,15 @@
                             <div class="mt-1 flex items-center gap-3 text-xs text-gray-500">
                                 <span class="flex items-center gap-1">
                                     <span class="w-2 h-2 rounded-full {{ $task->status === 'done' ? 'bg-green-500' : ($task->status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-400') }}"></span>
-                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                    @php
+                                        $statusLabels = [
+                                            'todo' => 'To Do',
+                                            'in_progress' => 'In Progress',
+                                            'review' => 'Done',
+                                            'done' => 'Completed',
+                                        ];
+                                    @endphp
+                                    {{ $statusLabels[$task->status] ?? ucfirst(str_replace('_', ' ', $task->status)) }}
                                 </span>
                                 @if($task->due_date)
                                 <span>Due: {{ $task->due_date->format('M d \a\t g:i A') }}</span>

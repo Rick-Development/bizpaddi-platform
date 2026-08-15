@@ -45,7 +45,13 @@
                         <p class="text-[10px] text-gray-500 mb-2 truncate">{{ $task->project->name }}</p>
                         
                         <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                             <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
+                            <div class="flex items-center gap-2">
+                                @if($task->assignee)
+                                <div class="h-6 w-6 rounded-full bg-brand-primary/10 flex items-center justify-center text-[10px] text-brand-primary font-bold ring-2 ring-white" title="Assigned to: {{ $task->assignee->name }}">
+                                    {{ substr($task->assignee->name, 0, 1) }}
+                                </div>
+                                @endif
+                                <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
                                     @if($task->due_date)
                                         @if(!in_array($task->status, ['done','completed']))
                                             @if($task->due_date->isPast())
@@ -65,6 +71,7 @@
                                         No due date
                                     @endif
                                 </div>
+                            </div>
                             @if($task->requires_client_approval)
                             <div class="flex items-center gap-1">
                                 <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Client Review</span>
@@ -84,9 +91,15 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+const isPM = @json(auth()->user()->isProjectManager());
+
 document.querySelectorAll('.kanban-column').forEach(column => {
+    const isDoneColumn = column.dataset.status === 'done';
     new Sortable(column, {
-        group: 'kanban',
+        group: {
+            name: 'kanban',
+            put: (isDoneColumn && !isPM) ? false : true
+        },
         animation: 150,
         draggable: '.kanban-task',
         ghostClass: 'opacity-50',
@@ -122,13 +135,25 @@ function updateTaskOrder() {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             console.log('Order updated');
+        } else {
+            alert(data.message || 'Error updating task status');
+            window.location.reload();
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || 'Only Project Managers can mark tasks as Completed.');
+        window.location.reload();
+    });
 }
 </script>
 @endpush
