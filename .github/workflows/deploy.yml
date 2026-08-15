@@ -52,3 +52,9 @@ jobs:
             run_php artisan optimize:clear
             run_php artisan optimize
             run_php artisan queue:restart
+
+            # Clear OPcache for Apache/PHP-FPM
+            echo "<?php opcache_reset(); echo 'OPcache cleared';" > public/opcache_clear.php
+            curl -s -L --insecure https://rickdevelopment.com/opcache_clear.php
+            rm -f public/opcache_clear.php
+
