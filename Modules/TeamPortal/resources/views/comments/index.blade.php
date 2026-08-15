@@ -50,11 +50,7 @@
                     $title = $commentable ? $commentable->title : 'Deleted Task';
                     $parentName = ($commentable && $commentable->project) ? $commentable->project->name : '';
                     if ($commentable) {
-                        if (auth()->user()->isProjectManager()) {
-                            $targetUrl = route('team.pm.projects.show', $commentable->project_id);
-                        } else {
-                            $targetUrl = route('team.tasks.show', $commentable->id);
-                        }
+                        $targetUrl = route('team.tasks.show', $commentable->id);
                     }
                 } elseif ($comment->commentable_type === \Modules\ProjectManagement\Models\Project::class) {
                     $isTask = false;
@@ -68,6 +64,7 @@
                         }
                     }
                 }
+
             @endphp
 
             <div class="relative flex gap-6 comment-row group" id="comment-row-{{ $comment->id }}">
