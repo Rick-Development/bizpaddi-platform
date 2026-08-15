@@ -14,29 +14,21 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-const reverbKey = import.meta.env.VITE_REVERB_APP_KEY || 'qxuhs8bjqhqczmjsk0m3';
-const reverbHost = import.meta.env.VITE_REVERB_HOST || window.location.hostname;
-const reverbPort = parseInt(import.meta.env.VITE_REVERB_PORT || '8080');
-const isHttps = window.location.protocol === 'https:';
-
 try {
     window.Echo = new Echo({
-        broadcaster: 'reverb',
-        key: reverbKey,
-        wsHost: reverbHost,
-        wsPort: isHttps ? 443 : 8080,
-        wssPort: isHttps ? 443 : 8080,
-        forceTLS: isHttps,
-        enabledTransports: ['ws', 'wss'],
+        broadcaster: 'pusher',
+        key: import.meta.env.VITE_PUSHER_APP_KEY || '53b545eb95d673cd9f92',
+        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
+        forceTLS: true
     });
 
     if (window.Echo && window.Echo.connector && window.Echo.connector.pusher) {
         window.Echo.connector.pusher.connection.bind('state_change', (states) => {
-            console.log('%c[Reverb WebSockets Status]: ' + states.current, 'color: #10B981; font-weight: bold;');
+            console.log('%c[Pusher WebSockets Status]: ' + states.current, 'color: #10B981; font-weight: bold;');
         });
 
         window.Echo.connector.pusher.connection.bind('error', (err) => {
-            console.warn('[Reverb WebSockets Connection Error]:', err);
+            console.warn('[Pusher WebSockets Connection Error]:', err);
         });
     }
 } catch(e) {
