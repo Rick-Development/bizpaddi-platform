@@ -31,9 +31,21 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [
+        $channels = [
             new PrivateChannel('conversation.' . $this->message->conversation_id),
         ];
+
+        // Broadcast to all participants in this conversation so their personal global listener receives it
+        if ($this->message->conversation) {
+            foreach ($this->message->conversation->participants as $participant) {
+                if ((int)$participant->user_id !== (int)$this->message->sender_id || $participant->user_type !== $this->message->sender_type) {
+                    $prefix = str_contains($participant->user_type, 'Admin') ? 'admin' : 'user';
+                    $channels[] = new PrivateChannel($prefix . '.messages.' . $participant->user_id);
+                }
+            }
+        }
+
+        return $channels;
     }
 
     /**

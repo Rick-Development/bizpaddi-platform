@@ -7,6 +7,14 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+Broadcast::channel('user.messages.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id && !str_contains(get_class($user), 'Admin');
+});
+
+Broadcast::channel('admin.messages.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id && str_contains(get_class($user), 'Admin');
+});
+
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
     $conversation = \Modules\ProjectManagement\Models\ProjectConversation::find($conversationId);
     if (!$conversation) {
