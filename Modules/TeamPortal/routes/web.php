@@ -81,6 +81,18 @@ Route::prefix('team')->name('team.')->group(function () {
         Route::get('projects/{project}', [\Modules\TeamPortal\Http\Controllers\ProjectController::class, 'show'])->name('projects.show'); // Need to create this controller if not exists to redirect or show details
         Route::get('projects/{project}/chat', [\Modules\TeamPortal\Http\Controllers\ProjectChatController::class, 'index'])->name('projects.chat');
         Route::post('projects/{project}/chat', [\Modules\TeamPortal\Http\Controllers\ProjectChatController::class, 'store'])->name('projects.chat.store');
+
+        // Unified Chat
+        Route::get('chat', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+        Route::get('chat/conversations', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'getConversations'])->name('chat.conversations');
+        Route::get('chat/conversations/{conversation}/messages', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('chat/conversations/{conversation}/messages', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.messages.store');
+        Route::post('chat/conversations/start', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'startConversation'])->name('chat.conversations.start');
+        Route::get('chat/unread-count', [\Modules\TeamPortal\Http\Controllers\ChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+
+        // Centralized Comment Feed
+        Route::get('comments-feed', [\Modules\TeamPortal\Http\Controllers\CommentFeedController::class, 'index'])->name('comments-feed.index');
+        Route::get('comments-feed/unread-count', [\Modules\TeamPortal\Http\Controllers\CommentFeedController::class, 'getUnreadCount'])->name('comments-feed.unread-count');
     });
 });
 

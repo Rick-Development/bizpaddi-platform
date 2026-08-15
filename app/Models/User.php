@@ -125,4 +125,10 @@ class User extends Authenticatable implements HasMedia
                $this->hasRole('bdm') || 
                $this->hasRole('Bdm');
     }
+
+    public function isOnline()
+    {
+        return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);
+    }
 }
+

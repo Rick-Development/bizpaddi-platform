@@ -47,6 +47,9 @@ public function store(Request $request)
         'is_internal' => $request->is_internal ?? false,
     ]);
 
+    // Dispatch CommentPosted event for real-time WebSocket updates
+    broadcast(new \Modules\ProjectManagement\Events\CommentPosted($comment))->toOthers();
+
     if ($request->hasFile('attachments')) {
         foreach ($request->file('attachments') as $file) {
             $comment->addMedia($file)->toMediaCollection('comment_attachments');

@@ -1,0 +1,338 @@
+<?php
+
+namespace Modules\TeamPortal\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Admin;
+use Modules\ProjectManagement\Models\ProjectConversation;
+use Modules\ProjectManagement\Models\ProjectMessage;
+use Modules\ProjectManagement\Models\ChatParticipant;
+use Modules\ProjectManagement\Models\ChatMessageRead;
+use Modules\ProjectManagement\Events\MessageSent;
+use Illuminate\Support\Facades\DB;
+
+class ChatController extends Controller
+{
+    /**
+     * Display the chat dashboard.
+     */
+    public function index(Request $request)
+    {
+        $currentUser = auth()->user();
+
+        // 1. Fetch active conversations for the user
+        $conversations = $this->getConversationsQuery($currentUser);
+
+        // 2. Extract user IDs & types of contacts who already have active direct conversations
+        $existingChatKeys = collect($conversations)->map(function ($convo) {
+            return $convo['other_user_key'] ?? null;
+        })->filter()->toArray();
+
+        // 3. Fetch all potential contacts (Users & Admins) and exclude existing chat partners
+        $users = User::where('id', '!=', $currentUser->id)
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($u) {
+                $u->type_label = 'Team Member';
+                $u->morph_class = get_class($u);
+                $u->user_key = get_class($u) . '_' . $u->id;
+                return $u;
+            })
+            ->reject(function ($u) use ($existingChatKeys) {
+                return in_array($u->user_key, $existingChatKeys);
+            });
+
+        $admins = Admin::orderBy('name')
+            ->get()
+            ->map(function ($a) {
+                $a->type_label = 'Admin';
+                $a->morph_class = get_class($a);
+                $a->user_key = get_class($a) . '_' . $a->id;
+                return $a;
+            })
+            ->reject(function ($a) use ($existingChatKeys) {
+                return in_array($a->user_key, $existingChatKeys);
+            });
+
+        $contacts = $users->concat($admins)->values();
+
+        return view('teamportal::chat.index', compact('contacts', 'conversations'));
+    }
+
+
+    /**
+     * Get active conversations via AJAX.
+     */
+    public function getConversations(Request $request)
+    {
+        $conversations = $this->getConversationsQuery(auth()->user());
+        
+        return response()->json([
+            'conversations' => $conversations
+        ]);
+    }
+
+    /**
+     * Fetch messages for a specific conversation.
+     */
+    public function getMessages(Request $request, ProjectConversation $conversation)
+    {
+        $currentUser = auth()->user();
+
+        // Ensure user is a participant
+        if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $messages = $conversation->messages()
+            ->with('sender')
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($message) use ($currentUser) {
+                // Mark as read for this user
+                ChatMessageRead::firstOrCreate([
+                    'message_id' => $message->id,
+                    'user_id' => $currentUser->id,
+                    'user_type' => get_class($currentUser),
+                ]);
+
+                $avatarUrl = null;
+                if ($message->sender) {
+                    if (method_exists($message->sender, 'getFirstMediaUrl') && $message->sender->getFirstMediaUrl('avatar')) {
+                        $avatarUrl = $message->sender->getFirstMediaUrl('avatar');
+                    }
+                }
+
+                return [
+                    'id' => $message->id,
+                    'content' => $message->content,
+                    'sender_id' => $message->sender_id,
+                    'sender_type' => $message->sender_type,
+                    'sender_name' => $message->sender ? $message->sender->name : 'Unknown User',
+                    'sender_avatar' => $avatarUrl,
+                    'is_me' => ($message->sender_id === $currentUser->id && $message->sender_type === get_class($currentUser)),
+                    'formatted_time' => $message->created_at->format('g:i A'),
+                ];
+            });
+
+        return response()->json([
+            'messages' => $messages
+        ]);
+    }
+
+    /**
+     * Send a message inside a conversation.
+     */
+    public function sendMessage(Request $request, ProjectConversation $conversation)
+    {
+        $currentUser = auth()->user();
+
+        // Ensure user is a participant
+        if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:2000',
+        ]);
+
+        $message = ProjectMessage::create([
+            'conversation_id' => $conversation->id,
+            'sender_id' => $currentUser->id,
+            'sender_type' => get_class($currentUser),
+            'content' => $request->content,
+        ]);
+
+        // Touch conversation to update updated_at timestamp
+        $conversation->touch();
+
+        // Automatically mark read for sender
+        ChatMessageRead::create([
+            'message_id' => $message->id,
+            'user_id' => $currentUser->id,
+            'user_type' => get_class($currentUser),
+        ]);
+
+        // Broadcast event
+        broadcast(new MessageSent($message))->toOthers();
+
+        $avatarUrl = null;
+        if ($currentUser->getFirstMediaUrl('avatar')) {
+            $avatarUrl = $currentUser->getFirstMediaUrl('avatar');
+        }
+
+        return response()->json([
+            'message' => [
+                'id' => $message->id,
+                'content' => $message->content,
+                'sender_id' => $message->sender_id,
+                'sender_type' => $message->sender_type,
+                'sender_name' => $currentUser->name,
+                'sender_avatar' => $avatarUrl,
+                'is_me' => true,
+                'formatted_time' => $message->created_at->format('g:i A'),
+            ]
+        ]);
+    }
+
+    /**
+     * Start or fetch DM conversation with a user.
+     */
+    public function startConversation(Request $request)
+    {
+        $request->validate([
+            'contact_id' => 'required|integer',
+            'contact_type' => 'required|string',
+        ]);
+
+        $currentUser = auth()->user();
+        
+        if ($request->contact_type === Admin::class || $request->contact_type === 'App\Models\Admin') {
+            $targetUser = Admin::findOrFail($request->contact_id);
+        } else {
+            $targetUser = User::findOrFail($request->contact_id);
+        }
+
+        // Prevent chatting with self
+        if ($currentUser->id === $targetUser->id && get_class($currentUser) === get_class($targetUser)) {
+            return response()->json(['error' => 'Cannot start chat with yourself.'], 400);
+        }
+
+        $conversation = $this->findOrCreateDirectConversation($currentUser, $targetUser);
+
+        return response()->json([
+            'conversation_id' => $conversation->id
+        ]);
+    }
+
+    /**
+     * Get the count of unread messages for the sidebar badge.
+     */
+    public function getUnreadCount(Request $request)
+    {
+        $currentUser = auth()->user();
+
+        // Count messages in user's conversations where there is no read record for this user
+        $unreadCount = ProjectMessage::whereHas('conversation.participants', function ($query) use ($currentUser) {
+            $query->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser));
+        })
+        ->where('sender_id', '!=', $currentUser->id)
+        ->whereDoesntHave('reads', function ($query) use ($currentUser) {
+            $query->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser));
+        })
+        ->count();
+
+        return response()->json([
+            'unread_count' => $unreadCount
+        ]);
+    }
+
+    /**
+     * Helper: Fetch formatted conversations list.
+     */
+    protected function getConversationsQuery($user)
+    {
+        $conversations = ProjectConversation::whereHas('participants', function ($query) use ($user) {
+            $query->where('user_id', $user->id)->where('user_type', get_class($user));
+        })
+        ->where(function ($q) {
+            $q->whereHas('messages')
+              ->orWhere('type', '!=', 'direct');
+        })
+        ->with(['messages' => function ($q) {
+            $q->latest();
+        }, 'participants.user'])
+        ->get()
+
+        ->map(function ($convo) use ($user) {
+            $lastMessage = $convo->messages->first();
+            
+            // Determine display name and avatar (the other participant)
+            $otherParticipant = $convo->participants->first(function ($p) use ($user) {
+                return !($p->user_id === $user->id && $p->user_type === get_class($user));
+            });
+
+            $name = $convo->name;
+            $avatar = null;
+            $typeLabel = 'Direct Message';
+
+            if ($convo->type === 'direct' && $otherParticipant && $otherParticipant->user) {
+                $name = $otherParticipant->user->name;
+                $typeLabel = str_contains($otherParticipant->user_type, 'Admin') ? 'Admin' : 'Team Member';
+                if (method_exists($otherParticipant->user, 'getFirstMediaUrl') && $otherParticipant->user->getFirstMediaUrl('avatar')) {
+                    $avatar = $otherParticipant->user->getFirstMediaUrl('avatar');
+                }
+            } elseif ($convo->type === 'internal_team' || $convo->type === 'client_team') {
+                $project = \Modules\ProjectManagement\Models\Project::find($convo->project_id);
+                $name = $project ? $project->name : 'Project Chat';
+                $typeLabel = 'Project Room';
+            }
+
+            // Calculate unread count
+            $unreadCount = $convo->messages()
+                ->where('sender_id', '!=', $user->id)
+                ->whereDoesntHave('reads', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('user_type', get_class($user));
+                })
+                ->count();
+
+            return [
+                'id' => $convo->id,
+                'name' => $name ?? 'General Room',
+                'avatar' => $avatar,
+                'type' => $convo->type,
+                'type_label' => $typeLabel,
+                'other_user_key' => $otherParticipant ? ($otherParticipant->user_type . '_' . $otherParticipant->user_id) : null,
+                'unread_count' => $unreadCount,
+                'last_message' => $lastMessage ? substr($lastMessage->content, 0, 50) : 'No messages yet',
+                'last_message_time' => $lastMessage ? $lastMessage->created_at->diffForHumans() : '',
+                'updated_timestamp' => $convo->updated_at->timestamp,
+            ];
+
+        })
+        ->sortByDesc('updated_timestamp')
+        ->values()
+        ->toArray();
+
+        return $conversations;
+    }
+
+    /**
+     * Helper: Find or create direct DM conversation.
+     */
+    protected function findOrCreateDirectConversation($userA, $userB)
+    {
+        $conversation = ProjectConversation::where('type', 'direct')
+            ->whereHas('participants', function ($query) use ($userA) {
+                $query->where('user_id', $userA->id)->where('user_type', get_class($userA));
+            })
+            ->whereHas('participants', function ($query) use ($userB) {
+                $query->where('user_id', $userB->id)->where('user_type', get_class($userB));
+            })
+            ->first();
+
+        if (!$conversation) {
+            $conversation = ProjectConversation::create([
+                'type' => 'direct',
+                'status' => 'active'
+            ]);
+
+            ChatParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $userA->id,
+                'user_type' => get_class($userA)
+            ]);
+
+            ChatParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $userB->id,
+                'user_type' => get_class($userB)
+            ]);
+        }
+
+        return $conversation;
+    }
+}

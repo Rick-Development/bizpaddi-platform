@@ -264,6 +264,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('tasks/{task}/approval', [TaskController::class, 'updateApproval'])->name('tasks.update-approval');
         Route::get('team-monitoring', [\Modules\Admin\Http\Controllers\TeamMonitoringController::class, 'index'])->name('team-monitoring.index');
 
+        // Admin Unified Chat
+        Route::get('chat', [\Modules\Admin\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+        Route::get('chat/conversations', [\Modules\Admin\Http\Controllers\ChatController::class, 'getConversations'])->name('chat.conversations');
+        Route::get('chat/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('chat/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.messages.store');
+        Route::post('chat/conversations/start', [\Modules\Admin\Http\Controllers\ChatController::class, 'startConversation'])->name('chat.conversations.start');
+        Route::get('chat/unread-count', [\Modules\Admin\Http\Controllers\ChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+
+        // Admin Centralized Comment Feed
+        Route::get('comments-feed', [\Modules\Admin\Http\Controllers\CommentFeedController::class, 'index'])->name('comments-feed.index');
+        Route::get('comments-feed/unread-count', [\Modules\Admin\Http\Controllers\CommentFeedController::class, 'getUnreadCount'])->name('comments-feed.unread-count');
+
         
         // Corporate Management
         Route::resource('subsidiaries', \Modules\Admin\Http\Controllers\SubsidiaryController::class);

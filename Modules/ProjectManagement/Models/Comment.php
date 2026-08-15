@@ -29,9 +29,8 @@ class Comment extends Model implements HasMedia
         return $this->morphTo();
     }
 
-    public function user(): BelongsTo
+    public function user(): MorphTo
     {
-        // This is a simplified relation, might need adjustment based on multiauth
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->morphTo(__FUNCTION__, 'user_type', 'user_id');
     }
 }

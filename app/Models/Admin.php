@@ -64,4 +64,10 @@ class Admin extends Authenticatable
     {
         return $query->where('is_active', true);
     }
+
+    public function isOnline(): bool
+    {
+        return \Illuminate\Support\Facades\Cache::has('admin-is-online-' . $this->id);
+    }
 }
+

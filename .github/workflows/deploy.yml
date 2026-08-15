@@ -51,4 +51,5 @@ jobs:
             run_php artisan config:clear
             run_php artisan optimize
             run_php artisan queue:restart
+            run_php artisan reverb:restart
 
