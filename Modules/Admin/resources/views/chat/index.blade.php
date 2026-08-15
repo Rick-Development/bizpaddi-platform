@@ -725,7 +725,7 @@
         const isSystem = msg.sender_name && (msg.content.includes("created the group chat.") || msg.content.includes("added ") || msg.content.includes("removed "));
         if (isSystem) {
             return `
-                <div class="flex justify-center my-2.5">
+                <div class="flex justify-center my-2.5 msg-row" id="msg-${msg.id}">
                     <div class="px-4 py-1.5 rounded-full bg-slate-100 border border-gray-200 text-gray-500 text-[10px] font-medium shadow-xs">
                         <strong>${escapeHtml(msg.sender_name)}</strong> ${escapeHtml(msg.content)}
                     </div>
