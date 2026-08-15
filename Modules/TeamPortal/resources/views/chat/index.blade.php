@@ -443,8 +443,8 @@
 
     function startDirectChat(userId, userType) {
         axios.post('/team/chat-api/conversations/start', {
-            user_id: userId,
-            user_type: userType
+            contact_id: userId,
+            contact_type: userType
         })
         .then(res => {
             if (res.data.conversation_id) {
