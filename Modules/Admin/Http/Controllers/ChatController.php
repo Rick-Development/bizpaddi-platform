@@ -22,6 +22,7 @@ class ChatController extends Controller
     public function index(Request $request, $conversation = null)
     {
         $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
 
         // 1. Fetch active conversations for the admin
         $conversations = $this->getConversationsQuery($currentUser);
@@ -71,7 +72,9 @@ class ChatController extends Controller
      */
     public function getConversations(Request $request)
     {
-        $conversations = $this->getConversationsQuery(Auth::guard('admin')->user());
+        $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
+        $conversations = $this->getConversationsQuery($currentUser);
         
         return response()->json([
             'conversations' => $conversations
@@ -84,6 +87,7 @@ class ChatController extends Controller
     public function getMessages(Request $request, ProjectConversation $conversation)
     {
         $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
 
         // Ensure admin is a participant
         if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
@@ -171,11 +175,14 @@ class ChatController extends Controller
                 ];
             });
 
+        $partnerIsOnline = $partnerUser ? \Illuminate\Support\Facades\Cache::has('online-' . $partner->user_type . '-' . $partner->user_id) : false;
+
         return response()->json([
             'partner_name' => $partnerName,
             'partner_avatar' => $partnerAvatar,
             'partner_key' => $partnerKey,
             'partner_role' => $partnerRole,
+            'partner_is_online' => $partnerIsOnline,
             'messages' => $messages
         ]);
     }
@@ -186,6 +193,7 @@ class ChatController extends Controller
     public function sendMessage(Request $request, ProjectConversation $conversation)
     {
         $currentUser = Auth::guard('admin')->user();
+        \Illuminate\Support\Facades\Cache::put('online-' . get_class($currentUser) . '-' . $currentUser->id, true, now()->addSeconds(10));
 
         // Ensure admin is a participant
         if (!$conversation->participants()->where('user_id', $currentUser->id)->where('user_type', get_class($currentUser))->exists()) {
@@ -380,6 +388,7 @@ class ChatController extends Controller
                 ->count();
 
             $shortType = $otherParticipant ? (str_contains($otherParticipant->user_type, 'Admin') ? 'Admin' : 'User') : null;
+            $isOnline = $otherParticipant ? \Illuminate\Support\Facades\Cache::has('online-' . $otherParticipant->user_type . '-' . $otherParticipant->user_id) : false;
 
             return [
                 'id' => $convo->id,
@@ -388,6 +397,7 @@ class ChatController extends Controller
                 'type' => $convo->type,
                 'type_label' => $typeLabel,
                 'partner_key' => $otherParticipant ? ($shortType . '_' . $otherParticipant->user_id) : null,
+                'is_online' => $isOnline,
                 'unread_count' => $unreadCount,
                 'last_message' => $lastMessage ? substr($lastMessage->content, 0, 50) : 'No messages yet',
                 'last_message_time' => $lastMessage ? $lastMessage->created_at->diffForHumans() : '',

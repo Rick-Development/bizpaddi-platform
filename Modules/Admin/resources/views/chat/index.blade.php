@@ -280,29 +280,7 @@
     const initialSelectedConvoId = "{{ $selectedConversationId ?? '' }}";
 
     document.addEventListener("DOMContentLoaded", () => {
-        // Echo Presence Channel online listener
-        if (typeof window.Echo !== 'undefined' && window.Echo) {
-            try {
-                window.Echo.join('online')
-                    .here((users) => {
-                        window.onlineUsersSet.clear();
-                        users.forEach(u => {
-                            window.onlineUsersSet.add(u.key);
-                            updatePresenceStatus(u.key, true);
-                        });
-                    })
-                    .joining((user) => {
-                        window.onlineUsersSet.add(user.key);
-                        updatePresenceStatus(user.key, true);
-                    })
-                    .leaving((user) => {
-                        window.onlineUsersSet.delete(user.key);
-                        updatePresenceStatus(user.key, false);
-                    });
-            } catch(e) {
-                console.error('Echo presence join error:', e);
-            }
-        }
+        // WebSockets disabled - relying entirely on robust 2s AJAX polling
 
         // Auto load conversation if URL contains ID
         if (initialSelectedConvoId) {
@@ -409,37 +387,44 @@
                 // Render Messages
                 renderMessages(data.messages);
 
-                // Listen for real-time messages & read receipts on conversation channel
-                activeEchoChannel = conversationId;
-                if (window.Echo) {
-                    window.Echo.private(`conversation.${conversationId}`)
-                        .listen('MessageSent', (e) => appendRealtimeMessage(e))
-                        .listen('.MessageSent', (e) => appendRealtimeMessage(e))
-                        .listen('.Modules\\ProjectManagement\\Events\\MessageSent', (e) => appendRealtimeMessage(e))
-                        .listen('MessageRead', (e) => updateAllTicksToRead())
-                        .listen('.MessageRead', (e) => updateAllTicksToRead())
-                        .listen('.Modules\\ProjectManagement\\Events\\MessageRead', (e) => updateAllTicksToRead());
-                }
+                // Active Echo channel left blank - using 2s polling
             })
             .catch(err => {
                 console.error('Failed to load conversation messages:', err);
             });
     }
 
-    // Fast 2-second background poll fallback to guarantee instant delivery without page refresh
+    // 2-second background poll to sync new messages, read status (ticks), and active partner online state
     setInterval(() => {
         if (activeConversationId) {
             axios.get(`/admin/chat-api/conversations/${activeConversationId}/messages`)
                 .then(res => {
                     const messages = res.data.messages || [];
-                    let hasNew = false;
-                    messages.forEach(msg => {
-                        if (!document.getElementById(`msg-${msg.id}`)) {
-                            const isMe = (parseInt(msg.sender_id) === currentUserId) && 
-                         (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+                    const partnerIsOnline = res.data.partner_is_online || false;
+                    
+                    // Update partner online header indicator
+                    window.activePartnerIsOnline = partnerIsOnline;
+                    if (window.activePartnerKey) {
+                        updatePresenceStatus(window.activePartnerKey, partnerIsOnline);
+                    }
 
+                    messages.forEach(msg => {
+                        const existingBubble = document.getElementById(`msg-${msg.id}`);
+                        if (!existingBubble) {
                             appendRealtimeMessage(msg);
-                            hasNew = true;
+                        } else {
+                            // Update read status ticks dynamically if they changed
+                            const isMe = (parseInt(msg.sender_id) === currentUserId) && 
+                                         (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+                            if (isMe) {
+                                const tick = existingBubble.querySelector('.tick-status');
+                                if (tick) {
+                                    const wasRead = tick.getAttribute('data-read') === 'true';
+                                    if (msg.is_read !== wasRead) {
+                                        tick.outerHTML = getTickHtml(msg.is_read);
+                                    }
+                                }
+                            }
                         }
                     });
                 })
@@ -447,7 +432,45 @@
         }
     }, 2000);
 
+    // 4-second background poll to sync sidebar conversations list (unread badges, last message, and online indicators)
+    setInterval(() => {
+        axios.get('/admin/chat-api/conversations')
+            .then(res => {
+                const conversations = res.data.conversations || [];
+                conversations.forEach(convo => {
+                    const convoBtn = document.getElementById(`convo-btn-${convo.id}`);
+                    if (convoBtn) {
+                        // Update last message time & text
+                        const lastMsgEl = convoBtn.querySelector('.flex-1 p');
+                        if (lastMsgEl) lastMsgEl.innerText = convo.last_message;
+                        
+                        const timeEl = convoBtn.querySelector('.flex-1 span');
+                        if (timeEl) timeEl.innerText = convo.last_message_time;
 
+                        // Update unread badge
+                        let badge = convoBtn.querySelector('.bg-\\[\\#FB4C4B\\]');
+                        if (convo.unread_count > 0) {
+                            if (!badge) {
+                                const badgeContainer = convoBtn.querySelector('.flex-1 > div:last-child');
+                                if (badgeContainer) {
+                                    badgeContainer.insertAdjacentHTML('beforeend', `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs">${convo.unread_count}</span>`);
+                                }
+                            } else {
+                                badge.innerText = convo.unread_count;
+                            }
+                        } else if (badge) {
+                            badge.remove();
+                        }
+
+                        // Update presence dot on conversations list
+                        if (convo.partner_key) {
+                            updatePresenceStatus(convo.partner_key, convo.is_online);
+                        }
+                    }
+                });
+            })
+            .catch(() => {});
+    }, 4000);
 
     function startDirectChat(userId, userType) {
         axios.post('/admin/chat-api/conversations/start', {
