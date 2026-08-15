@@ -131,13 +131,13 @@
                                         <h3 class="text-xs font-bold text-gray-900 truncate group-hover:text-[#FB4C4B] transition-colors">
                                             {{ $convo['name'] }}
                                         </h3>
-                                        <span class="text-[10px] text-gray-400 font-medium">
+                                        <span class="text-[10px] text-gray-400 font-medium convo-last-message-time">
                                             {{ $convo['last_message_time'] ? \Carbon\Carbon::parse($convo['last_message_time'])->diffForHumans() : '' }}
                                         </span>
                                     </div>
                                     
                                     <div class="flex items-center justify-between">
-                                        <p class="text-xs text-gray-500 truncate max-w-[180px]">
+                                        <p class="text-xs text-gray-500 truncate max-w-[180px] convo-last-message-text">
                                             {{ $convo['last_message'] ?? 'No messages yet' }}
                                         </p>
                                         @if(($convo['unread_count'] ?? 0) > 0)
@@ -441,10 +441,10 @@
                     const convoBtn = document.getElementById(`convo-btn-${convo.id}`);
                     if (convoBtn) {
                         // Update last message time & text
-                        const lastMsgEl = convoBtn.querySelector('.flex-1 p');
+                        const lastMsgEl = convoBtn.querySelector('.convo-last-message-text');
                         if (lastMsgEl) lastMsgEl.innerText = convo.last_message;
                         
-                        const timeEl = convoBtn.querySelector('.flex-1 span');
+                        const timeEl = convoBtn.querySelector('.convo-last-message-time');
                         if (timeEl) timeEl.innerText = convo.last_message_time;
 
                         // Update unread badge

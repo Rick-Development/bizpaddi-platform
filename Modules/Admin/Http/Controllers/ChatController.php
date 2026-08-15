@@ -39,6 +39,7 @@ class ChatController extends Controller
             ->map(function ($u) {
                 $u->type_label = 'Team Member';
                 $u->morph_class = get_class($u);
+                $u->type = get_class($u);
                 $u->key = 'User_' . $u->id;
                 return $u;
             })
@@ -52,6 +53,7 @@ class ChatController extends Controller
             ->map(function ($a) {
                 $a->type_label = 'Admin';
                 $a->morph_class = get_class($a);
+                $a->type = get_class($a);
                 $a->key = 'Admin_' . $a->id;
                 return $a;
             })
