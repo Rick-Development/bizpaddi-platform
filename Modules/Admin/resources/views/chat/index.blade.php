@@ -401,22 +401,42 @@
                 // Render Messages
                 renderMessages(data.messages);
 
-                // Listen for real-time messages & read receipts
+                // Listen for real-time messages & read receipts on conversation channel
                 activeEchoChannel = conversationId;
                 if (window.Echo) {
                     window.Echo.private(`conversation.${conversationId}`)
-                        .listen('.Modules\\ProjectManagement\\Events\\MessageSent', (e) => {
-                            appendRealtimeMessage(e);
-                        })
-                        .listen('.Modules\\ProjectManagement\\Events\\MessageRead', (e) => {
-                            updateAllTicksToRead();
-                        });
+                        .listen('MessageSent', (e) => appendRealtimeMessage(e))
+                        .listen('.MessageSent', (e) => appendRealtimeMessage(e))
+                        .listen('.Modules\\ProjectManagement\\Events\\MessageSent', (e) => appendRealtimeMessage(e))
+                        .listen('MessageRead', (e) => updateAllTicksToRead())
+                        .listen('.MessageRead', (e) => updateAllTicksToRead())
+                        .listen('.Modules\\ProjectManagement\\Events\\MessageRead', (e) => updateAllTicksToRead());
                 }
             })
             .catch(err => {
                 console.error('Failed to load conversation messages:', err);
             });
     }
+
+    // Smart 4-second background poll fallback to guarantee 100% real-time delivery
+    setInterval(() => {
+        if (activeConversationId) {
+            axios.get(`/admin/chat-api/conversations/${activeConversationId}/messages`)
+                .then(res => {
+                    const messages = res.data.messages || [];
+                    let hasNew = false;
+                    messages.forEach(msg => {
+                        if (!document.getElementById(`msg-${msg.id}`)) {
+                            const isMe = (parseInt(msg.sender_id) === currentUserId) && (msg.sender_type === currentUserType);
+                            appendRealtimeMessage(msg);
+                            hasNew = true;
+                        }
+                    });
+                })
+                .catch(() => {});
+        }
+    }, 4000);
+
 
     function startDirectChat(userId, userType) {
         axios.post('/admin/chat-api/conversations/start', {
