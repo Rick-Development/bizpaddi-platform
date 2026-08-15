@@ -28,7 +28,7 @@
                             $statusLabels = [
                                 'todo' => 'To Do',
                                 'in_progress' => 'In Progress',
-                                'review' => 'Done (Waiting for Review)',
+                                'review' => 'Done',
                                 'done' => 'Completed',
                             ];
                         @endphp
@@ -57,7 +57,7 @@
                     <select name="status" onchange="this.form.submit()" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500">
                         <option value="todo" {{ $task->status == 'todo' ? 'selected' : '' }}>To Do</option>
                         <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                        <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Done (Waiting for Review)</option>
+                        <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Done</option>
                         @if(auth()->user()->isProjectManager() || $task->status == 'done')
                             <option value="done" {{ $task->status == 'done' ? 'selected' : '' }} {{ !auth()->user()->isProjectManager() ? 'disabled' : '' }}>Completed</option>
                         @endif

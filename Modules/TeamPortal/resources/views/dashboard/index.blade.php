@@ -187,7 +187,7 @@
                             $statusLabels = [
                                 'todo' => 'To Do',
                                 'in_progress' => 'In Progress',
-                                'review' => 'Done (Waiting for Review)',
+                                'review' => 'Done',
                                 'done' => 'Completed',
                             ];
                         @endphp
