@@ -138,7 +138,7 @@
     <div id="global-toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <!-- Desktop Notification Modal Prompt -->
-    <div id="desktop-notif-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div id="desktop-notif-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-gray-100 transform scale-95 transition-all duration-300 text-center relative overflow-hidden">
             
             <div class="h-16 w-16 rounded-2xl bg-gradient-to-tr from-[#191C47] to-[#FB4C4B] text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/20">
@@ -190,37 +190,57 @@
         function openNotifModal() {
             const modal = document.getElementById('desktop-notif-modal');
             if (!modal) return;
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            const card = modal.querySelector('.transform');
-            if (card) {
-                card.classList.remove('scale-95');
-                card.classList.add('scale-100');
-            }
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                const card = modal.querySelector('.transform');
+                if (card) {
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }
+            }, 50);
         }
 
         function closeNotifModal() {
             const modal = document.getElementById('desktop-notif-modal');
             if (!modal) return;
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-0');
             const card = modal.querySelector('.transform');
             if (card) {
                 card.classList.remove('scale-100');
                 card.classList.add('scale-95');
             }
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
+
         function grantNotifPermissionFromModal() {
-            if (typeof Notification !== 'undefined') {
+            if (typeof Notification === 'undefined' || !('Notification' in window)) {
+                closeNotifModal();
+                showGlobalToast('In-App Alerts Active 🔔', 'Your mobile browser uses in-app toasts & badges for real-time notifications.', '#', 'chat');
+                return;
+            }
+
+            try {
                 Notification.requestPermission().then(permission => {
                     closeNotifModal();
                     if (permission === 'granted') {
-                        showGlobalToast('Desktop Notifications Enabled 🔔', 'You will now receive desktop alerts for new chats & comments.', '#', 'chat');
+                        showGlobalToast('Notifications Enabled 🔔', 'You will now receive alerts for new chats & comments.', '#', 'chat');
+                    } else {
+                        showGlobalToast('In-App Alerts Active 🔔', 'In-app toasts & sidebar badges will keep you updated live.', '#', 'chat');
                     }
+                }).catch(() => {
+                    closeNotifModal();
+                    showGlobalToast('In-App Alerts Active 🔔', 'Real-time in-app toasts & badges are active on your device.', '#', 'chat');
                 });
-            } else {
+            } catch (e) {
                 closeNotifModal();
+                showGlobalToast('In-App Alerts Active 🔔', 'Real-time in-app toasts & badges are active on your device.', '#', 'chat');
             }
         }
+
 
         // Show Floating Interactive Toast & Native Desktop Notification
         function showGlobalToast(title, body, url = '#', iconType = 'chat') {
