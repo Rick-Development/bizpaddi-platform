@@ -36,7 +36,10 @@ Broadcast::channel('task-comments', function ($user) {
     return $user !== null;
 });
 
-Broadcast::channel('online', function ($user) {
+Broadcast::channel('online', function ($user = null) {
+    if (!$user) {
+        $user = Auth::guard('admin')->user() ?? Auth::guard('web')->user();
+    }
     if ($user) {
         $shortType = str_contains(get_class($user), 'Admin') ? 'Admin' : 'User';
         return [
@@ -48,4 +51,5 @@ Broadcast::channel('online', function ($user) {
     }
     return false;
 });
+
 

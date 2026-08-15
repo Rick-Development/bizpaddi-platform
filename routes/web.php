@@ -28,3 +28,20 @@ Route::get('/test-500', function () {
 Route::get('/test-403', function () {
     abort(403);
 });
+
+// Multi-guard broadcast authentication endpoint for Reverb WebSockets & Presence channels
+Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request) {
+    $user = \Illuminate\Support\Facades\Auth::guard('admin')->user() 
+         ?? \Illuminate\Support\Facades\Auth::guard('web')->user();
+
+    if (!$user) {
+        return response()->json(['error' => 'Unauthenticated'], 401);
+    }
+
+    $request->setUserResolver(function () use ($user) {
+        return $user;
+    });
+
+    return \Illuminate\Support\Facades\Broadcast::auth($request);
+})->middleware(['web']);
+
