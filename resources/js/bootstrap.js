@@ -16,7 +16,6 @@ window.Pusher = Pusher;
 
 const reverbKey = import.meta.env.VITE_REVERB_APP_KEY || 'qxuhs8bjqhqczmjsk0m3';
 const reverbHost = import.meta.env.VITE_REVERB_HOST || window.location.hostname;
-const reverbPort = import.meta.env.VITE_REVERB_PORT || 8080;
 const isHttps = window.location.protocol === 'https:';
 
 try {
@@ -24,11 +23,12 @@ try {
         broadcaster: 'reverb',
         key: reverbKey,
         wsHost: reverbHost,
-        wsPort: reverbPort,
-        wssPort: isHttps ? 443 : reverbPort,
+        wsPort: isHttps ? 443 : 8080,
+        wssPort: isHttps ? 443 : 8080,
         forceTLS: isHttps,
-        enabledTransports: isHttps ? ['ws', 'wss'] : ['ws'],
+        enabledTransports: ['ws', 'wss'],
     });
 } catch(e) {
     console.warn('Echo initialization failed:', e);
 }
+

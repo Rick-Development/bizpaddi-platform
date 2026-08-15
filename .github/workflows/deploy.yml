@@ -51,6 +51,8 @@ jobs:
             run_php artisan optimize:clear
             run_php artisan optimize
             run_php artisan queue:restart
-            run_php artisan reverb:restart
+            run_php artisan reverb:restart || true
+            pgrep -f "reverb:start" > /dev/null || (nohup php artisan reverb:start --host=0.0.0.0 --port=8080 > storage/logs/reverb.log 2>&1 &)
+
 
 
