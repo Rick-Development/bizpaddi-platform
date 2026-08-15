@@ -266,8 +266,13 @@
 <script>
     let activeConversationId = null;
     let activeEchoChannel = null;
+    window.onlineUsersSet = new Set();
+    window.activePartnerKey = null;
+    window.activePartnerIsOnline = false;
+
     const currentUserId = {{ auth('admin')->id() }};
     const currentUserType = "{{ addslashes(get_class(auth('admin')->user())) }}";
+    const initialSelectedConvoId = "{{ $selectedConversationId ?? '' }}";
 
     document.addEventListener("DOMContentLoaded", () => {
         // Echo Presence Channel online listener
@@ -275,17 +280,29 @@
             try {
                 window.Echo.join('online')
                     .here((users) => {
-                        users.forEach(u => updatePresenceStatus(u.key, true));
+                        window.onlineUsersSet.clear();
+                        users.forEach(u => {
+                            window.onlineUsersSet.add(u.key);
+                            updatePresenceStatus(u.key, true);
+                        });
                     })
                     .joining((user) => {
+                        window.onlineUsersSet.add(user.key);
                         updatePresenceStatus(user.key, true);
                     })
                     .leaving((user) => {
+                        window.onlineUsersSet.delete(user.key);
                         updatePresenceStatus(user.key, false);
                     });
             } catch(e) {
                 console.error('Echo presence join error:', e);
             }
+        }
+
+        // Auto load conversation if URL contains ID
+        if (initialSelectedConvoId) {
+            const btn = document.getElementById(`convo-btn-${initialSelectedConvoId}`);
+            loadConversation(initialSelectedConvoId, btn);
         }
     });
 
@@ -301,8 +318,8 @@
             }
         }
 
-        // Update active header if currently talking to this user
         if (window.activePartnerKey === userKey) {
+            window.activePartnerIsOnline = isOnline;
             const headerDot = document.getElementById('active-partner-dot');
             const headerStatus = document.getElementById('active-partner-status');
             if (headerDot) {
@@ -316,6 +333,9 @@
                     if (headerStatus) headerStatus.innerText = 'Offline';
                 }
             }
+
+            // Update unread ticks to reflect online delivery state
+            updateUnreadTicksOnlineState(isOnline);
         }
     }
 
@@ -334,10 +354,18 @@
     function loadConversation(conversationId, element = null) {
         activeConversationId = conversationId;
 
+        // Update URL to /admin/chat/{id} seamlessly
+        if (history.pushState) {
+            history.pushState(null, null, `/admin/chat/${conversationId}`);
+        }
+
         // Highlight active item
         document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
         if (element) {
             element.classList.add('active');
+        } else {
+            const activeBtn = document.getElementById(`convo-btn-${conversationId}`);
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
         // Show active container
@@ -350,14 +378,16 @@
         }
 
         // Fetch Messages via API
-        axios.get(`/admin/chat/messages/${conversationId}`)
+        axios.get(`/admin/chat-api/conversations/${conversationId}/messages`)
             .then(res => {
                 const data = res.data;
                 
                 // Update partner header
                 window.activePartnerKey = data.partner_key;
+                window.activePartnerIsOnline = window.onlineUsersSet.has(data.partner_key);
+
                 document.getElementById('active-partner-name').innerText = data.partner_name;
-                document.getElementById('active-[#FB4C4B]');
+                document.getElementById('active-partner-role').innerText = data.partner_role;
 
                 const avatarBox = document.getElementById('active-partner-avatar');
                 if (data.partner_avatar) {
@@ -366,15 +396,20 @@
                     avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
                 }
 
+                updatePresenceStatus(data.partner_key, window.activePartnerIsOnline);
+
                 // Render Messages
                 renderMessages(data.messages);
 
-                // Listen for new messages in real-time
+                // Listen for real-time messages & read receipts
                 activeEchoChannel = conversationId;
                 if (window.Echo) {
                     window.Echo.private(`conversation.${conversationId}`)
                         .listen('.Modules\\ProjectManagement\\Events\\MessageSent', (e) => {
                             appendRealtimeMessage(e);
+                        })
+                        .listen('.Modules\\ProjectManagement\\Events\\MessageRead', (e) => {
+                            updateAllTicksToRead();
                         });
                 }
             })
@@ -384,14 +419,13 @@
     }
 
     function startDirectChat(userId, userType) {
-        axios.post('/admin/chat/start', {
+        axios.post('/admin/chat-api/conversations/start', {
             user_id: userId,
             user_type: userType
         })
         .then(res => {
             if (res.data.conversation_id) {
-                // Reload page to refresh sidebar with active conversation
-                window.location.href = `/admin/chat?conversation=${res.data.conversation_id}`;
+                window.location.href = `/admin/chat/${res.data.conversation_id}`;
             }
         })
         .catch(err => {
@@ -417,18 +451,39 @@
         scrollToBottom();
     }
 
+    function getTickHtml(isRead) {
+        // 1. Double Coral Red Ticks (Read)
+        if (isRead) {
+            return `<span class="tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1" data-read="true" title="Read">
+                        <span>✓</span><span>✓</span>
+                    </span>`;
+        }
+        
+        // 2. Double Gray Ticks (Delivered / Counterpart Online)
+        if (window.activePartnerIsOnline) {
+            return `<span class="tick-status text-slate-400 font-bold text-xs flex items-center -space-x-1" data-read="false" title="Delivered">
+                        <span>✓</span><span>✓</span>
+                    </span>`;
+        }
+
+        // 3. Single Gray Tick (Sent / Counterpart Offline)
+        return `<span class="tick-status text-slate-400 font-bold text-xs" data-read="false" title="Sent">✓</span>`;
+    }
+
     function buildMessageBubble(msg, isMe) {
         const bubbleClass = isMe ? 'message-bubble-me' : 'message-bubble-other';
         const alignClass = isMe ? 'justify-end' : 'justify-start';
+        const tickHtml = isMe ? getTickHtml(msg.is_read) : '';
 
         return `
-            <div class="flex ${alignClass} mb-3" id="msg-${msg.id}">
+            <div class="flex ${alignClass} mb-3 msg-row" id="msg-${msg.id}">
                 <div class="max-w-[75%] md:max-w-[65%]">
                     <div class="px-4 py-3 rounded-2xl text-xs md:text-sm leading-relaxed ${bubbleClass}">
                         ${escapeHtml(msg.content)}
                     </div>
                     <div class="flex items-center gap-1.5 mt-1 px-1 ${isMe ? 'justify-end' : 'justify-start'}">
                         <span class="text-[10px] text-gray-400 font-medium">${msg.formatted_time}</span>
+                        ${tickHtml}
                     </div>
                 </div>
             </div>
@@ -439,14 +494,44 @@
         const container = document.getElementById('messages-container');
         const isMe = (parseInt(msg.sender_id) === currentUserId) && (msg.sender_type === currentUserType);
         
-        // Remove empty state text if present
         if (container.querySelector('p')) {
             container.innerHTML = '';
         }
 
+        // Don't duplicate message if already appended locally
+        if (document.getElementById(`msg-${msg.id}`)) return;
+
         const html = buildMessageBubble(msg, isMe);
         container.insertAdjacentHTML('beforeend', html);
         scrollToBottom();
+
+        // If incoming message, trigger read API
+        if (!isMe && activeConversationId) {
+            axios.post(`/admin/chat-api/conversations/${activeConversationId}/read`).catch(() => {});
+        }
+    }
+
+    function updateAllTicksToRead() {
+        document.querySelectorAll('.tick-status').forEach(el => {
+            el.setAttribute('data-read', 'true');
+            el.className = 'tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1';
+            el.innerHTML = '<span>✓</span><span>✓</span>';
+            el.setAttribute('title', 'Read');
+        });
+    }
+
+    function updateUnreadTicksOnlineState(isOnline) {
+        document.querySelectorAll('.tick-status[data-read="false"]').forEach(el => {
+            if (isOnline) {
+                el.className = 'tick-status text-slate-400 font-bold text-xs flex items-center -space-x-1';
+                el.innerHTML = '<span>✓</span><span>✓</span>';
+                el.setAttribute('title', 'Delivered');
+            } else {
+                el.className = 'tick-status text-slate-400 font-bold text-xs';
+                el.innerHTML = '✓';
+                el.setAttribute('title', 'Sent');
+            }
+        });
     }
 
     function sendMessage(e) {
@@ -458,12 +543,13 @@
 
         input.value = '';
 
-        axios.post('/admin/chat/send', {
-            conversation_id: activeConversationId,
+        axios.post(`/admin/chat-api/conversations/${activeConversationId}/messages`, {
             content: content
         })
         .then(res => {
-            // Message appended automatically via WebSockets broadcast or manual fallback
+            if (res.data.message) {
+                appendRealtimeMessage(res.data.message);
+            }
         })
         .catch(err => {
             console.error('Failed to send message:', err);

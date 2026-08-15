@@ -19,7 +19,7 @@ class ChatController extends Controller
     /**
      * Display the chat dashboard for Admin.
      */
-    public function index(Request $request)
+    public function index(Request $request, $conversation = null)
     {
         $currentUser = Auth::guard('admin')->user();
 
@@ -60,7 +60,9 @@ class ChatController extends Controller
 
         $contacts = $users->concat($admins)->values();
 
-        return view('admin::chat.index', compact('contacts', 'conversations'));
+        $selectedConversationId = $conversation ?? $request->query('conversation');
+
+        return view('admin::chat.index', compact('contacts', 'conversations', 'selectedConversationId'));
     }
 
 
@@ -88,24 +90,51 @@ class ChatController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Mark incoming messages as read
+        $updatedCount = ProjectMessage::where('conversation_id', $conversation->id)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('sender_id', '!=', $currentUser->id)
+                  ->orWhere('sender_type', '!=', get_class($currentUser));
+            })
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        if ($updatedCount > 0) {
+            broadcast(new \Modules\ProjectManagement\Events\MessageRead(
+                $conversation->id,
+                $currentUser->id,
+                get_class($currentUser)
+            ));
+        }
+
+        $partner = $conversation->participants()
+            ->where(function ($q) use ($currentUser) {
+                $q->where('user_id', '!=', $currentUser->id)
+                  ->orWhere('user_type', '!=', get_class($currentUser));
+            })->first();
+
+        $partnerUser = $partner ? $partner->user : null;
+        $partnerName = $partnerUser ? $partnerUser->name : 'Chat Room';
+        $partnerAvatar = null;
+        if ($partnerUser && method_exists($partnerUser, 'getFirstMediaUrl') && $partnerUser->getFirstMediaUrl('avatar')) {
+            $partnerAvatar = $partnerUser->getFirstMediaUrl('avatar');
+        }
+        $partnerKey = $partnerUser ? (get_class($partnerUser) . '_' . $partnerUser->id) : null;
+        $partnerRole = ($partnerUser && str_contains(get_class($partnerUser), 'Admin')) ? 'Admin' : 'Team Member';
+
         $messages = $conversation->messages()
-            ->with('sender')
+            ->with(['sender', 'reads'])
             ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($message) use ($currentUser) {
-                // Mark as read for this admin
-                ChatMessageRead::firstOrCreate([
-                    'message_id' => $message->id,
-                    'user_id' => $currentUser->id,
-                    'user_type' => get_class($currentUser),
-                ]);
-
                 $avatarUrl = null;
                 if ($message->sender) {
                     if (method_exists($message->sender, 'getFirstMediaUrl') && $message->sender->getFirstMediaUrl('avatar')) {
                         $avatarUrl = $message->sender->getFirstMediaUrl('avatar');
                     }
                 }
+
+                $isRead = $message->read_at !== null || $message->reads->where('user_id', '!=', $message->sender_id)->count() > 0;
 
                 return [
                     'id' => $message->id,
@@ -115,11 +144,16 @@ class ChatController extends Controller
                     'sender_name' => $message->sender ? $message->sender->name : 'Unknown User',
                     'sender_avatar' => $avatarUrl,
                     'is_me' => ($message->sender_id === $currentUser->id && $message->sender_type === get_class($currentUser)),
+                    'is_read' => $isRead,
                     'formatted_time' => $message->created_at->format('g:i A'),
                 ];
             });
 
         return response()->json([
+            'partner_name' => $partnerName,
+            'partner_avatar' => $partnerAvatar,
+            'partner_key' => $partnerKey,
+            'partner_role' => $partnerRole,
             'messages' => $messages
         ]);
     }
@@ -150,15 +184,8 @@ class ChatController extends Controller
         // Touch conversation to update updated_at timestamp
         $conversation->touch();
 
-        // Automatically mark read for sender
-        ChatMessageRead::create([
-            'message_id' => $message->id,
-            'user_id' => $currentUser->id,
-            'user_type' => get_class($currentUser),
-        ]);
-
-        // Broadcast event
-        broadcast(new MessageSent($message))->toOthers();
+        // Broadcast event over WebSockets instantly
+        broadcast(new MessageSent($message));
 
         $avatarUrl = null;
         if (method_exists($currentUser, 'getFirstMediaUrl') && $currentUser->getFirstMediaUrl('avatar')) {
@@ -174,10 +201,12 @@ class ChatController extends Controller
                 'sender_name' => $currentUser->name,
                 'sender_avatar' => $avatarUrl,
                 'is_me' => true,
+                'is_read' => false,
                 'formatted_time' => $message->created_at->format('g:i A'),
             ]
         ]);
     }
+
 
     /**
      * Start or fetch DM conversation with a contact.

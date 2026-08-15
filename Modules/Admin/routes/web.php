@@ -265,12 +265,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('team-monitoring', [\Modules\Admin\Http\Controllers\TeamMonitoringController::class, 'index'])->name('team-monitoring.index');
 
         // Admin Unified Chat
-        Route::get('chat', [\Modules\Admin\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
-        Route::get('chat/conversations', [\Modules\Admin\Http\Controllers\ChatController::class, 'getConversations'])->name('chat.conversations');
-        Route::get('chat/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
-        Route::post('chat/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.messages.store');
-        Route::post('chat/conversations/start', [\Modules\Admin\Http\Controllers\ChatController::class, 'startConversation'])->name('chat.conversations.start');
-        Route::get('chat/unread-count', [\Modules\Admin\Http\Controllers\ChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+        Route::get('chat/{conversation?}', [\Modules\Admin\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+        Route::get('chat-api/conversations', [\Modules\Admin\Http\Controllers\ChatController::class, 'getConversations'])->name('chat.conversations');
+        Route::get('chat-api/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('chat-api/conversations/{conversation}/messages', [\Modules\Admin\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.messages.store');
+        Route::post('chat-api/conversations/{conversation}/read', [\Modules\Admin\Http\Controllers\ChatController::class, 'markAsRead'])->name('chat.messages.read');
+        Route::post('chat-api/conversations/start', [\Modules\Admin\Http\Controllers\ChatController::class, 'startConversation'])->name('chat.conversations.start');
+        Route::get('chat-api/unread-count', [\Modules\Admin\Http\Controllers\ChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+
 
         // Admin Centralized Comment Feed
         Route::get('comments-feed', [\Modules\Admin\Http\Controllers\CommentFeedController::class, 'index'])->name('comments-feed.index');
