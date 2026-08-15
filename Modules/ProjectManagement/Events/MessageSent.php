@@ -21,8 +21,10 @@ class MessageSent implements ShouldBroadcastNow
      */
     public function __construct(ProjectMessage $message)
     {
+        $message->loadMissing(['conversation.participants', 'sender', 'reads']);
         $this->message = $message;
     }
+
 
     /**
      * The event's broadcast name.

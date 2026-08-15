@@ -20,11 +20,17 @@ Broadcast::channel('conversation.{conversationId}', function ($user, $conversati
     if (!$conversation) {
         return false;
     }
+    $userClass = get_class($user);
     return $conversation->participants()
         ->where('user_id', $user->id)
-        ->where('user_type', get_class($user))
+        ->where(function ($q) use ($userClass) {
+            $q->where('user_type', $userClass)
+              ->orWhere('user_type', str_contains($userClass, 'Admin') ? 'Admin' : 'User')
+              ->orWhere('user_type', 'LIKE', '%' . class_basename($userClass));
+        })
         ->exists();
 });
+
 
 Broadcast::channel('task-comments', function ($user) {
     return $user !== null;
