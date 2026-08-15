@@ -98,13 +98,7 @@ document.querySelectorAll('.kanban-column').forEach(column => {
     new Sortable(column, {
         group: {
             name: 'kanban',
-            put: function (to, from, dragEl) {
-                // Prevent non-PMs from dropping tasks in the 'done' (Completed) column
-                if (isDoneColumn && !isPM) {
-                    return false;
-                }
-                return true;
-            }
+            put: (isDoneColumn && !isPM) ? false : true
         },
         animation: 150,
         draggable: '.kanban-task',
