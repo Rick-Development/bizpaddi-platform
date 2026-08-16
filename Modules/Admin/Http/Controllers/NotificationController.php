@@ -19,7 +19,8 @@ class NotificationController extends Controller
     public function index()
     {
         $clients = Client::where('is_active', true)->orderBy('name')->get();
-        return view('admin::notifications.index', compact('clients'));
+        $teamMembers = \App\Models\User::orderBy('name')->get();
+        return view('admin::notifications.index', compact('clients', 'teamMembers'));
     }
 
     public function send(Request $request)
@@ -45,5 +46,25 @@ class NotificationController extends Controller
 
         return redirect()->route('admin.notifications.index')
             ->with('error', 'Failed to send notification: ' . ($result['message'] ?? 'Unknown error'));
+    }
+
+    public function sendToTeam(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+            'user_ids' => 'required|array|min:1',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $users = \App\Models\User::whereIn('id', $request->user_ids)->get();
+        $notification = new \App\Notifications\AdminBroadcastNotification($request->title, $request->message);
+
+        foreach ($users as $user) {
+            $user->notify($notification);
+        }
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Notification broadcasted successfully to ' . $users->count() . ' team member(s).');
     }
 }

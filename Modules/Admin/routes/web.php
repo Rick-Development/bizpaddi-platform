@@ -35,6 +35,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Push Notifications
         Route::get('notifications', [\Modules\Admin\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
         Route::post('notifications/send', [\Modules\Admin\Http\Controllers\NotificationController::class, 'send'])->name('notifications.send');
+        Route::post('notifications/team/send', [\Modules\Admin\Http\Controllers\NotificationController::class, 'sendToTeam'])->name('notifications.team.send');
 
         // Password Management
         Route::get('passwords', [\Modules\Admin\Http\Controllers\PasswordManagementController::class, 'index'])->name('passwords.index');
