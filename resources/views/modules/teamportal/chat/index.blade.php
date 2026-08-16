@@ -275,10 +275,11 @@
                             </svg>
                         </button>
                         <input type="file" id="attachment-input" class="hidden" multiple onchange="handleFileSelect(event)">
-
-                        <input type="text" id="message-input" placeholder="Type a message..." 
-                               class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] focus:bg-white transition-all placeholder-gray-400"
-                               autocomplete="off">
+                        
+                        <textarea id="message-input" rows="1" placeholder="Type a message..." 
+                               class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] focus:bg-white transition-all placeholder-gray-400 resize-none overflow-hidden"
+                               style="min-height: 44px; max-height: 120px; line-height: 1.5;"
+                               onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); document.getElementById('send-btn').click(); }"></textarea>
 
                         <button type="submit" id="send-btn" 
                                 class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
@@ -944,7 +945,7 @@
     }
 
     function sendMessage(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         const input = document.getElementById('message-input');
         const content = input.value.trim();
 
@@ -959,6 +960,7 @@
         });
 
         input.value = '';
+        input.style.height = 'auto'; // Reset height
         selectedFiles = [];
         renderUploadPreview();
 
@@ -1143,5 +1145,22 @@
             console.error('Failed to add member:', err);
         });
     }
+    // Setup textarea auto-resize and Enter key behavior
+    document.addEventListener('DOMContentLoaded', () => {
+        const messageInput = document.getElementById('message-input');
+        if (messageInput) {
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+    });
 </script>
 @endpush
