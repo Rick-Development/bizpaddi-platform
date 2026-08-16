@@ -69,5 +69,10 @@ class Admin extends Authenticatable
     {
         return \Illuminate\Support\Facades\Cache::has('admin-is-online-' . $this->id);
     }
+
+    public function fcmTokens()
+    {
+        return $this->morphMany(FcmToken::class, 'user');
+    }
 }
 

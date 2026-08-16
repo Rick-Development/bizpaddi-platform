@@ -24,6 +24,7 @@ class FcmTokenController extends Controller
         // Save or update token
         FcmToken::firstOrCreate([
             'user_id' => $user->id,
+            'user_type' => get_class($user),
             'token' => $request->token,
         ]);
 

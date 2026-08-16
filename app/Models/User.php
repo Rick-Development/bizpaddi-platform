@@ -133,6 +133,6 @@ class User extends Authenticatable implements HasMedia
 
     public function fcmTokens()
     {
-        return $this->hasMany(FcmToken::class);
+        return $this->morphMany(FcmToken::class, 'user');
     }
 }
