@@ -82,8 +82,8 @@
 
         <!-- Main Content -->
         <div class="{{ auth()->check() && auth()->user()->status === 'active' ? 'lg:pl-72' : '' }}">
-            <!-- Mobile Header -->
             @if(auth()->check() && auth()->user()->status === 'active')
+            <!-- Mobile Header -->
             <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 lg:hidden">
                 <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
                     <span class="sr-only">Open sidebar</span>
@@ -94,6 +94,20 @@
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                     <div class="flex flex-1 items-center justify-center lg:justify-end">
                          <span class="text-lg font-bold text-gray-900">Team Portal</span>
+                    </div>
+                    <div class="flex items-center gap-x-4">
+                        <x-bell-notification />
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Desktop Header -->
+            <div class="hidden lg:flex sticky top-0 z-40 h-16 shrink-0 items-center justify-end gap-x-4 border-b border-gray-200 bg-white/80 backdrop-blur-md px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+                <div class="flex items-center gap-x-4 lg:gap-x-6">
+                    <x-bell-notification />
+                    <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true"></div>
+                    <div class="flex items-center gap-x-4">
+                        <span class="text-sm font-semibold leading-6 text-gray-900">{{ auth()->user()->name }}</span>
                     </div>
                 </div>
             </div>
@@ -121,6 +135,7 @@
             </main>
         </div>
     </div>
+    <x-notification-prompt />
     @stack('scripts')
 </body>
 </html>

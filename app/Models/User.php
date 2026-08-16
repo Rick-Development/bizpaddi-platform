@@ -130,5 +130,9 @@ class User extends Authenticatable implements HasMedia
     {
         return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);
     }
-}
 
+    public function fcmTokens()
+    {
+        return $this->hasMany(FcmToken::class);
+    }
+}

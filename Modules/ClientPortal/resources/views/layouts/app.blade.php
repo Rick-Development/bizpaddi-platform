@@ -59,6 +59,10 @@
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                     <div class="flex flex-1"></div>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
+                        <div class="relative" x-data="{ open: false }">
+                            <x-bell-notification />
+                        </div>
+                        
                         <!-- Profile dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button type="button" @click="open = !open" class="-m-1.5 flex items-center p-1.5">
@@ -138,6 +142,7 @@
             </main>
         </div>
     </div>
+    <x-notification-prompt />
     @stack('scripts')
 </body>
 </html>

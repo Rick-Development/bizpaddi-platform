@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard') - Client Portal</title>
+    @php
+        $favicon = \Modules\Settings\Models\Setting::get('favicon');
+    @endphp
+    @if($favicon)
+        <link rel="icon" href="{{ asset('storage/' . $favicon) }}" type="image/x-icon">
+    @else
+        <link rel="icon" href="/logo.png" type="image/png">
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
@@ -51,6 +59,10 @@
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                     <div class="flex flex-1"></div>
                     <div class="flex items-center gap-x-4 lg:gap-x-6">
+                        <div class="relative" x-data="{ open: false }">
+                            <x-bell-notification />
+                        </div>
+                        
                         <!-- Profile dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button type="button" @click="open = !open" class="-m-1.5 flex items-center p-1.5">
@@ -130,6 +142,7 @@
             </main>
         </div>
     </div>
+    <x-notification-prompt />
     @stack('scripts')
 </body>
 </html>

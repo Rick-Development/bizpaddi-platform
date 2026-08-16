@@ -99,6 +99,8 @@
                             <h2 class="text-lg font-semibold text-gray-900">@yield('title', 'Dashboard')</h2>
                         </div>
                         <div class="flex items-center gap-x-4 lg:gap-x-6">
+                            <x-bell-notification />
+                            
                             <!-- User menu -->
                             <div class="flex items-center gap-x-4">
                                 <div class="hidden sm:block">
@@ -332,8 +334,7 @@
             }
         });
     </script>
-
+    <x-notification-prompt />
     @stack('scripts')
 </body>
 </html>
-

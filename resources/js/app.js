@@ -10,4 +10,11 @@ Alpine.plugin(intersect);
 window.Alpine = Alpine;
 window.marked = marked;
 
+import { initFirebaseMessaging } from './fcm';
+
 Alpine.start();
+
+// Initialize Firebase Messaging for push notifications
+document.addEventListener('DOMContentLoaded', () => {
+    initFirebaseMessaging();
+});

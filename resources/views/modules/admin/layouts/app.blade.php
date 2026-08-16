@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard') - Rick Development</title>
     @php
         $favicon = \Modules\Settings\Models\Setting::get('favicon');
@@ -19,46 +18,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-
+        
         .sidebar-gradient {
             background: linear-gradient(180deg, #191C47 0%, #0F1229 100%);
         }
-
+        
         .stat-card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
+        
         .stat-card-hover:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        /* ── Critical layout overrides (supplement compiled Tailwind) ── */
-        @media (min-width: 1024px) {
-            .lg\:pl-72 { padding-left: 18rem !important; }
-            .lg\:fixed  { position: fixed !important; }
-            .lg\:inset-y-0 { top: 0; bottom: 0; }
-            .lg\:z-50  { z-index: 50 !important; }
-            .lg\:flex  { display: flex !important; }
-            .lg\:w-72  { width: 18rem !important; }
-            .lg\:flex-col { flex-direction: column !important; }
-            .lg\:hidden { display: none !important; }
-        }
-        .grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
-        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        @media (min-width: 640px) {
-            .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-        }
-        @media (min-width: 1024px) {
-            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .lg\:col-span-2  { grid-column: span 2 / span 2; }
-            .lg\:flex-row    { flex-direction: row !important; }
-            .lg\:w-1\/3      { width: 33.333333% !important; }
-            .lg\:w-2\/3      { width: 66.666667% !important; }
         }
     </style>
     @stack('styles')
@@ -109,13 +83,14 @@
         <div class="lg:pl-72">
             <!-- Top bar -->
             <div class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-md shadow-sm">
-                <div class="flex h-16 shrink-0 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
-                    <button type="button" @click="sidebarOpen = true" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+                <div class="mx-auto max-w-7xl 2xl:max-w-[1600px] flex h-16 shrink-0 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
+                    <button type="button" @click="sidebarOpen = true" class="-m-2.5 p-2.5 text-gray-700 lg:hidden relative z-30 cursor-pointer focus:outline-none">
                         <span class="sr-only">Open sidebar</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
+
 
                     <div class="h-6 w-px bg-gray-200 lg:hidden"></div>
 
@@ -124,6 +99,8 @@
                             <h2 class="text-lg font-semibold text-gray-900">@yield('title', 'Dashboard')</h2>
                         </div>
                         <div class="flex items-center gap-x-4 lg:gap-x-6">
+                            <x-bell-notification />
+                            
                             <!-- User menu -->
                             <div class="flex items-center gap-x-4">
                                 <div class="hidden sm:block">
@@ -147,7 +124,7 @@
 
             <!-- Page content -->
             <main class="py-8">
-                <div class="px-4 sm:px-6 lg:px-8 w-full">
+                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1600px] mx-auto">
                     @if(session('success'))
                     <div class="mb-6 rounded-xl bg-green-50 p-4 border-l-4 border-green-500">
                         <div class="flex">
@@ -181,8 +158,183 @@
                     @yield('content')
                 </div>
             </main>
+    <!-- Global Toast Notifications Container -->
+    <div id="global-toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Desktop Notification Modal Prompt -->
+    <div id="desktop-notif-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-gray-100 transform scale-95 transition-all duration-300 text-center relative overflow-hidden">
+            
+            <div class="h-16 w-16 rounded-2xl bg-gradient-to-tr from-[#191C47] to-[#FB4C4B] text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/20">
+                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+            </div>
+
+            <h3 class="text-base font-bold text-gray-900">Enable Admin Desktop Notifications?</h3>
+            <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+                Get instant desktop alerts for new admin messages and global task comments even when your browser is in the background.
+            </p>
+
+            <div class="mt-6 flex items-center justify-center gap-3">
+                <button type="button" onclick="closeNotifModal()" 
+                        class="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-semibold transition-all">
+                    Cancel / Not Now
+                </button>
+                <button type="button" onclick="grantNotifPermissionFromModal()" 
+                        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FB4C4B] to-[#e03b3a] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">
+                    Enable Notifications 🔔
+                </button>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Web Audio Synthesized Notification Chime
+        function playNotificationChime() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.35);
+            } catch(e) {}
+        }
+
+        // Open/Close Notification Modal
+        function openNotifModal() {
+            const modal = document.getElementById('desktop-notif-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                const card = modal.querySelector('.transform');
+                if (card) {
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }
+            }, 50);
+        }
+
+        function closeNotifModal() {
+            const modal = document.getElementById('desktop-notif-modal');
+            if (!modal) return;
+            modal.classList.add('opacity-0');
+            const card = modal.querySelector('.transform');
+            if (card) {
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+            }
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+
+        function grantNotifPermissionFromModal() {
+            if (typeof Notification === 'undefined' || !('Notification' in window)) {
+                closeNotifModal();
+                showGlobalToast('In-App Alerts Active 🔔', 'Your mobile browser uses in-app toasts & badges for real-time notifications.', '#', 'chat');
+                return;
+            }
+
+            try {
+                Notification.requestPermission().then(permission => {
+                    closeNotifModal();
+                    if (permission === 'granted') {
+                        showGlobalToast('Notifications Enabled 🔔', 'You will now receive alerts for new chats & comments.', '#', 'chat');
+                    } else {
+                        showGlobalToast('In-App Alerts Active 🔔', 'In-app toasts & sidebar badges will keep you updated live.', '#', 'chat');
+                    }
+                }).catch(() => {
+                    closeNotifModal();
+                    showGlobalToast('In-App Alerts Active 🔔', 'Real-time in-app toasts & badges are active on your device.', '#', 'chat');
+                });
+            } catch (e) {
+                closeNotifModal();
+                showGlobalToast('In-App Alerts Active 🔔', 'Real-time in-app toasts & badges are active on your device.', '#', 'chat');
+            }
+        }
+
+
+        // Show Floating Interactive Toast & Native Desktop Notification
+        function showGlobalToast(title, body, url = '#', iconType = 'chat') {
+            playNotificationChime();
+
+            // Native OS Desktop Notification (works when browser is in background)
+            if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                try {
+                    const desktopNotif = new Notification(title, {
+                        body: body,
+                        icon: '/logo.png',
+                    });
+                    desktopNotif.onclick = function() {
+                        window.focus();
+                        if (url && url !== '#') {
+                            window.location.href = url;
+                        }
+                    };
+                } catch(e) {}
+            }
+
+            // In-App Floating Toast
+            const container = document.getElementById('global-toast-container');
+            if (!container) return;
+
+            const toastId = 'toast-' + Date.now();
+            const bgGradient = iconType === 'chat' ? 'from-[#191C47] to-[#2B2F6C]' : 'from-[#FB4C4B] to-[#D93635]';
+
+            const toastHtml = `
+                <div id="${toastId}" class="pointer-events-auto bg-white rounded-2xl shadow-xl border border-gray-200/80 p-4 flex items-start gap-3 transform translate-x-full transition-all duration-300 opacity-0 cursor-pointer hover:border-[#FB4C4B]"
+                     onclick="window.location.href='${url}'">
+                    <div class="h-9 w-9 rounded-xl bg-gradient-to-br ${bgGradient} text-white flex items-center justify-center flex-shrink-0 font-bold text-xs shadow-sm">
+                        ${iconType === 'chat' ? '💬' : '📝'}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-gray-900 truncate">${title}</h4>
+                        <p class="text-xs text-gray-600 truncate mt-0.5">${body}</p>
+                        <span class="text-[10px] text-[#FB4C4B] font-semibold mt-1 inline-block">Click to view →</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); document.getElementById('${toastId}').remove();" class="text-gray-400 hover:text-gray-600 p-1">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('afterbegin', toastHtml);
+
+            const toastEl = document.getElementById(toastId);
+            setTimeout(() => {
+                if (toastEl) {
+                    toastEl.classList.remove('opacity-0', 'translate-x-full');
+                }
+            }, 50);
+
+            setTimeout(() => {
+                if (toastEl) {
+                    toastEl.classList.add('opacity-0', 'translate-x-full');
+                    setTimeout(() => toastEl.remove(), 300);
+                }
+            }, 6000);
+        }
+
+        // On Page Load: Check if permission is default, if so show modal prompt
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+                setTimeout(openNotifModal, 1000);
+            }
+        });
+    </script>
+    <x-notification-prompt />
     @stack('scripts')
 </body>
 </html>
