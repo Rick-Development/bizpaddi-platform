@@ -153,10 +153,18 @@ class ChatController extends Controller
             })
             ->max('created_at');
 
-        $messages = $conversation->messages()
+        $limit = (int) $request->input('limit', 10);
+        $beforeId = $request->input('before_id');
+
+        $query = $conversation->messages()
             ->with(['sender', 'reads', 'media'])
-            ->orderBy('created_at', 'asc')
-            ->get()
+            ->orderBy('created_at', 'desc');
+
+        if ($beforeId) {
+            $query->where('id', '<', $beforeId);
+        }
+
+        $messages = $query->take($limit)->get()->reverse()->values()
             ->map(function ($message) use ($currentUser, $latestPartnerMessageTime) {
                 $isMe = ((int)$message->sender_id === (int)$currentUser->id) && 
                         (str_contains($message->sender_type, 'Admin') === str_contains(get_class($currentUser), 'Admin'));
