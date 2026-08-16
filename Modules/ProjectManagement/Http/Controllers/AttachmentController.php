@@ -44,6 +44,12 @@ class AttachmentController extends Controller
         return back()->with('success', 'File(s) uploaded successfully.');
     }
 
+    public function download(Request $request, $id)
+    {
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($id);
+        return response()->file($media->getPath());
+    }
+
     public function destroy($id)
     {
         // Spatie media deletion

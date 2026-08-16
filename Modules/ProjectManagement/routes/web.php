@@ -14,6 +14,7 @@ Route::group([], function () {
     Route::delete('comments/{comment}', [Modules\ProjectManagement\Http\Controllers\CommentController::class, 'destroy'])->name('pm.comments.destroy');
 
     Route::post('attachments', [Modules\ProjectManagement\Http\Controllers\AttachmentController::class, 'store'])->name('pm.attachments.store');
+    Route::get('attachments/{attachment}/download', [Modules\ProjectManagement\Http\Controllers\AttachmentController::class, 'download'])->name('pm.attachments.download');
     Route::delete('attachments/{attachment}', [Modules\ProjectManagement\Http\Controllers\AttachmentController::class, 'destroy'])
     ->name('pm.attachments.destroy');
     Route::post('time-logs/start', [Modules\ProjectManagement\Http\Controllers\TimeLogController::class, 'start'])->name('pm.time-logs.start');

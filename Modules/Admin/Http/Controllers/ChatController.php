@@ -181,7 +181,7 @@ class ChatController extends Controller
                     return [
                         'id' => $media->id,
                         'name' => $media->file_name,
-                        'url' => $media->getUrl(),
+                        'url' => route('pm.attachments.download', $media),
                         'mime_type' => $media->mime_type,
                         'size' => $media->human_readable_size,
                         'is_image' => str_contains($media->mime_type, 'image'),
@@ -306,7 +306,7 @@ class ChatController extends Controller
             return [
                 'id' => $media->id,
                 'name' => $media->file_name,
-                'url' => $media->getUrl(),
+                'url' => route('pm.attachments.download', $media),
                 'mime_type' => $media->mime_type,
                 'size' => $media->human_readable_size,
                 'is_image' => str_contains($media->mime_type, 'image'),

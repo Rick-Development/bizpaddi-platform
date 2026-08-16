@@ -24,4 +24,9 @@ class AccountCategory extends Model
     // {
     //     // return AccountCategoryFactory::new();
     // }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'category_id');
+    }
 }
