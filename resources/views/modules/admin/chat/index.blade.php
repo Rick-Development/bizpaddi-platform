@@ -404,6 +404,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     let activeConversationId = null;
     let activeEchoChannel = null;
@@ -411,12 +412,27 @@
     window.activePartnerKey = null;
     window.activePartnerIsOnline = false;
 
+    // Pagination states
+    let oldestMessageId = null;
+    let isLoadingMore = false;
+    let hasMoreMessages = true;
+
     const currentUserId = {{ auth('admin')->id() }};
     const currentUserType = "{{ addslashes(get_class(auth('admin')->user())) }}";
     const initialSelectedConvoId = "{{ $selectedConversationId ?? '' }}";
 
     document.addEventListener("DOMContentLoaded", () => {
         // WebSockets disabled - relying entirely on robust 2s AJAX polling
+
+        // Chat scroll pagination
+        const msgsContainer = document.getElementById('messages-container');
+        if (msgsContainer) {
+            msgsContainer.addEventListener('scroll', function() {
+                if (this.scrollTop === 0 && hasMoreMessages && !isLoadingMore && activeConversationId) {
+                    loadMoreMessages();
+                }
+            });
+        }
 
         // Auto load conversation if URL contains ID
         if (initialSelectedConvoId) {
@@ -500,7 +516,7 @@
         }
 
         // Fetch Messages via API
-        axios.get(`/admin/chat-api/conversations/${conversationId}/messages`)
+        axios.get(`/admin/chat-api/conversations/${conversationId}/messages?limit=10`)
             .then(res => {
                 const data = res.data;
                 
@@ -538,9 +554,69 @@
 
                 // Render Messages
                 renderMessages(data.messages);
+                
+                // Set pagination variables
+                if (data.messages && data.messages.length > 0) {
+                    oldestMessageId = data.messages[0].id;
+                } else {
+                    oldestMessageId = null;
+                }
+                
+                if (data.messages && data.messages.length < 10) {
+                    hasMoreMessages = false;
+                } else {
+                    hasMoreMessages = true;
+                }
+                isLoadingMore = false;
             })
             .catch(err => {
                 console.error('Failed to load conversation messages:', err);
+            });
+    }
+
+    function loadMoreMessages() {
+        isLoadingMore = true;
+        const container = document.getElementById('messages-container');
+        const previousScrollHeight = container.scrollHeight;
+
+        // Show a small loader at top
+        const loaderId = 'loading-more-msgs';
+        container.insertAdjacentHTML('afterbegin', `<div id="${loaderId}" class="text-center py-2"><span class="text-xs text-gray-400">Loading...</span></div>`);
+
+        axios.get(`/admin/chat-api/conversations/${activeConversationId}/messages?limit=10&before_id=${oldestMessageId}`)
+            .then(res => {
+                // Remove loader
+                const loader = document.getElementById(loaderId);
+                if (loader) loader.remove();
+
+                const newMessages = res.data.messages || [];
+                if (newMessages.length > 0) {
+                    oldestMessageId = newMessages[0].id;
+                    
+                    let newHtml = '';
+                    newMessages.forEach(msg => {
+                        const isMe = (parseInt(msg.sender_id) === currentUserId) && 
+                                     (msg.sender_type.includes('Admin') === currentUserType.includes('Admin'));
+                        newHtml += buildMessageBubble(msg, isMe);
+                    });
+
+                    container.insertAdjacentHTML('afterbegin', newHtml);
+
+                    // Maintain scroll position so it doesn't jump
+                    container.scrollTop = container.scrollHeight - previousScrollHeight;
+                }
+
+                if (newMessages.length < 10) {
+                    hasMoreMessages = false;
+                }
+                
+                isLoadingMore = false;
+            })
+            .catch(err => {
+                console.error('Failed to load more messages:', err);
+                const loader = document.getElementById(loaderId);
+                if (loader) loader.remove();
+                isLoadingMore = false;
             });
     }
 
