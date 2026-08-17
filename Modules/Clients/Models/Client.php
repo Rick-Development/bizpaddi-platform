@@ -2,6 +2,7 @@
 
 namespace Modules\Clients\Models;
 
+use App\Models\FcmToken;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -72,5 +73,10 @@ class Client extends Authenticatable implements HasMedia
     public function serviceOrders()
     {
         return $this->hasMany(\Modules\ClientPortal\Models\ServiceOrder::class);
+    }
+
+    public function fcmTokens()
+    {
+        return $this->morphMany(FcmToken::class, 'user');
     }
 }
