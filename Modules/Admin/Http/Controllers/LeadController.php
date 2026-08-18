@@ -57,7 +57,7 @@ class LeadController extends Controller
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $leads = $query->latest()->paginate(25);
+        $leads = $query->orderBy('updated_at', 'desc')->paginate(25);
         $teamMembers = User::all();
 
         return view('admin::leads.index', compact('leads', 'teamMembers'));

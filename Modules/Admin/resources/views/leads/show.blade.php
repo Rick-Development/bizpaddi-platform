@@ -66,6 +66,79 @@
             </dl>
         </div>
 
+        <!-- Fintech / B2B Project Requirements -->
+        @if($lead->metadata && (isset($lead->metadata['job_title']) || isset($lead->metadata['solution_interest']) || isset($lead->metadata['project_stage'])))
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Fintech Project Requirements</h2>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @if(isset($lead->metadata['job_title']))
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Job Title</dt>
+                    <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ $lead->metadata['job_title'] }}</dd>
+                </div>
+                @endif
+                @if(isset($lead->metadata['solution_interest']))
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Solution Interest</dt>
+                    <dd class="mt-1 text-sm text-brand-primary font-bold">{{ $lead->metadata['solution_interest'] }}</dd>
+                </div>
+                @endif
+                @if(isset($lead->metadata['project_stage']))
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Project Stage</dt>
+                    <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ $lead->metadata['project_stage'] }}</dd>
+                </div>
+                @endif
+                @if(isset($lead->metadata['clicked_cta']))
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Clicked CTA Source</dt>
+                    <dd class="mt-1 text-sm text-gray-900"><code class="bg-gray-100 px-2 py-0.5 rounded text-xs text-brand-primary font-semibold font-mono">{{ $lead->metadata['clicked_cta'] }}</code></dd>
+                </div>
+                @endif
+            </dl>
+        </div>
+        @endif
+
+        <!-- Form Resubmission History -->
+        @if($lead->metadata && isset($lead->metadata['submission_history']) && count($lead->metadata['submission_history']) > 0)
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Form Resubmission History</h2>
+            <div class="flow-root">
+                <ul role="list" class="-mb-8">
+                    @foreach($lead->metadata['submission_history'] as $historyIndex => $history)
+                    <li>
+                        <div class="relative pb-8">
+                            @if(!$loop->last)
+                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                            @endif
+                            <div class="relative flex space-x-3">
+                                <div>
+                                    <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white text-white text-xs font-bold">
+                                        {{ count($lead->metadata['submission_history']) - $historyIndex }}
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0 pt-1.5 flex justify-between space-x-4">
+                                    <div>
+                                        <p class="text-sm text-gray-800">
+                                            Submitted interest in <span class="font-semibold text-brand-primary">{{ $history['solution_interest'] ?? 'N/A' }}</span> ({{ $history['project_stage'] ?? 'N/A' }})
+                                            @if(!empty($history['notes']))
+                                            <span class="block mt-1 text-xs text-gray-600 bg-gray-50 p-2.5 rounded border border-gray-150 whitespace-pre-wrap font-sans">"{{ $history['notes'] }}"</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="text-right text-xs whitespace-nowrap text-gray-500">
+                                        <time datetime="{{ $history['submitted_at'] ?? '' }}">{{ isset($history['submitted_at']) ? \Carbon\Carbon::parse($history['submitted_at'])->format('M d, Y h:i A') : 'N/A' }}</time>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+        @endif
+
         <!-- Tracking Data -->
         @if($lead->utm_source || $lead->utm_medium || $lead->utm_campaign || $lead->utm_term || $lead->utm_content)
         <div class="bg-white rounded-lg shadow-sm p-6">

@@ -390,4 +390,46 @@ class WorkLogController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Force checkout selected active work logs.
+     */
+    public function bulkCheckout(Request $request)
+    {
+        $request->validate([
+            'log_ids' => 'required|array',
+            'log_ids.*' => 'required|exists:work_logs,id',
+        ]);
+
+        $logIds = $request->input('log_ids');
+        $now = now();
+        $updatedCount = 0;
+
+        foreach ($logIds as $id) {
+            $log = WorkLog::where('id', $id)
+                ->where('status', 'in_progress')
+                ->first();
+
+            if ($log) {
+                $log->update([
+                    'end_time' => $now,
+                    'status' => 'completed',
+                    'actual_tasks' => $log->actual_tasks ?: 'Forced checkout by Administrator.',
+                    'challenges' => $log->challenges ?: 'None (Admin Override)',
+                ]);
+                $updatedCount++;
+            }
+        }
+
+        if ($updatedCount > 0) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('performance:sync');
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to sync performance after bulk checkout: ' . $e->getMessage());
+            }
+            return redirect()->back()->with('success', "Successfully forced checkout for {$updatedCount} team member(s) and synced performance metrics.");
+        }
+
+        return redirect()->back()->with('error', 'No active work sessions were selected or modified.');
+    }
 }
