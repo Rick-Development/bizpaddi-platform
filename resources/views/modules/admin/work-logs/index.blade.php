@@ -123,8 +123,8 @@
                 <!-- Planned Tasks -->
                 <div class="col-span-12 md:col-span-4">
                     <a href="{{ route('admin.work-logs.show', $log->id) }}" class="block">
-                        <p class="text-sm text-gray-600 line-clamp-2" title="{{ $log->planned_tasks }}">
-                            <span class="font-medium text-gray-900">Summary:</span> {{ $log->planned_tasks }}
+                        <p class="text-sm text-gray-600 line-clamp-2" title="{!! strip_tags($log->planned_tasks) !!}">
+                            <span class="font-medium text-gray-900">Summary:</span> {!! strip_tags($log->planned_tasks) !!}
                         </p>
                     </a>
                 </div>

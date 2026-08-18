@@ -463,10 +463,10 @@
                                 </td>
                                 @if($includePlanned)
                                 <td>
-                                    {{ $log->planned_tasks }}
+                                    {!! strip_tags($log->planned_tasks) !!}
                                     @if($log->resources_needed)
                                         <div style="font-size: 10px; color: #4b5563; margin-top: 2px;">
-                                            <strong>Resources:</strong> {{ $log->resources_needed }}
+                                            <strong>Resources:</strong> {!! strip_tags($log->resources_needed) !!}
                                         </div>
                                     @endif
                                 </td>

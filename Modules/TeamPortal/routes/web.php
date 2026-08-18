@@ -46,7 +46,9 @@ Route::prefix('team')->name('team.')->group(function () {
 
         // Work Logs (New)
         Route::get('work-logs', [Modules\TeamPortal\Http\Controllers\WorkLogController::class, 'index'])->name('work-logs.index');
+        Route::get('work-logs/check-partial-status', [Modules\TeamPortal\Http\Controllers\WorkLogController::class, 'checkPartialStatus'])->name('work-logs.check-partial-status');
         Route::post('work-logs/check-in', [Modules\TeamPortal\Http\Controllers\WorkLogController::class, 'checkIn'])->name('work-logs.check-in');
+        Route::get('work-logs/{workLog}', [Modules\TeamPortal\Http\Controllers\WorkLogController::class, 'show'])->name('work-logs.show');
         Route::put('work-logs/{workLog}/check-out', [Modules\TeamPortal\Http\Controllers\WorkLogController::class, 'checkOut'])->name('work-logs.check-out');
         
         // Bank Accounts

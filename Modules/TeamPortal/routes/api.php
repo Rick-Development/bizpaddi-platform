@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum', 'user_type:team'])->prefix('v1/team')->name('
 
     // Work Logs
     Route::get('/work-logs', [WorkLogController::class, 'index']);
+    Route::get('/work-logs/check-partial-status', [WorkLogController::class, 'checkPartialStatus']);
     Route::post('/work-logs/check-in', [WorkLogController::class, 'checkIn']);
     Route::post('/work-logs/start', [WorkLogController::class, 'checkIn']);       // alias for check-in
     Route::put('/work-logs/{id}/check-out', [WorkLogController::class, 'checkOut']);

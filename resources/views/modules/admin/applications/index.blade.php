@@ -10,7 +10,55 @@
     </div>
 </div>
 
-<div class="mt-8 flow-root">
+{{-- Search & Filter Bar --}}
+<div class="mt-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+    <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+
+        {{-- Search --}}
+        <div class="relative flex-1">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </span>
+            <input type="text" id="search-input"
+                   placeholder="Search by name, email or job..."
+                   class="w-full border border-gray-300 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        {{-- Status Filter --}}
+        <div class="md:w-48">
+            <select id="status-filter"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="reviewing">Reviewing</option>
+                <option value="interview">Interview</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+
+        {{-- Job Filter --}}
+        <div class="md:w-56">
+            <select id="job-filter"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Positions</option>
+                @foreach($jobs as $job)
+                    <option value="{{ $job->id }}">{{ $job->title }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Results count --}}
+        <div class="text-sm text-gray-500 whitespace-nowrap self-center" id="results-count">
+            {{ $applications->count() }} result(s)
+        </div>
+    </div>
+</div>
+
+{{-- Table --}}
+<div class="mt-4 flow-root">
     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
@@ -25,57 +73,72 @@
                             <th class="relative py-3.5 pl-3 pr-4 sm:pr-6"><span class="sr-only">Actions</span></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                        @forelse($applications as $application)
-                        <tr>
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                <div class="font-medium">{{ $application->candidate->first_name }} {{ $application->candidate->last_name }}</div>
-                                <div class="text-gray-500">{{ $application->candidate->email }}</div>
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {{ $application->job->title }}
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {{ $application->created_at->format('M d, Y') }}
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                @php
-                                    $statusClasses = [
-                                        'pending' => 'bg-yellow-50 text-yellow-700 ring-yellow-600/20',
-                                        'reviewing' => 'bg-blue-50 text-blue-700 ring-blue-700/10',
-                                        'interview' => 'bg-purple-50 text-purple-700 ring-purple-700/10',
-                                        'accepted' => 'bg-green-50 text-green-700 ring-green-600/20',
-                                        'rejected' => 'bg-red-50 text-red-700 ring-red-600/10',
-                                    ];
-                                @endphp
-                                <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $statusClasses[$application->status] ?? 'bg-gray-50 text-gray-600 ring-gray-500/10' }}">
-                                    {{ ucfirst($application->status) }}
-                                </span>
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                @if($application->ai_score)
-                                    <span class="font-semibold {{ $application->ai_score >= 80 ? 'text-green-600' : ($application->ai_score >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
-                                        {{ $application->ai_score }}%
-                                    </span>
-                                @else
-                                    <span class="text-gray-400">-</span>
-                                @endif
-                            </td>
-                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                <a href="{{ route('admin.applications.show', $application) }}" class="text-brand-primary hover:text-red-900">View Details</a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="px-3 py-8 text-center text-sm text-gray-500">
-                                No applications found.
-                            </td>
-                        </tr>
-                        @endforelse
+                    <tbody id="applications-table-body" class="divide-y divide-gray-200 bg-white">
+                        @include('modules.admin.applications.partials.table')
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput   = document.getElementById('search-input');
+    const statusFilter  = document.getElementById('status-filter');
+    const jobFilter     = document.getElementById('job-filter');
+    const tableBody     = document.getElementById('applications-table-body');
+    const resultsCount  = document.getElementById('results-count');
+
+    let debounceTimer;
+
+    function fetchApplications() {
+        const params = new URLSearchParams({
+            ajax:   '1',
+            search: searchInput.value,
+            status: statusFilter.value,
+            job_id: jobFilter.value,
+        });
+
+        tableBody.innerHTML = `<tr>
+            <td colspan="6" class="px-3 py-10 text-center text-sm text-gray-400">
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <svg style="width:18px;height:18px;animation:spin 1s linear infinite;" fill="none" viewBox="0 0 24 24">
+                        <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading…
+                </div>
+            </td>
+        </tr>`;
+
+        fetch(window.location.pathname + '?' + params.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            tableBody.innerHTML = data.html;
+            if (data.count !== undefined && resultsCount) {
+                resultsCount.textContent = data.count + ' result(s)';
+            }
+        })
+        .catch(() => {
+            tableBody.innerHTML = `<tr><td colspan="6" class="px-3 py-8 text-center text-sm text-red-500">Failed to load. Please refresh.</td></tr>`;
+        });
+    }
+
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(fetchApplications, 300);
+    });
+
+    statusFilter.addEventListener('change', fetchApplications);
+    jobFilter.addEventListener('change', fetchApplications);
+});
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+@endpush
 @endsection
