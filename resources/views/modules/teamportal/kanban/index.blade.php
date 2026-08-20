@@ -78,6 +78,13 @@
                             </div>
                             @endif
                         </div>
+                        @if($task->status_changed_at)
+                        <div class="mt-2.5 pt-2.5 border-t border-gray-50 flex items-center text-[9px] text-gray-400 font-mono">
+                            <span class="flex items-center gap-1">
+                                🕒 {{ $task->status === 'todo' ? 'Assigned' : 'Moved' }}: {{ $task->status_changed_at->format('M d, Y \a\t H:i:s') }}
+                            </span>
+                        </div>
+                        @endif
                     </div>
                     @endforeach
                 @endif

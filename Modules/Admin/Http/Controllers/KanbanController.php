@@ -45,10 +45,13 @@ class KanbanController extends Controller
         ]);
 
         foreach ($request->tasks as $taskData) {
-            Task::where('id', $taskData['id'])->update([
-                'status' => $taskData['status'],
-                'order' => $taskData['order'],
-            ]);
+            $task = Task::find($taskData['id']);
+            if ($task) {
+                $task->update([
+                    'status' => $taskData['status'],
+                    'order' => $taskData['order'],
+                ]);
+            }
         }
 
         return response()->json(['success' => true]);

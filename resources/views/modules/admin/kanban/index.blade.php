@@ -74,10 +74,34 @@
                                </div>
                                @endif
                             </div>
-                            <div class="text-[10px] text-gray-400 font-medium">
-                                {{ $task->due_date ? $task->due_date->format('M d') : 'No due date' }}
+                            <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
+                                @if($task->due_date)
+                                    @if(!in_array($task->status, ['done','completed']))
+                                        @if($task->due_date->isPast())
+                                            <span class="relative flex h-2 w-2 shrink-0">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                                            </span>
+                                        @elseif($task->due_date->diffInHours(now(), false) >= -48)
+                                            <span class="relative flex h-2 w-2 shrink-0">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                                            </span>
+                                        @endif
+                                    @endif
+                                    {{ $task->due_date->format('M d') }} at {{ $task->due_date->format('g:i A') }}
+                                @else
+                                    No due date
+                                @endif
                             </div>
                         </div>
+                        @if($task->status_changed_at)
+                        <div class="mt-2.5 pt-2.5 border-t border-gray-50 flex items-center text-[9px] text-gray-400 font-mono">
+                            <span class="flex items-center gap-1">
+                                🕒 {{ $task->status === 'todo' ? 'Assigned' : 'Moved' }}: {{ $task->status_changed_at->format('M d, Y \a\t H:i:s') }}
+                            </span>
+                        </div>
+                        @endif
                     </div>
                     @endforeach
                 @endif

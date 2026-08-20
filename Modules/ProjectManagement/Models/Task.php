@@ -34,6 +34,7 @@ class Task extends Model implements HasMedia
         'approved_at',
         'milestone_id',
         'order',
+        'status_changed_at',
     ];
 
     protected $casts = [
@@ -44,7 +45,17 @@ class Task extends Model implements HasMedia
         'milestone_id' => 'integer',
         'order' => 'integer',
         'completed_at' => 'datetime',
+        'status_changed_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($task) {
+            if ($task->isDirty('status')) {
+                $task->status_changed_at = now();
+            }
+        });
+    }
 
     public function project(): BelongsTo
     {
