@@ -38,9 +38,17 @@ class EmailTemplateController extends Controller
             'subject' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category' => 'nullable|string|max:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('thumbnail')) {
+            $file = $request->file('thumbnail');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/email-templates'), $filename);
+            $validated['thumbnail'] = '/uploads/email-templates/' . $filename;
+        }
 
         $template = EmailTemplate::create($validated);
 
@@ -60,9 +68,22 @@ class EmailTemplateController extends Controller
             'subject' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category' => 'nullable|string|max:100',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('thumbnail')) {
+            // Delete old file if exists
+            if ($emailTemplate->thumbnail && file_exists(public_path($emailTemplate->thumbnail))) {
+                @unlink(public_path($emailTemplate->thumbnail));
+            }
+            
+            $file = $request->file('thumbnail');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/email-templates'), $filename);
+            $validated['thumbnail'] = '/uploads/email-templates/' . $filename;
+        }
 
         $emailTemplate->update($validated);
 

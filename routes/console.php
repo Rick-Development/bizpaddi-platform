@@ -8,8 +8,14 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('tasks:send-reminders')->twiceDaily(9, 14);
-Schedule::command('tasks:send-reminders')->dailyAt('18:00');
+// Hourly check-in and check-out tracking
+Schedule::command('team:checkin-checkout-reminders')->hourly();
+
+// Daily task alerts at 9:00 AM
+Schedule::command('tasks:send-reminders')->dailyAt('09:00');
+
+// Hourly trigger for daily/weekly reports
+Schedule::command('reports:send-operational')->hourly();
 
 // Schedule weekly project reports to be sent every Monday at 8:00 AM
 Schedule::command('reports:send-weekly')

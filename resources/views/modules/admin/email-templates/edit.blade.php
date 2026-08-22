@@ -24,7 +24,7 @@
         <p class="mt-1 text-sm text-gray-600">Update template content and details</p>
     </div>
 
-    <form action="{{ route('admin.email-templates.update', $emailTemplate) }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.email-templates.update', $emailTemplate) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
 
@@ -44,6 +44,17 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <input type="text" name="category" value="{{ old('category', $emailTemplate->category) }}" placeholder="e.g. Newsletter, Transactional" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Feature Graphic (Thumbnail)</label>
+                    @if($emailTemplate->thumbnail)
+                        <div class="mb-3">
+                            <img src="{{ $emailTemplate->thumbnail }}" alt="Feature Graphic Preview" class="h-32 w-auto object-cover rounded-lg border border-gray-200">
+                        </div>
+                    @endif
+                    <input type="file" name="thumbnail" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <p class="mt-1 text-xs text-gray-500">Supported formats: JPEG, PNG, JPG, GIF, SVG. Max size: 2MB.</p>
+                </div>
                 
                 <div>
                     <label class="flex items-center space-x-2">
@@ -60,8 +71,42 @@
             
             <textarea name="content" id="template-content" required>{{ old('content', $emailTemplate->content) }}</textarea>
             
-            <div class="mt-2 text-sm text-gray-500">
-                Available variables: @{{ first_name }}, @{{ last_name }}, @{{ email }}, @{{ company }}
+            @php
+                $category = strtolower($emailTemplate->category ?? 'system');
+                $name = strtolower($emailTemplate->name ?? '');
+
+                $vars = ['site_name', 'site_url', 'name'];
+
+                if (str_contains($category, 'attendance')) {
+                    $vars = array_merge($vars, ['checkin_url', 'checkout_url', 'start_time', 'end_time', 'duration', 'completed_tasks', 'points_earned']);
+                }
+
+                if (str_contains($category, 'task') || str_contains($category, 'project') || str_contains($category, 'milestone')) {
+                    $vars = array_merge($vars, ['assignee_name', 'task_title', 'task_description', 'task_due_date', 'task_url', 'reason', 'reviews_url', 'milestone_title', 'project_name', 'project_url', 'due_date', 'pending_percentage', 'employee_name', 'tasks_list']);
+                }
+
+                if (str_contains($category, 'report') || str_contains($category, 'summary')) {
+                    $vars = array_merge($vars, ['total_members', 'on_time', 'late', 'absent', 'projects_summary', 'projects_status', 'invoices_total', 'leads_count', 'avg_score', 'table_rows', 'projects_audit', 'pm_name', 'projects_count', 'avg_response_hours', 'pending_reviews', 'resolved_blockers', 'overdue_count', 'new_leads', 'invoices_count', 'open_tickets', 'active_clock_ins']);
+                }
+
+                if (str_contains($category, 'pm') || str_contains($category, 'manager') || str_contains($category, 'project manager alerts')) {
+                    $vars = array_merge($vars, ['checked_in_names', 'late_names', 'absent_names', 'employee_name', 'violation_type', 'violation_details', 'tasks_list', 'reason', 'task_title', 'task_url', 'project_name', 'project_url', 'due_date']);
+                }
+
+                if (str_contains($name, 'blocked') || str_contains($name, 'blocker')) {
+                    $vars[] = 'reason';
+                }
+
+                $vars = array_unique($vars);
+            @endphp
+
+            <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Available Variables (Click to select & copy):</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    @foreach($vars as $var)
+                        <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2.5 py-1 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                    @endforeach
+                </div>
             </div>
         </div>
 
@@ -86,6 +131,10 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <script>
+function insertVariable(val) {
+    $('#template-content').summernote('insertText', val);
+}
+
 $(document).ready(function() {
     // Override Summernote's built-in sanitizer with a passthrough so that
     // full email HTML (DOCTYPE, <style>, !important, MSO conditionals) is

@@ -292,6 +292,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [\Modules\Admin\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
         Route::post('settings', [\Modules\Admin\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
 
+        // Mail / SMTP Settings
+        Route::prefix('settings/mail')->name('settings.mail.')->group(function () {
+            Route::get('/', [\Modules\Admin\Http\Controllers\MailSettingsController::class, 'index'])->name('index');
+            Route::put('/', [\Modules\Admin\Http\Controllers\MailSettingsController::class, 'update'])->name('update');
+            Route::post('/test', [\Modules\Admin\Http\Controllers\MailSettingsController::class, 'sendTest'])->name('test');
+        });
+
         // SEO Manager
         Route::get('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'index'])->name('seo.index');
         Route::put('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'update'])->name('seo.update');

@@ -3,9 +3,30 @@
 @section('title', 'Settings')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Site Settings</h1>
-    <p class="mt-2 text-sm text-gray-700">Manage global configuration, contact information, and social links.</p>
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900">Site Settings</h1>
+        <p class="mt-2 text-sm text-gray-700">Manage global configuration, contact information, and social links.</p>
+    </div>
+</div>
+
+{{-- Quick Links --}}
+<div class="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <a href="{{ route('admin.settings.mail.index') }}"
+       class="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:border-brand-primary hover:shadow-md transition-all group">
+        <div class="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center group-hover:bg-brand-primary transition-colors">
+            <svg class="h-5 w-5 text-brand-primary group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        <div>
+            <p class="text-sm font-semibold text-gray-900">Mail / SMTP Settings</p>
+            <p class="text-xs text-gray-500">Configure outgoing email server</p>
+        </div>
+        <svg class="ml-auto h-4 w-4 text-gray-400 group-hover:text-brand-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+    </a>
 </div>
 
 <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8 divide-y divide-gray-200">

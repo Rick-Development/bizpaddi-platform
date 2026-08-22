@@ -20,7 +20,7 @@ class TaskReviewNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database', FcmChannel::class];
+        return ['database', FcmChannel::class, 'mail'];
     }
 
     public function toDatabase($notifiable)
@@ -45,5 +45,14 @@ class TaskReviewNotification extends Notification
                 'type' => 'task_review'
             ]
         ];
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new \App\Notifications\OperationalMailNotification('Task Submitted for Review', [
+            'task_title' => $this->task->title,
+            'employee_name' => $this->task->assignee->name ?? 'Team Member',
+            'task_url' => route('admin.tasks.edit', $this->task->id),
+        ]))->toMail($notifiable);
     }
 }

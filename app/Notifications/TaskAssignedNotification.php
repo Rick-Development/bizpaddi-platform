@@ -20,7 +20,7 @@ class TaskAssignedNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database', FcmChannel::class];
+        return ['database', FcmChannel::class, 'mail'];
     }
 
     public function toDatabase($notifiable)
@@ -45,5 +45,16 @@ class TaskAssignedNotification extends Notification
                 'type' => 'task_assigned'
             ]
         ];
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new \App\Notifications\OperationalMailNotification('Task Assigned', [
+            'assignee_name' => $notifiable->name,
+            'task_title' => $this->task->title,
+            'task_description' => $this->task->description ?: 'No description provided.',
+            'task_due_date' => $this->task->due_date ? $this->task->due_date->format('Y-m-d H:i') : 'No due date',
+            'task_url' => route('team.tasks.show', $this->task->id),
+        ]))->toMail($notifiable);
     }
 }

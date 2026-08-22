@@ -45,8 +45,42 @@
             
             <textarea name="content" id="template-content" required>{{ old('content', $emailTemplate->content) }}</textarea>
             
-            <div class="mt-2 text-sm text-gray-500">
-                Available variables: @{{ first_name }}, @{{ last_name }}, @{{ email }}, @{{ company }}
+            @php
+                $category = strtolower($emailTemplate->category ?? 'system');
+                $name = strtolower($emailTemplate->name ?? '');
+
+                $vars = ['site_name', 'site_url', 'name'];
+
+                if (str_contains($category, 'attendance')) {
+                    $vars = array_merge($vars, ['checkin_url', 'checkout_url', 'start_time', 'end_time', 'duration', 'completed_tasks', 'points_earned']);
+                }
+
+                if (str_contains($category, 'task') || str_contains($category, 'project') || str_contains($category, 'milestone')) {
+                    $vars = array_merge($vars, ['assignee_name', 'task_title', 'task_description', 'task_due_date', 'task_url', 'reason', 'reviews_url', 'milestone_title', 'project_name', 'project_url', 'due_date', 'pending_percentage', 'employee_name', 'tasks_list']);
+                }
+
+                if (str_contains($category, 'report') || str_contains($category, 'summary')) {
+                    $vars = array_merge($vars, ['total_members', 'on_time', 'late', 'absent', 'projects_summary', 'projects_status', 'invoices_total', 'leads_count', 'avg_score', 'table_rows', 'projects_audit', 'pm_name', 'projects_count', 'avg_response_hours', 'pending_reviews', 'resolved_blockers', 'overdue_count', 'new_leads', 'invoices_count', 'open_tickets', 'active_clock_ins']);
+                }
+
+                if (str_contains($category, 'pm') || str_contains($category, 'manager') || str_contains($category, 'project manager alerts')) {
+                    $vars = array_merge($vars, ['checked_in_names', 'late_names', 'absent_names', 'employee_name', 'violation_type', 'violation_details', 'tasks_list', 'reason', 'task_title', 'task_url', 'project_name', 'project_url', 'due_date']);
+                }
+
+                if (str_contains($name, 'blocked') || str_contains($name, 'blocker')) {
+                    $vars[] = 'reason';
+                }
+
+                $vars = array_unique($vars);
+            @endphp
+
+            <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Available Variables (Click to select & copy):</span>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    @foreach($vars as $var)
+                        <code onclick="navigator.clipboard.writeText('{{ '{{' }}{{ $var }}{{ '}}' }}'); alert('Copied: {{ '{{' }}{{ $var }}{{ '}}' }}');" class="px-2.5 py-1 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to copy">@{{ {{ $var }} }}</code>
+                    @endforeach
+                </div>
             </div>
         </div>
 
