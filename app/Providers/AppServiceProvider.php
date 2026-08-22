@@ -31,6 +31,15 @@ class AppServiceProvider extends ServiceProvider
         // Wrapped in try/catch so that the app still boots on a fresh install
         // before migrations have been run.
         $this->applyMailSettingsFromDatabase();
+
+        // Auto-provision default email templates if any are missing
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('email_templates')) {
+                \App\Services\DynamicTemplateService::provisionTemplates();
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::debug('AppServiceProvider: Could not provision email templates — ' . $e->getMessage());
+        }
     }
 
     /**
