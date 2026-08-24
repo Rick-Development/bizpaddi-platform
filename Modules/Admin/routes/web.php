@@ -257,6 +257,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('tasks/export-csv', [TaskController::class, 'exportCsv'])->name('tasks.export-csv');
         Route::resource('tasks', TaskController::class);
         Route::get('kanban', [KanbanController::class, 'index'])->name('kanban.index');
+        Route::post('kanban', [KanbanController::class, 'index'])->name('kanban.filter');
         Route::post('kanban/update-order', [KanbanController::class, 'updateOrder'])->name('kanban.update-order');
         Route::get('project-management/work-logs/export', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'exportPage'])->name('work-logs.export-page');
         Route::post('project-management/work-logs/bulk-checkout', [\Modules\Admin\Http\Controllers\WorkLogController::class, 'bulkCheckout'])->name('work-logs.bulk-checkout');

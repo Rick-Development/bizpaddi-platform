@@ -77,7 +77,17 @@
     </form>
 </div>
 
-<div id="kanban-board-container" class="transition-opacity duration-200">
+<div id="kanban-board-container" class="relative transition-opacity duration-200">
+    <!-- Loading Spinner Overlay -->
+    <div id="kanban-loader" class="hidden absolute inset-0 bg-white/70 backdrop-blur-xs z-50 flex items-center justify-center rounded-xl min-h-[300px]">
+        <div class="flex flex-col items-center gap-2 bg-white/80 p-4 rounded-xl shadow-sm border border-gray-100">
+            <svg class="animate-spin h-8 w-8 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs font-semibold text-gray-700">Loading tasks...</span>
+        </div>
+    </div>
     @include('admin::kanban.board')
 </div>
 @endsection
@@ -140,6 +150,7 @@ function updateTaskOrder() {
 // AJAX Filtering Setup
 const filtersForm = document.getElementById('kanban-filters-form');
 const boardContainer = document.getElementById('kanban-board-container');
+const loader = document.getElementById('kanban-loader');
 const dateFilterSelect = document.getElementById('date_filter');
 const customDateContainer = document.getElementById('custom-date-container');
 const newTaskBtn = document.getElementById('new-task-btn');
@@ -156,11 +167,11 @@ dateFilterSelect.addEventListener('change', toggleCustomDate);
 toggleCustomDate(); // Run once on startup
 
 function fetchFilteredTasks() {
-    boardContainer.classList.add('opacity-50');
+    // Show loading spinner
+    loader.classList.remove('hidden');
 
     const formData = new FormData(filtersForm);
-    const params = new URLSearchParams(formData).toString();
-    const url = `{{ route('admin.kanban.index') }}?${params}`;
+    const searchParams = new URLSearchParams(formData);
 
     // Update the "+ New Task" button link
     const projectId = formData.get('project_id');
@@ -170,23 +181,32 @@ function fetchFilteredTasks() {
         newTaskBtn.href = `{{ route('admin.tasks.create') }}`;
     }
 
-    // Update address bar status without page refresh
-    window.history.pushState({}, '', url);
-
-    fetch(url, {
+    // Post filters to fetch results and keep URL completely clean
+    fetch('{{ route("admin.kanban.filter") }}', {
+        method: 'POST',
         headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'X-Requested-With': 'XMLHttpRequest'
-        }
+        },
+        body: JSON.stringify(Object.fromEntries(searchParams))
     })
     .then(response => response.text())
     .then(html => {
-        boardContainer.innerHTML = html;
+        // Find existing board and update
+        const boardEl = document.querySelector('.flex.gap-4.overflow-x-auto');
+        if (boardEl) boardEl.remove();
+        
+        // Append new HTML structure after the loader
+        loader.insertAdjacentHTML('afterend', html);
+        
         initializeSortable();
-        boardContainer.classList.remove('opacity-50');
+        loader.classList.add('hidden');
     })
     .catch(error => {
         console.error('Error fetching tasks:', error);
-        boardContainer.classList.remove('opacity-50');
+        loader.classList.add('hidden');
     });
 }
 
