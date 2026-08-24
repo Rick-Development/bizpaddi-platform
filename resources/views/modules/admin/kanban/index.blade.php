@@ -3,129 +3,104 @@
 @section('title', 'Kanban Board')
 
 @section('content')
-<div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-        <h1 class="text-3xl font-bold text-gray-900">Task Board</h1>
-        <p class="text-sm text-gray-500 mt-1">Manage project tasks with drag and drop</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <form action="{{ route('admin.kanban.index') }}" method="GET" class="flex items-center gap-2">
-            <select name="project_id" onchange="this.form.submit()" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500">
-                <option value="">All Projects</option>
-                @foreach($projects as $p)
-                    <option value="{{ $p->id }}" {{ $project && $project->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-                @endforeach
-            </select>
-        </form>
-        <a href="{{ route('admin.tasks.create', ['project_id' => $project ? $project->id : null]) }}" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition-all">
-            + New Task
-        </a>
-    </div>
-</div>
-
-<div class="flex gap-4 overflow-x-auto pb-8 min-h-[calc(100vh-250px)]">
-    @foreach($columns as $status => $label)
-    <div class="flex-shrink-0 w-80">
-        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    {{ $label }}
-                    <span class="bg-white text-gray-400 text-[10px] px-2 py-0.5 rounded-full border border-gray-100">
-                        {{ isset($groupedTasks[$status]) ? $groupedTasks[$status]->count() : 0 }}
-                    </span>
-                </h3>
-            </div>
-            
-            <div id="column-{{ $status }}" data-status="{{ $status }}" class="kanban-column space-y-3 flex-1 min-h-[200px]">
-                @if(isset($groupedTasks[$status]))
-                    @foreach($groupedTasks[$status] as $task)
-                    <div data-id="{{ $task->id }}" class="kanban-task bg-white p-4 rounded-xl border border-gray-100 shadow-sm cursor-grab active:cursor-grabbing hover:border-gray-300 transition-all group">
-                        <div class="flex items-start justify-between mb-2">
-                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase 
-                                @if($task->priority == 'urgent') bg-red-100 text-red-700
-                                @elseif($task->priority == 'high') bg-orange-100 text-orange-700
-                                @elseif($task->priority == 'medium') bg-blue-100 text-blue-700
-                                @else bg-gray-100 text-gray-700 @endif">
-                                {{ $task->priority }}
-                            </span>
-                            @if($task->milestone)
-                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase bg-purple-100 text-purple-700 truncate max-w-[100px]" title="Milestone: {{ $task->milestone->title }}">
-                                🏔️ {{ Str::limit($task->milestone->title, 10) }}
-                            </span>
-                            @endif
-                            @if($task->requires_client_approval)
-                            <span class="text-[10px] text-gray-400" title="Requires Client Approval">🛡️</span>
-                            @endif
-                        </div>
-                        <h4 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-black transition-colors">
-                            <a href="{{ route('admin.tasks.show', $task) }}">{{ $task->title }}</a>
-                        </h4>
-                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">{{ Str::limit(strip_tags($task->description), 100) }}</p>
-                        
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div class="flex -space-x-1">
-                               @if($task->assignee)
-                               <div class="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500 border-2 border-white ring-1 ring-gray-100" title="{{ $task->assignee->name }}">
-                                   {{ substr($task->assignee->name, 0, 1) }}
-                               </div>
-                               @else
-                               <div class="h-6 w-6 rounded-full bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center text-[10px] text-gray-300">
-                                   ?
-                               </div>
-                               @endif
-                            </div>
-                            <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
-                                @if($task->due_date)
-                                    @if(!in_array($task->status, ['done','completed']))
-                                        @if($task->due_date->isPast())
-                                            <span class="relative flex h-2 w-2 shrink-0">
-                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
-                                            </span>
-                                        @elseif($task->due_date->diffInHours(now(), false) >= -48)
-                                            <span class="relative flex h-2 w-2 shrink-0">
-                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                                            </span>
-                                        @endif
-                                    @endif
-                                    {{ $task->due_date->format('M d') }} at {{ $task->due_date->format('g:i A') }}
-                                @else
-                                    No due date
-                                @endif
-                            </div>
-                        </div>
-                        @if($task->status_changed_at)
-                        <div class="mt-2.5 pt-2.5 border-t border-gray-50 flex items-center text-[9px] text-gray-400 font-mono">
-                            <span class="flex items-center gap-1">
-                                🕒 {{ $task->status === 'todo' ? 'Assigned' : 'Moved' }}: {{ $task->status_changed_at->format('M d, Y \a\t H:i:s') }}
-                            </span>
-                        </div>
-                        @endif
-                    </div>
-                    @endforeach
-                @endif
-            </div>
+<div class="mb-8 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Task Board</h1>
+            <p class="text-sm text-gray-500 mt-1">Manage project tasks with drag and drop</p>
+        </div>
+        <div>
+            <a id="new-task-btn" href="{{ route('admin.tasks.create', ['project_id' => $project ? $project->id : null]) }}" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-black transition-all inline-block shadow-sm">
+                + New Task
+            </a>
         </div>
     </div>
-    @endforeach
+
+    <!-- AJAX Filters Form -->
+    <form id="kanban-filters-form" class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-wrap items-center gap-3 text-sm" onsubmit="event.preventDefault();">
+        <!-- Keyword Search -->
+        <div class="w-full sm:w-auto flex-1 sm:flex-none">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs"></i>
+                </span>
+                <input type="text" name="search" placeholder="Search tasks..." class="w-full sm:w-48 pl-9 pr-3 py-2 rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+            </div>
+        </div>
+
+        <!-- Project Selection -->
+        <select name="project_id" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+            <option value="">All Projects</option>
+            @foreach($projects as $p)
+                <option value="{{ $p->id }}" {{ $project && $project->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+            @endforeach
+        </select>
+
+        <!-- Assignee Filter -->
+        <select name="assigned_to" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+            <option value="">All Assignees</option>
+            @foreach($assignees as $member)
+                <option value="{{ $member->id }}">{{ $member->name }}</option>
+            @endforeach
+        </select>
+
+        <!-- Priority Filter -->
+        <select name="priority" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+            <option value="">All Priorities</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+        </select>
+
+        <!-- Date Filter Option -->
+        <select name="date_filter" id="date_filter" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+            <option value="">All Time</option>
+            <option value="today">Assigned Today</option>
+            <option value="yesterday">Assigned Yesterday</option>
+            <option value="this_week">Assigned This Week</option>
+            <option value="this_month">Assigned This Month</option>
+            <option value="custom">Custom Date Range</option>
+        </select>
+
+        <!-- Custom Date Range Pickers -->
+        <div id="custom-date-container" class="hidden flex items-center gap-2">
+            <input type="date" name="start_date" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500 py-1.5">
+            <span class="text-gray-400 text-xs">to</span>
+            <input type="date" name="end_date" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500 py-1.5">
+        </div>
+
+        <!-- Reset Button -->
+        <button type="button" id="reset-filters" class="text-xs font-semibold text-gray-400 hover:text-gray-900 ml-auto cursor-pointer p-1.5 hover:bg-gray-50 rounded-lg transition-all">
+            Reset Filters
+        </button>
+    </form>
+</div>
+
+<div id="kanban-board-container" class="transition-opacity duration-200">
+    @include('admin::kanban.board')
 </div>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-document.querySelectorAll('.kanban-column').forEach(column => {
-    new Sortable(column, {
-        group: 'kanban',
-        animation: 150,
-        draggable: '.kanban-task',
-        ghostClass: 'opacity-50',
-        onEnd: function (evt) {
-            updateTaskOrder();
-        }
+function initializeSortable() {
+    document.querySelectorAll('.kanban-column').forEach(column => {
+        new Sortable(column, {
+            group: 'kanban',
+            animation: 150,
+            draggable: '.kanban-task',
+            ghostClass: 'opacity-50',
+            onEnd: function (evt) {
+                updateTaskOrder();
+            }
+        });
     });
-});
+}
+
+// Run initial sortable binding
+initializeSortable();
 
 function updateTaskOrder() {
     let data = {
@@ -161,5 +136,77 @@ function updateTaskOrder() {
     })
     .catch(error => console.error('Error:', error));
 }
+
+// AJAX Filtering Setup
+const filtersForm = document.getElementById('kanban-filters-form');
+const boardContainer = document.getElementById('kanban-board-container');
+const dateFilterSelect = document.getElementById('date_filter');
+const customDateContainer = document.getElementById('custom-date-container');
+const newTaskBtn = document.getElementById('new-task-btn');
+
+function toggleCustomDate() {
+    if (dateFilterSelect.value === 'custom') {
+        customDateContainer.classList.remove('hidden');
+    } else {
+        customDateContainer.classList.add('hidden');
+    }
+}
+
+dateFilterSelect.addEventListener('change', toggleCustomDate);
+toggleCustomDate(); // Run once on startup
+
+function fetchFilteredTasks() {
+    boardContainer.classList.add('opacity-50');
+
+    const formData = new FormData(filtersForm);
+    const params = new URLSearchParams(formData).toString();
+    const url = `{{ route('admin.kanban.index') }}?${params}`;
+
+    // Update the "+ New Task" button link
+    const projectId = formData.get('project_id');
+    if (projectId) {
+        newTaskBtn.href = `{{ route('admin.tasks.create') }}?project_id=${projectId}`;
+    } else {
+        newTaskBtn.href = `{{ route('admin.tasks.create') }}`;
+    }
+
+    // Update address bar status without page refresh
+    window.history.pushState({}, '', url);
+
+    fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        boardContainer.innerHTML = html;
+        initializeSortable();
+        boardContainer.classList.remove('opacity-50');
+    })
+    .catch(error => {
+        console.error('Error fetching tasks:', error);
+        boardContainer.classList.remove('opacity-50');
+    });
+}
+
+// Bind change event to select selectors and dates
+filtersForm.querySelectorAll('select, input[type="date"]').forEach(el => {
+    el.addEventListener('change', fetchFilteredTasks);
+});
+
+// Debounced filter for search input
+let debounceTimer;
+filtersForm.querySelector('input[name="search"]').addEventListener('input', function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(fetchFilteredTasks, 250);
+});
+
+// Reset Button Logic
+document.getElementById('reset-filters').addEventListener('click', function() {
+    filtersForm.reset();
+    toggleCustomDate();
+    fetchFilteredTasks();
+});
 </script>
 @endpush
