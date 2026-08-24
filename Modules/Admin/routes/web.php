@@ -49,6 +49,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('team-members/{user}/status', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'updateStatus'])->name('team-members.update-status');
         Route::get('team-performance', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'performance'])->name('team-performance.index');
         Route::get('team-performance/export-pdf', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'exportPdf'])->name('team-performance.export-pdf');
+
+        // Team Emails
+        Route::get('team-emails/create', [\Modules\Admin\Http\Controllers\TeamEmailController::class, 'create'])->name('team-emails.create');
+        Route::post('team-emails', [\Modules\Admin\Http\Controllers\TeamEmailController::class, 'send'])->name('team-emails.send');
         
         // Departments & Roles
         Route::resource('departments', \Modules\Admin\Http\Controllers\DepartmentController::class);
