@@ -26,6 +26,7 @@
                     <option value="all_active">All Active Team Members</option>
                     <option value="department">By Department</option>
                     <option value="role">By Role</option>
+                    <option value="project">By Project</option>
                     <option value="selected_users">Specific Team Member(s)</option>
                 </select>
             </div>
@@ -59,6 +60,17 @@
                 <option value="">-- Choose a Role --</option>
                 @foreach($roles as $role)
                     <option value="{{ $role->name }}" {{ old('role') == $role->name ? 'selected' : '' }}>{{ ucwords(str_replace('_', ' ', $role->name)) }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Conditional Field: Project -->
+        <div x-show="recipientType === 'project'" x-transition class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Project <span class="text-red-500">*</span></label>
+            <select name="project_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm bg-white">
+                <option value="">-- Choose a Project --</option>
+                @foreach($projects as $project)
+                    <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
                 @endforeach
             </select>
         </div>

@@ -19,16 +19,18 @@ class TeamEmailController extends Controller
         $departments = Department::where('is_active', true)->orderBy('name')->get();
         $roles = Role::orderBy('name')->get();
         $templates = EmailTemplate::where('is_active', true)->orderBy('name')->get();
+        $projects = \Modules\ProjectManagement\Models\Project::orderBy('name')->get();
 
-        return view('admin::team-emails.create', compact('teamMembers', 'departments', 'roles', 'templates'));
+        return view('admin::team-emails.create', compact('teamMembers', 'departments', 'roles', 'templates', 'projects'));
     }
 
     public function send(Request $request)
     {
         $validated = $request->validate([
-            'recipient_type' => 'required|in:all_active,department,role,selected_users',
+            'recipient_type' => 'required|in:all_active,department,role,selected_users,project',
             'department' => 'required_if:recipient_type,department|nullable|string|exists:departments,name',
             'role' => 'required_if:recipient_type,role|nullable|string|exists:roles,name',
+            'project_id' => 'required_if:recipient_type,project|nullable|integer|exists:pm_projects,id',
             'users' => 'required_if:recipient_type,selected_users|nullable|array',
             'users.*' => 'exists:users,id',
             'subject' => 'required|string|max:255',
@@ -45,6 +47,18 @@ class TeamEmailController extends Controller
                 break;
             case 'role':
                 $query->role($request->role);
+                break;
+            case 'project':
+                $project = \Modules\ProjectManagement\Models\Project::with('teamMembers')->find($request->project_id);
+                if ($project) {
+                    $memberIds = $project->teamMembers->pluck('id')->toArray();
+                    if ($project->manager_id) {
+                        $memberIds[] = $project->manager_id;
+                    }
+                    $query->whereIn('id', array_unique($memberIds));
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
                 break;
             case 'selected_users':
                 $query->whereIn('id', $request->users);
