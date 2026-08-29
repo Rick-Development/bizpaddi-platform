@@ -21,7 +21,19 @@ class ServiceCategory extends Model
     protected function image(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
-            get: fn ($value) => $value ? \Illuminate\Support\Facades\Storage::disk('public')->url($value) : null,
+            get: function ($value) {
+                if (!$value) {
+                    return null;
+                }
+                if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
+                    return $value;
+                }
+                $cleanPath = ltrim($value, '/');
+                if (\Illuminate\Support\Str::startsWith($cleanPath, 'storage/')) {
+                    $cleanPath = substr($cleanPath, 8);
+                }
+                return \Illuminate\Support\Facades\Storage::disk('public')->url($cleanPath);
+            }
         );
     }
 

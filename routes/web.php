@@ -50,3 +50,22 @@ Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationC
 Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->middleware(['web']);
 
 Route::post('/fcm-token', [\App\Http\Controllers\Api\FcmTokenController::class, 'store'])->middleware(['web']);
+
+// Fallback direct storage file server if public/storage symlink is missing or bypassed by web server
+Route::get('/storage/{path}', function ($path) {
+    // Strip accidental duplicate storage/ prefixes if any
+    $path = preg_replace('/^(storage\/)+/', '', $path);
+    
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        $fullPath = storage_path('app/' . $path);
+    }
+    
+    if (!file_exists($fullPath) || is_dir($fullPath)) {
+        abort(404, 'File not found');
+    }
+    
+    $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
+    return response()->file($fullPath, ['Content-Type' => $mimeType]);
+})->where('path', '.*');
+

@@ -62,4 +62,33 @@ class ApplicationController extends Controller
 
         return redirect()->back()->with('success', 'Application status updated successfully.');
     }
+
+    public function downloadResume(Application $application)
+    {
+        if (!$application->resume_path) {
+            return back()->with('error', 'No resume file associated with this application.');
+        }
+
+        $path = $application->resume_path;
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->download($path);
+        }
+
+        if (\Illuminate\Support\Facades\Storage::exists($path)) {
+            return \Illuminate\Support\Facades\Storage::download($path);
+        }
+
+        $publicPath = storage_path('app/public/' . ltrim($path, '/'));
+        if (file_exists($publicPath)) {
+            return response()->download($publicPath);
+        }
+
+        $appPath = storage_path('app/' . ltrim($path, '/'));
+        if (file_exists($appPath)) {
+            return response()->download($appPath);
+        }
+
+        return back()->with('error', 'Resume file could not be found on the server disk.');
+    }
 }

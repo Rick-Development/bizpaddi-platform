@@ -168,6 +168,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         // Careers Management
         Route::resource('jobs', \Modules\Admin\Http\Controllers\JobController::class);
+        Route::get('applications/{application}/download-resume', [\Modules\Admin\Http\Controllers\ApplicationController::class, 'downloadResume'])->name('applications.download-resume');
         Route::resource('applications', \Modules\Admin\Http\Controllers\ApplicationController::class)->only(['index', 'show', 'update']);
         
         // Contact Management

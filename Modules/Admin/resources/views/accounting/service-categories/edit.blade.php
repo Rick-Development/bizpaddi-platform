@@ -39,7 +39,7 @@
                 
                 @if($serviceCategory->image)
                     <div class="mb-4">
-                        <img src="{{ asset('storage/' . $serviceCategory->image) }}" alt="{{ $serviceCategory->name }}" class="h-32 w-auto object-cover rounded-lg border border-gray-200">
+                        <img src="{{ $serviceCategory->image }}" alt="{{ $serviceCategory->name }}" class="h-32 w-auto object-cover rounded-lg border border-gray-200">
                     </div>
                 @endif
 

@@ -119,7 +119,7 @@
                         
                         @if($category->image)
                         <div class="relative h-56 overflow-hidden">
-                            <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}">
+                            <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" src="{{ $category->image }}" alt="{{ $category->name }}">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         </div>
                         @else
