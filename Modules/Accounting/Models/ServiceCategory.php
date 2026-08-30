@@ -25,14 +25,28 @@ class ServiceCategory extends Model
                 if (!$value) {
                     return null;
                 }
-                if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://'])) {
-                    return $value;
+
+                $clean = $value;
+                // Strip domain prefix
+                $clean = preg_replace('/^https?:\/\/[^\/]+/', '', $clean);
+                // Strip leading /storage/ or storage/ repeatedly
+                while (preg_match('/^\/?storage\//i', $clean)) {
+                    $clean = preg_replace('/^\/?storage\//i', '', $clean);
                 }
-                $cleanPath = ltrim($value, '/');
-                if (\Illuminate\Support\Str::startsWith($cleanPath, 'storage/')) {
-                    $cleanPath = substr($cleanPath, 8);
+                // Handle nested domain if present inside string
+                if (preg_match('/https?:\/\/[^\/]+\/(.*)$/i', $clean, $matches)) {
+                    $clean = $matches[1];
+                    while (preg_match('/^\/?storage\//i', $clean)) {
+                        $clean = preg_replace('/^\/?storage\//i', '', $clean);
+                    }
                 }
-                return \Illuminate\Support\Facades\Storage::disk('public')->url($cleanPath);
+
+                $clean = ltrim($clean, '/');
+                if (!$clean) {
+                    return null;
+                }
+
+                return \Illuminate\Support\Facades\Storage::disk('public')->url($clean);
             }
         );
     }
