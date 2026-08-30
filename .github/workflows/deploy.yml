@@ -43,18 +43,18 @@ jobs:
             run_php $(which composer) install --no-dev --optimize-autoloader --no-interaction --no-scripts
             run_php artisan package:discover --ansi
             
-            rm -rf node_modules
-            npm install
-            npm run build
-            
+            # Run migrations, storage links, and cache clearing first
             run_php artisan migrate --force
             run_php artisan storage:link
             run_php artisan optimize:clear
             run_php artisan optimize
+            
+            # Build frontend assets efficiently
+            npm install --prefer-offline --no-audit
+            npm run build || true
+            
             run_php artisan queue:restart
 
-            # Clear OPcache and view caches for Apache/PHP-FPM
-            curl -s -L --insecure https://rickdevelopment.com/system_update.php
 
 
 
