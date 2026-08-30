@@ -69,26 +69,31 @@ class ApplicationController extends Controller
             return back()->with('error', 'No resume file associated with this application.');
         }
 
-        $path = $application->resume_path;
+        $rawPath = $application->resume_path;
 
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-            return \Illuminate\Support\Facades\Storage::disk('public')->download($path);
+        // Clean path from any domain or leading storage/
+        $cleanPath = preg_replace('/^https?:\/\/[^\/]+/', '', $rawPath);
+        $cleanPath = preg_replace('/^\/?storage\//', '', $cleanPath);
+        $cleanPath = ltrim($cleanPath, '/');
+        $filename = basename($cleanPath);
+
+        $possiblePaths = [
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/resumes/' . $filename),
+            storage_path('app/private/' . $cleanPath),
+            storage_path('app/private/resumes/' . $filename),
+            storage_path('app/' . $cleanPath),
+            storage_path('app/resumes/' . $filename),
+            public_path('storage/' . $cleanPath),
+            public_path('storage/resumes/' . $filename),
+        ];
+
+        foreach ($possiblePaths as $fullPath) {
+            if (file_exists($fullPath) && !is_dir($fullPath)) {
+                return response()->download($fullPath, $filename);
+            }
         }
 
-        if (\Illuminate\Support\Facades\Storage::exists($path)) {
-            return \Illuminate\Support\Facades\Storage::download($path);
-        }
-
-        $publicPath = storage_path('app/public/' . ltrim($path, '/'));
-        if (file_exists($publicPath)) {
-            return response()->download($publicPath);
-        }
-
-        $appPath = storage_path('app/' . ltrim($path, '/'));
-        if (file_exists($appPath)) {
-            return response()->download($appPath);
-        }
-
-        return back()->with('error', 'Resume file could not be found on the server disk.');
+        return back()->with('error', "Resume file ({$filename}) could not be located on the server disk.");
     }
 }

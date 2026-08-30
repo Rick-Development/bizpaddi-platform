@@ -53,19 +53,29 @@ Route::post('/fcm-token', [\App\Http\Controllers\Api\FcmTokenController::class, 
 
 // Fallback direct storage file server if public/storage symlink is missing or bypassed by web server
 Route::get('/storage/{path}', function ($path) {
-    // Strip accidental duplicate storage/ prefixes if any
+    // Strip accidental duplicate storage/ or domain prefixes if any
     $path = preg_replace('/^(storage\/)+/', '', $path);
-    
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        $fullPath = storage_path('app/' . $path);
+    $path = ltrim($path, '/');
+    $filename = basename($path);
+
+    $possiblePaths = [
+        storage_path('app/public/' . $path),
+        storage_path('app/public/resumes/' . $filename),
+        storage_path('app/private/' . $path),
+        storage_path('app/private/resumes/' . $filename),
+        storage_path('app/' . $path),
+        storage_path('app/resumes/' . $filename),
+        public_path('storage/' . $path),
+        public_path('storage/resumes/' . $filename),
+    ];
+
+    foreach ($possiblePaths as $fullPath) {
+        if (file_exists($fullPath) && !is_dir($fullPath)) {
+            $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
+            return response()->file($fullPath, ['Content-Type' => $mimeType]);
+        }
     }
-    
-    if (!file_exists($fullPath) || is_dir($fullPath)) {
-        abort(404, 'File not found');
-    }
-    
-    $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
-    return response()->file($fullPath, ['Content-Type' => $mimeType]);
+
+    abort(404, 'File not found on storage server');
 })->where('path', '.*');
 
