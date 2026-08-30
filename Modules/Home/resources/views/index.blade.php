@@ -119,7 +119,21 @@
                         
                         @if($category->image)
                         <div class="relative h-56 overflow-hidden">
-                            <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" src="{{ $category->image }}" alt="{{ $category->name }}">
+                            @php
+                                $catImg = $category->image;
+                                $catImg = preg_replace('/^https?:\/\/[^\/]+/', '', $catImg);
+                                while (preg_match('/^\/?storage\//i', $catImg)) {
+                                    $catImg = preg_replace('/^\/?storage\//i', '', $catImg);
+                                }
+                                if (preg_match('/https?:\/\/[^\/]+\/(.*)$/i', $catImg, $matches)) {
+                                    $catImg = $matches[1];
+                                    while (preg_match('/^\/?storage\//i', $catImg)) {
+                                        $catImg = preg_replace('/^\/?storage\//i', '', $catImg);
+                                    }
+                                }
+                                $catImg = asset('storage/' . ltrim($catImg, '/'));
+                            @endphp
+                            <img class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" src="{{ $catImg }}" alt="{{ $category->name }}">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         </div>
                         @else

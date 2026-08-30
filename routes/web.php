@@ -79,3 +79,11 @@ Route::get('/storage/{path}', function ($path) {
     abort(404, 'File not found on storage server');
 })->where('path', '.*');
 
+Route::get('/clear-cache', function () {
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    if (function_exists('opcache_reset')) {
+        @opcache_reset();
+    }
+    return 'Cache cleared successfully!';
+});
+
