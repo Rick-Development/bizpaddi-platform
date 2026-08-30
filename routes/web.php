@@ -87,3 +87,14 @@ Route::get('/clear-cache', function () {
     return 'Cache cleared successfully!';
 });
 
+Route::get('/deploy-git-pull', function () {
+    $basePath = base_path();
+    $output = shell_exec("cd {$basePath} && git fetch origin main 2>&1 && git reset --hard origin/main 2>&1");
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    if (function_exists('opcache_reset')) {
+        @opcache_reset();
+    }
+    return "<pre>" . e($output) . "\nMigration & Cache clear completed!</pre>";
+});
+
