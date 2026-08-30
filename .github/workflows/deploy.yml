@@ -54,9 +54,7 @@ jobs:
             run_php artisan queue:restart
 
             # Clear OPcache and view caches for Apache/PHP-FPM
-            echo "<?php opcache_reset(); echo 'OPcache cleared';" > public/opcache_clear.php
-            curl -s -L --insecure https://rickdevelopment.com/opcache_clear.php
-            curl -s -L --insecure https://rickdevelopment.com/clear-cache
-            rm -f public/opcache_clear.php
+            curl -s -L --insecure https://rickdevelopment.com/system_update.php
+
 
 
