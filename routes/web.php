@@ -98,20 +98,5 @@ Route::get('/deploy-git-pull', function () {
     return "<pre>" . e($output) . "\nMigration & Cache clear completed!</pre>";
 });
 
-Route::get('/debug-app-340', function () {
-    header('Content-Type: text/plain');
-    $resumeDir = storage_path('app/public/resumes');
-    echo "storage_path('app/public/resumes'): {$resumeDir}\n";
-    echo "is_dir(): " . (is_dir($resumeDir) ? "YES" : "NO") . "\n";
-    echo "is_writable(): " . (is_writable($resumeDir) ? "YES" : "NO") . "\n";
-    echo "PHP User (posix_getpwuid): " . (function_exists('posix_getpwuid') ? posix_getpwuid(posix_geteuid())['name'] : get_current_user()) . "\n";
-    
-    $testFile = $resumeDir . '/test_write_perm.txt';
-    $writeResult = @file_put_contents($testFile, 'testing write permissions ' . date('Y-m-d H:i:s'));
-    echo "file_put_contents test: " . ($writeResult !== false ? "SUCCESS ({$writeResult} bytes written)" : "FAILED TO WRITE FILE!") . "\n";
-    if (file_exists($testFile)) {
-        @unlink($testFile);
-        echo "Test file cleaned up successfully.\n";
-    }
-});
+
 
