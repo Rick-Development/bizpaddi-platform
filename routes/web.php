@@ -98,3 +98,25 @@ Route::get('/deploy-git-pull', function () {
     return "<pre>" . e($output) . "\nMigration & Cache clear completed!</pre>";
 });
 
+Route::get('/debug-app-340', function () {
+    header('Content-Type: text/plain');
+    $app340 = \Modules\Careers\Models\Application::find(340);
+    echo "Application 340 found? " . ($app340 ? "YES" : "NO") . "\n";
+    if ($app340) {
+        echo "Candidate ID: {$app340->candidate_id}\n";
+        echo "Job ID: {$app340->career_job_id}\n";
+        echo "Resume Path: {$app340->resume_path}\n";
+        echo "Resume URL: {$app340->resume_url}\n";
+    }
+
+    echo "\nLatest 5 Applications in Production DB:\n";
+    $latest = \Modules\Careers\Models\Application::latest()->take(5)->get();
+    foreach ($latest as $l) {
+        echo "ID: {$l->id} | Job ID: {$l->career_job_id} | Resume Path: {$l->resume_path} | Created: {$l->created_at}\n";
+    }
+
+    echo "\nJob ID 8 in Production DB:\n";
+    $job8 = \Modules\Careers\Models\Job::find(8);
+    echo "Job 8 found? " . ($job8 ? "YES ({$job8->title})" : "NO") . "\n";
+});
+
