@@ -100,33 +100,17 @@ Route::get('/deploy-git-pull', function () {
 
 Route::get('/debug-app-340', function () {
     header('Content-Type: text/plain');
-    $latest = \Modules\Careers\Models\Application::latest()->take(5)->get();
-    foreach ($latest as $l) {
-        $filename = basename($l->resume_path);
-        echo "App ID: {$l->id} | File: {$filename}\n";
-        $paths = [
-            'app/public/resumes/' => storage_path('app/public/resumes/' . $filename),
-            'app/private/resumes/' => storage_path('app/private/resumes/' . $filename),
-            'app/resumes/' => storage_path('app/resumes/' . $filename),
-            'public/storage/resumes/' => public_path('storage/resumes/' . $filename),
-        ];
-        foreach ($paths as $label => $p) {
-            echo "  [{$label}] " . (file_exists($p) ? "EXISTS (" . filesize($p) . " bytes)" : "NOT FOUND ({$p})") . "\n";
-        }
-        echo "--------------------------------------------------\n";
-    }
+    echo "base_path(): " . base_path() . "\n";
+    echo "storage_path(): " . storage_path() . "\n";
+    echo "public_path(): " . public_path() . "\n";
+    echo "storage_path('app/public'): " . storage_path('app/public') . "\n";
+    echo "realpath(storage_path('app/public')): " . realpath(storage_path('app/public')) . "\n";
+    echo "public_path('storage'): " . public_path('storage') . "\n";
+    echo "is_link(public_path('storage')): " . (is_link(public_path('storage')) ? "YES -> " . readlink(public_path('storage')) : "NO") . "\n\n";
 
-    echo "\nListing actual files inside storage/app/public/resumes/:\n";
-    $dir = storage_path('app/public/resumes');
-    if (is_dir($dir)) {
-        $files = scandir($dir);
-        foreach ($files as $f) {
-            if ($f !== '.' && $f !== '..') {
-                echo " - {$f} (" . filesize($dir . '/' . $f) . " bytes)\n";
-            }
-        }
-    } else {
-        echo "Directory storage/app/public/resumes DOES NOT EXIST!\n";
-    }
+    echo "SEARCHING ENTIRE SERVER DISK FOR KFcNCArOgYennijGNN3OBXSEVicGej6NWbOmo5H7.pdf...\n";
+    $cmd = "find /home /tmp /var/www /var/tmp -name '*KFcNCArOgYennijGNN3OBXSEVicGej6NWbOmo5H7*' 2>/dev/null";
+    $output = shell_exec($cmd);
+    echo "Find output:\n" . ($output ?: "NONE FOUND WITH FIND COMMAND!") . "\n";
 });
 
