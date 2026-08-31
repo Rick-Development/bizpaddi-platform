@@ -45,6 +45,11 @@ jobs:
             
             # Run migrations, storage links, and cache clearing first
             run_php artisan migrate --force
+            if [ -d "public/storage" ] && [ ! -L "public/storage" ]; then
+              cp -rn public/storage/* storage/app/public/ 2>/dev/null || true
+              rm -rf public/storage
+              ln -s $(pwd)/storage/app/public public/storage
+            fi
             run_php artisan storage:link
             run_php artisan optimize:clear
             run_php artisan optimize

@@ -12,12 +12,59 @@ header('Content-Type: text/plain');
 
 echo "=== EXECUTING SYSTEM UPDATE ===\n";
 
+$publicStorage = public_path('storage');
+$targetStorage = storage_path('app/public');
+
 try {
-    echo "Running artisan storage:link...\n";
-    \Illuminate\Support\Facades\Artisan::call('storage:link');
-    echo \Illuminate\Support\Facades\Artisan::output() . "\n";
+    if (file_exists($publicStorage) && !is_link($publicStorage)) {
+        echo "public/storage is a physical directory. Syncing files to storage/app/public and converting to symlink...\n";
+
+        if (!is_dir($targetStorage)) {
+            mkdir($targetStorage, 0755, true);
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($publicStorage, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $item) {
+            $subPath = substr($item->getPathname(), strlen($publicStorage));
+            $dest = $targetStorage . $subPath;
+            if ($item->isDir()) {
+                if (!is_dir($dest)) {
+                    mkdir($dest, 0755, true);
+                }
+            } else {
+                $destDir = dirname($dest);
+                if (!is_dir($destDir)) {
+                    mkdir($destDir, 0755, true);
+                }
+                if (!file_exists($dest)) {
+                    copy($item->getPathname(), $dest);
+                }
+            }
+        }
+
+        $deleteDir = function($dir) use (&$deleteDir) {
+            if (!is_dir($dir)) return;
+            $files = array_diff(scandir($dir), array('.','..'));
+            foreach ($files as $file) {
+                (is_dir("$dir/$file")) ? $deleteDir("$dir/$file") : unlink("$dir/$file");
+            }
+            rmdir($dir);
+        };
+        $deleteDir($publicStorage);
+
+        symlink($targetStorage, $publicStorage);
+        echo "Symlink created successfully: public/storage -> storage/app/public\n";
+    } else {
+        echo "Running artisan storage:link...\n";
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        echo \Illuminate\Support\Facades\Artisan::output() . "\n";
+    }
 } catch (\Throwable $e) {
-    echo "storage:link output: " . $e->getMessage() . "\n";
+    echo "storage link error: " . $e->getMessage() . "\n";
 }
 
 try {
