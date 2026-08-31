@@ -100,17 +100,18 @@ Route::get('/deploy-git-pull', function () {
 
 Route::get('/debug-app-340', function () {
     header('Content-Type: text/plain');
-    echo "base_path(): " . base_path() . "\n";
-    echo "storage_path(): " . storage_path() . "\n";
-    echo "public_path(): " . public_path() . "\n";
-    echo "storage_path('app/public'): " . storage_path('app/public') . "\n";
-    echo "realpath(storage_path('app/public')): " . realpath(storage_path('app/public')) . "\n";
-    echo "public_path('storage'): " . public_path('storage') . "\n";
-    echo "is_link(public_path('storage')): " . (is_link(public_path('storage')) ? "YES -> " . readlink(public_path('storage')) : "NO") . "\n\n";
-
-    echo "SEARCHING ENTIRE SERVER DISK FOR KFcNCArOgYennijGNN3OBXSEVicGej6NWbOmo5H7.pdf...\n";
-    $cmd = "find /home /tmp /var/www /var/tmp -name '*KFcNCArOgYennijGNN3OBXSEVicGej6NWbOmo5H7*' 2>/dev/null";
-    $output = shell_exec($cmd);
-    echo "Find output:\n" . ($output ?: "NONE FOUND WITH FIND COMMAND!") . "\n";
+    $resumeDir = storage_path('app/public/resumes');
+    echo "storage_path('app/public/resumes'): {$resumeDir}\n";
+    echo "is_dir(): " . (is_dir($resumeDir) ? "YES" : "NO") . "\n";
+    echo "is_writable(): " . (is_writable($resumeDir) ? "YES" : "NO") . "\n";
+    echo "PHP User (posix_getpwuid): " . (function_exists('posix_getpwuid') ? posix_getpwuid(posix_geteuid())['name'] : get_current_user()) . "\n";
+    
+    $testFile = $resumeDir . '/test_write_perm.txt';
+    $writeResult = @file_put_contents($testFile, 'testing write permissions ' . date('Y-m-d H:i:s'));
+    echo "file_put_contents test: " . ($writeResult !== false ? "SUCCESS ({$writeResult} bytes written)" : "FAILED TO WRITE FILE!") . "\n";
+    if (file_exists($testFile)) {
+        @unlink($testFile);
+        echo "Test file cleaned up successfully.\n";
+    }
 });
 
