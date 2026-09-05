@@ -32,11 +32,23 @@ class ApplicationController extends Controller
             $query->where('career_job_id', $request->input('job_id'));
         }
 
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->input('from_date'));
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->input('to_date'));
+        }
+
         $applications = $query->latest()->get();
 
         if ($request->ajax() || $request->has('ajax')) {
+            $viewName = view()->exists('modules.admin.applications.partials.table') 
+                ? 'modules.admin.applications.partials.table' 
+                : 'admin::applications.partials.table';
+
             return response()->json([
-                'html'  => view('modules.admin.applications.partials.table', compact('applications'))->render(),
+                'html'  => view($viewName, compact('applications'))->render(),
                 'count' => $applications->count(),
             ]);
         }

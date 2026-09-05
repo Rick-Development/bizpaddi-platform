@@ -12,10 +12,10 @@
 
 {{-- Search & Filter Bar --}}
 <div class="mt-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-    <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+    <div class="flex flex-col xl:flex-row gap-3 items-stretch xl:items-center">
 
         {{-- Search --}}
-        <div class="relative flex-1">
+        <div class="relative flex-1 min-w-[200px]">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -27,7 +27,7 @@
         </div>
 
         {{-- Status Filter --}}
-        <div class="md:w-48">
+        <div class="xl:w-40">
             <select id="status-filter"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Statuses</option>
@@ -40,7 +40,7 @@
         </div>
 
         {{-- Job Filter --}}
-        <div class="md:w-56">
+        <div class="xl:w-48">
             <select id="job-filter"
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Positions</option>
@@ -49,6 +49,26 @@
                 @endforeach
             </select>
         </div>
+
+        {{-- From Date --}}
+        <div class="flex items-center gap-1 xl:w-44">
+            <span class="text-xs text-gray-500 font-medium whitespace-nowrap">From:</span>
+            <input type="date" id="from-date-filter"
+                   class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        {{-- To Date --}}
+        <div class="flex items-center gap-1 xl:w-44">
+            <span class="text-xs text-gray-500 font-medium whitespace-nowrap">To:</span>
+            <input type="date" id="to-date-filter"
+                   class="w-full border border-gray-300 rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        {{-- Reset Button --}}
+        <button type="button" id="reset-filters"
+                class="px-3 py-2 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors whitespace-nowrap">
+            Clear
+        </button>
 
         {{-- Results count --}}
         <div class="text-sm text-gray-500 whitespace-nowrap self-center" id="results-count">
@@ -85,20 +105,25 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const searchInput   = document.getElementById('search-input');
-    const statusFilter  = document.getElementById('status-filter');
-    const jobFilter     = document.getElementById('job-filter');
-    const tableBody     = document.getElementById('applications-table-body');
-    const resultsCount  = document.getElementById('results-count');
+    const searchInput    = document.getElementById('search-input');
+    const statusFilter   = document.getElementById('status-filter');
+    const jobFilter      = document.getElementById('job-filter');
+    const fromDateFilter = document.getElementById('from-date-filter');
+    const toDateFilter   = document.getElementById('to-date-filter');
+    const resetFilters   = document.getElementById('reset-filters');
+    const tableBody      = document.getElementById('applications-table-body');
+    const resultsCount   = document.getElementById('results-count');
 
     let debounceTimer;
 
     function fetchApplications() {
         const params = new URLSearchParams({
-            ajax:   '1',
-            search: searchInput.value,
-            status: statusFilter.value,
-            job_id: jobFilter.value,
+            ajax:      '1',
+            search:    searchInput.value,
+            status:    statusFilter.value,
+            job_id:    jobFilter.value,
+            from_date: fromDateFilter.value,
+            to_date:   toDateFilter.value,
         });
 
         tableBody.innerHTML = `<tr>
@@ -135,6 +160,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     statusFilter.addEventListener('change', fetchApplications);
     jobFilter.addEventListener('change', fetchApplications);
+    fromDateFilter.addEventListener('change', fetchApplications);
+    toDateFilter.addEventListener('change', fetchApplications);
+
+    resetFilters.addEventListener('click', function () {
+        searchInput.value = '';
+        statusFilter.value = '';
+        jobFilter.value = '';
+        fromDateFilter.value = '';
+        toDateFilter.value = '';
+        fetchApplications();
+    });
 });
 </script>
 <style>
