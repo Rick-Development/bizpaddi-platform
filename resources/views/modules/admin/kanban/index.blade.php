@@ -17,63 +17,80 @@
     </div>
 
     <!-- AJAX Filters Form -->
-    <form id="kanban-filters-form" class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-wrap items-center gap-3 text-sm" onsubmit="event.preventDefault();">
-        <!-- Keyword Search -->
-        <div class="w-full sm:w-auto flex-1 sm:flex-none">
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-xs"></i>
+    <form id="kanban-filters-form" class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-3" onsubmit="event.preventDefault();">
+        <!-- Top Row: Search tasks... | All Projects | All Assignees -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+            <!-- Keyword Search -->
+            <div class="md:col-span-4 relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </span>
-                <input type="text" name="search" placeholder="Search tasks..." class="w-full sm:w-48 pl-9 pr-3 py-2 rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
+                <input type="text" name="search" placeholder="Search tasks..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm">
+            </div>
+
+            <!-- Project Selection -->
+            <div class="md:col-span-4">
+                <select name="project_id" class="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <option value="">All Projects</option>
+                    @foreach($projects as $p)
+                        <option value="{{ $p->id }}" {{ $project && $project->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Assignee Filter -->
+            <div class="md:col-span-4">
+                <select name="assigned_to" class="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <option value="">All Assignees</option>
+                    @foreach($assignees as $member)
+                        <option value="{{ $member->id }}">{{ $member->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
-        <!-- Project Selection -->
-        <select name="project_id" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
-            <option value="">All Projects</option>
-            @foreach($projects as $p)
-                <option value="{{ $p->id }}" {{ $project && $project->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-            @endforeach
-        </select>
+        <!-- Second Row: All Priorities | All Time (with Custom Date) | Reset Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100">
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Priority Filter -->
+                <div class="w-full sm:w-44">
+                    <select name="priority" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
 
-        <!-- Assignee Filter -->
-        <select name="assigned_to" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
-            <option value="">All Assignees</option>
-            @foreach($assignees as $member)
-                <option value="{{ $member->id }}">{{ $member->name }}</option>
-            @endforeach
-        </select>
+                <!-- Date Filter Option -->
+                <div class="w-full sm:w-44">
+                    <select name="date_filter" id="date_filter" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                        <option value="">All Time</option>
+                        <option value="today">Assigned Today</option>
+                        <option value="yesterday">Assigned Yesterday</option>
+                        <option value="this_week">Assigned This Week</option>
+                        <option value="this_month">Assigned This Month</option>
+                        <option value="custom">Custom Date Range</option>
+                    </select>
+                </div>
 
-        <!-- Priority Filter -->
-        <select name="priority" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
-            <option value="">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
-        </select>
+                <!-- Custom Date Range Pickers -->
+                <div id="custom-date-container" class="hidden flex items-center gap-2">
+                    <input type="date" name="start_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <span class="text-gray-400 text-xs font-medium">to</span>
+                    <input type="date" name="end_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                </div>
+            </div>
 
-        <!-- Date Filter Option -->
-        <select name="date_filter" id="date_filter" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500">
-            <option value="">All Time</option>
-            <option value="today">Assigned Today</option>
-            <option value="yesterday">Assigned Yesterday</option>
-            <option value="this_week">Assigned This Week</option>
-            <option value="this_month">Assigned This Month</option>
-            <option value="custom">Custom Date Range</option>
-        </select>
-
-        <!-- Custom Date Range Pickers -->
-        <div id="custom-date-container" class="hidden flex items-center gap-2">
-            <input type="date" name="start_date" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500 py-1.5">
-            <span class="text-gray-400 text-xs">to</span>
-            <input type="date" name="end_date" class="rounded-lg border-gray-300 text-sm focus:ring-gray-500 focus:border-gray-500 py-1.5">
+            <!-- Reset Button -->
+            <button type="button" id="reset-filters" class="text-xs font-semibold text-gray-500 hover:text-gray-900 cursor-pointer px-3 py-1.5 rounded-xl hover:bg-gray-100 transition-all flex items-center gap-1.5 border border-transparent hover:border-gray-200">
+                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Reset Filters
+            </button>
         </div>
-
-        <!-- Reset Button -->
-        <button type="button" id="reset-filters" class="text-xs font-semibold text-gray-400 hover:text-gray-900 ml-auto cursor-pointer p-1.5 hover:bg-gray-50 rounded-lg transition-all">
-            Reset Filters
-        </button>
     </form>
 </div>
 
