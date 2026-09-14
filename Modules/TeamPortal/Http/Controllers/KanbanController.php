@@ -15,12 +15,17 @@ class KanbanController extends Controller
         
         $query = Task::with(['project', 'assignee', 'milestone']);
         
-        if ($user->isProjectManager()) {
-            // PMs see tasks assigned to them OR tasks in projects they manage
+        if ($user->isAdmin()) {
+            // Admins can view all tasks
+        } elseif ($user->isProjectManager()) {
+            // PMs see tasks assigned to them OR tasks in projects they manage OR projects where they are team members
             $query->where(function($q) use ($user) {
                 $q->where('assigned_to', $user->id)
                   ->orWhereHas('project', function($pq) use ($user) {
-                      $pq->where('manager_id', $user->id);
+                      $pq->where('manager_id', $user->id)
+                        ->orWhereHas('teamMembers', function($tmq) use ($user) {
+                            $tmq->where('users.id', $user->id);
+                        });
                   });
             });
         } else {
@@ -81,16 +86,28 @@ class KanbanController extends Controller
             return view('teamportal::kanban.board', compact('groupedTasks', 'columns'))->render();
         }
 
-        if ($user->isProjectManager()) {
-            $projects = Project::where('manager_id', $user->id)
-                ->orWhereHas('members', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })->get();
+        if ($user->isAdmin() || $user->isProjectManager()) {
+            $projectsList = Project::orderBy('name');
+            if (!$user->isAdmin()) {
+                $projectsList->where(function($pq) use ($user) {
+                    $pq->where('manager_id', $user->id)
+                      ->orWhereHas('teamMembers', function($tmq) use ($user) {
+                          $tmq->where('users.id', $user->id);
+                      });
+                });
+            }
+            $projects = $projectsList->get();
+            if ($projects->isEmpty()) {
+                $projects = Project::orderBy('name')->get();
+            }
             $assignees = \App\Models\User::where('status', 'active')->orderBy('name')->get();
         } else {
-            $projects = Project::whereHas('members', function($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })->get();
+            $projects = Project::whereHas('teamMembers', function($q) use ($user) {
+                $q->where('users.id', $user->id);
+            })->orderBy('name')->get();
+            if ($projects->isEmpty()) {
+                $projects = Project::orderBy('name')->get();
+            }
             $assignees = collect([$user]);
         }
 
@@ -109,10 +126,10 @@ class KanbanController extends Controller
         foreach ($request->tasks as $taskData) {
             $task = Task::with('project')->find($taskData['id']);
             if ($task) {
-                // Allow update if assigned to user OR user manages the project
-                if ($task->assigned_to == auth()->id() || ($task->project && $task->project->manager_id == auth()->id())) {
+                // Allow update if assigned to user OR user manages the project OR user is admin
+                if ($task->assigned_to == auth()->id() || ($task->project && $task->project->manager_id == auth()->id()) || auth()->user()->isAdmin()) {
                     $newStatus = $taskData['status'];
-                    if ($newStatus === 'done' && $task->status !== 'done' && !auth()->user()->isProjectManager()) {
+                    if ($newStatus === 'done' && $task->status !== 'done' && !auth()->user()->isProjectManager() && !auth()->user()->isAdmin()) {
                         return response()->json([
                             'success' => false,
                             'message' => 'Only Project Managers can mark tasks as Completed.'
