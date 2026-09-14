@@ -108,6 +108,16 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(\Modules\ProjectManagement\Models\Project::class, 'manager_id');
     }
 
+    public function isAdmin()
+    {
+        $role = strtolower($this->role ?? '');
+        return $role === 'admin' || 
+               $role === 'super_admin' || 
+               $role === 'administrator' || 
+               $this->hasRole('admin') || 
+               $this->hasRole('super_admin');
+    }
+
     public function isProjectManager()
     {
         return $this->role === 'pm' || 
