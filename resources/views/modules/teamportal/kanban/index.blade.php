@@ -1,97 +1,119 @@
 @extends('teamportal::layouts.app')
 
-@section('title', 'My Task Board')
+@section('title', 'Task Board')
 
 @section('content')
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">My Task Board</h1>
-    <p class="text-sm text-gray-500 mt-1">Manage your tasks with drag and drop</p>
-</div>
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Task Board</h1>
+            <p class="text-sm text-gray-500 mt-1">Manage project tasks with drag and drop</p>
+        </div>
+        @if(auth()->user()->isProjectManager() || auth()->user()->isAdmin())
+        <div>
+            <a href="{{ isset($project) && $project ? route('team.pm.tasks.create', $project) : route('team.pm.projects.index') }}" id="new-task-btn" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-black transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                + New Task
+            </a>
+        </div>
+        @endif
+    </div>
 
-<div class="flex gap-4 overflow-x-auto pb-8 min-h-[calc(100vh-250px)]">
-    @foreach($columns as $status => $label)
-    <div class="flex-shrink-0 w-80">
-        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    {{ $label }}
-                    <span class="bg-white text-gray-400 text-[10px] px-2 py-0.5 rounded-full border border-gray-100">
-                        {{ isset($groupedTasks[$status]) ? $groupedTasks[$status]->count() : 0 }}
-                    </span>
-                </h3>
+    <!-- Filter Bar Card -->
+    <form id="kanban-filters-form" class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-3" onsubmit="event.preventDefault();">
+        <!-- Top Row: Search tasks... | All Projects | All Assignees -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+            <!-- Keyword Search -->
+            <div class="md:col-span-4 relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </span>
+                <input type="text" name="search" placeholder="Search tasks..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm">
             </div>
-            
-            <div id="column-{{ $status }}" data-status="{{ $status }}" class="kanban-column space-y-3 flex-1 min-h-[200px]">
-                @if(isset($groupedTasks[$status]))
-                    @foreach($groupedTasks[$status] as $task)
-                    <div data-id="{{ $task->id }}" class="kanban-task bg-white p-4 rounded-xl border border-gray-100 shadow-sm cursor-grab active:cursor-grabbing hover:border-gray-300 transition-all group">
-                        <div class="flex items-start justify-between mb-2">
-                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase 
-                                @if($task->priority == 'urgent') bg-red-100 text-red-700
-                                @elseif($task->priority == 'high') bg-orange-100 text-orange-700
-                                @elseif($task->priority == 'medium') bg-blue-100 text-blue-700
-                                @else bg-gray-100 text-gray-700 @endif">
-                                {{ $task->priority }}
-                            </span>
-                            @if($task->milestone)
-                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase bg-purple-100 text-purple-700 truncate max-w-[100px]" title="Milestone: {{ $task->milestone->title }}">
-                                🏔️ {{ Str::limit($task->milestone->title, 10) }}
-                            </span>
-                            @endif
-                        </div>
-                        <h4 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-black transition-colors">
-                            <a href="{{ route('team.tasks.show', $task) }}">{{ $task->title }}</a>
-                        </h4>
-                        <p class="text-[10px] text-gray-500 mb-2 truncate">{{ $task->project->name }}</p>
-                        
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div class="flex items-center gap-2">
-                                @if($task->assignee)
-                                <div class="h-6 w-6 rounded-full bg-brand-primary/10 flex items-center justify-center text-[10px] text-brand-primary font-bold ring-2 ring-white" title="Assigned to: {{ $task->assignee->name }}">
-                                    {{ substr($task->assignee->name, 0, 1) }}
-                                </div>
-                                @endif
-                                <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
-                                    @if($task->due_date)
-                                        @if(!in_array($task->status, ['done','completed']))
-                                            @if($task->due_date->isPast())
-                                                <span class="relative flex h-2 w-2 shrink-0">
-                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600 animate-intense-blink"></span>
-                                                </span>
-                                            @elseif($task->due_date->diffInHours(now(), false) >= -48)
-                                                <span class="relative flex h-2 w-2 shrink-0">
-                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500 animate-intense-blink"></span>
-                                                </span>
-                                            @endif
-                                        @endif
-                                        {{ $task->due_date->format('M d') }} at {{ $task->due_date->format('g:i A') }}
-                                    @else
-                                        No due date
-                                    @endif
-                                </div>
-                            </div>
-                            @if($task->requires_client_approval)
-                            <div class="flex items-center gap-1">
-                                <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Client Review</span>
-                            </div>
-                            @endif
-                        </div>
-                        @if($task->status_changed_at)
-                        <div class="mt-2.5 pt-2.5 border-t border-gray-50 flex items-center text-[9px] text-gray-400 font-mono">
-                            <span class="flex items-center gap-1">
-                                🕒 {{ $task->status === 'todo' ? 'Assigned' : 'Moved' }}: {{ $task->status_changed_at->format('M d, Y \a\t H:i:s') }}
-                            </span>
-                        </div>
-                        @endif
-                    </div>
+
+            <!-- Project Selection -->
+            <div class="md:col-span-4">
+                <select name="project_id" class="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <option value="">All Projects</option>
+                    @foreach($projects as $p)
+                        <option value="{{ $p->id }}" {{ isset($project) && $project && $project->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
                     @endforeach
-                @endif
+                </select>
+            </div>
+
+            <!-- Assignee Filter -->
+            <div class="md:col-span-4">
+                <select name="assigned_to" class="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <option value="">All Assignees</option>
+                    @foreach($assignees as $member)
+                        <option value="{{ $member->id }}">{{ $member->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
+
+        <!-- Second Row: All Priorities | All Time (with Custom Date) | Reset Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100">
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Priority Filter -->
+                <div class="w-full sm:w-44">
+                    <select name="priority" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+
+                <!-- Date Filter Option -->
+                <div class="w-full sm:w-44">
+                    <select name="date_filter" id="date_filter" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                        <option value="">All Time</option>
+                        <option value="today">Assigned Today</option>
+                        <option value="yesterday">Assigned Yesterday</option>
+                        <option value="this_week">Assigned This Week</option>
+                        <option value="this_month">Assigned This Month</option>
+                        <option value="custom">Custom Date Range</option>
+                    </select>
+                </div>
+
+                <!-- Custom Date Range Pickers -->
+                <div id="custom-date-container" class="hidden flex items-center gap-2">
+                    <input type="date" name="start_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                    <span class="text-gray-400 text-xs font-medium">to</span>
+                    <input type="date" name="end_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                </div>
+            </div>
+
+            <!-- Reset Button -->
+            <button type="button" id="reset-filters" class="text-xs font-semibold text-gray-500 hover:text-gray-900 cursor-pointer px-3 py-1.5 rounded-xl hover:bg-gray-100 transition-all flex items-center gap-1.5 border border-transparent hover:border-gray-200">
+                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Reset Filters
+            </button>
+        </div>
+    </form>
+
+    <!-- Kanban Board Wrapper with Loading Overlay -->
+    <div id="kanban-board-container" class="relative min-h-[400px]">
+        <div id="kanban-loader" class="hidden absolute inset-0 bg-white/50 backdrop-blur-[1px] z-20 flex items-center justify-center rounded-2xl">
+            <div class="flex flex-col items-center gap-2 bg-white/80 p-4 rounded-xl shadow-sm border border-gray-100">
+                <svg class="animate-spin h-8 w-8 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-xs font-semibold text-gray-700">Loading tasks...</span>
+            </div>
+        </div>
+        @include('teamportal::kanban.board')
     </div>
-    @endforeach
 </div>
 @endsection
 
@@ -100,21 +122,26 @@
 <script>
 const isPM = @json(auth()->user()->isProjectManager());
 
-document.querySelectorAll('.kanban-column').forEach(column => {
-    const isDoneColumn = column.dataset.status === 'done';
-    new Sortable(column, {
-        group: {
-            name: 'kanban',
-            put: (isDoneColumn && !isPM) ? false : true
-        },
-        animation: 150,
-        draggable: '.kanban-task',
-        ghostClass: 'opacity-50',
-        onEnd: function (evt) {
-            updateTaskOrder();
-        }
+function initializeSortable() {
+    document.querySelectorAll('.kanban-column').forEach(column => {
+        const isDoneColumn = column.dataset.status === 'done';
+        new Sortable(column, {
+            group: {
+                name: 'kanban',
+                put: (isDoneColumn && !isPM) ? false : true
+            },
+            animation: 150,
+            draggable: '.kanban-task',
+            ghostClass: 'opacity-50',
+            onEnd: function (evt) {
+                updateTaskOrder();
+            }
+        });
     });
-});
+}
+
+// Run initial sortable binding
+initializeSortable();
 
 function updateTaskOrder() {
     let data = {
@@ -161,6 +188,93 @@ function updateTaskOrder() {
         alert(error.message || 'Only Project Managers can mark tasks as Completed.');
         window.location.reload();
     });
+}
+
+// AJAX Filtering Setup
+const filtersForm = document.getElementById('kanban-filters-form');
+const loader = document.getElementById('kanban-loader');
+const dateFilterSelect = document.getElementById('date_filter');
+const customDateContainer = document.getElementById('custom-date-container');
+const newTaskBtn = document.getElementById('new-task-btn');
+
+function toggleCustomDate() {
+    if (dateFilterSelect.value === 'custom') {
+        customDateContainer.classList.remove('hidden');
+    } else {
+        customDateContainer.classList.add('hidden');
+    }
+}
+
+if (dateFilterSelect) {
+    dateFilterSelect.addEventListener('change', toggleCustomDate);
+    toggleCustomDate();
+}
+
+function fetchFilteredTasks() {
+    if (!loader || !filtersForm) return;
+
+    loader.classList.remove('hidden');
+
+    const formData = new FormData(filtersForm);
+    const searchParams = new URLSearchParams(formData);
+
+    const projectId = formData.get('project_id');
+    if (newTaskBtn) {
+        if (projectId) {
+            newTaskBtn.href = `/team/pm/projects/${projectId}/tasks/create`;
+        } else {
+            newTaskBtn.href = `{{ route('team.pm.projects.index') }}`;
+        }
+    }
+
+    fetch('{{ route("team.kanban.filter") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(Object.fromEntries(searchParams))
+    })
+    .then(response => response.text())
+    .then(html => {
+        const boardEl = document.querySelector('#kanban-board-container .flex.gap-4.overflow-x-auto');
+        if (boardEl) boardEl.remove();
+        
+        loader.insertAdjacentHTML('afterend', html);
+        
+        initializeSortable();
+        loader.classList.add('hidden');
+    })
+    .catch(error => {
+        console.error('Error fetching tasks:', error);
+        loader.classList.add('hidden');
+    });
+}
+
+if (filtersForm) {
+    filtersForm.querySelectorAll('select, input[type="date"]').forEach(el => {
+        el.addEventListener('change', fetchFilteredTasks);
+    });
+
+    let debounceTimer;
+    const searchInput = filtersForm.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchFilteredTasks, 250);
+        });
+    }
+
+    const resetBtn = document.getElementById('reset-filters');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            filtersForm.reset();
+            toggleCustomDate();
+            fetchFilteredTasks();
+        });
+    }
 }
 </script>
 @endpush

@@ -13,7 +13,7 @@ class KanbanController extends Controller
     {
         $user = auth()->user();
         
-        $query = Task::with(['project', 'assignee']);
+        $query = Task::with(['project', 'assignee', 'milestone']);
         
         if ($user->isProjectManager()) {
             // PMs see tasks assigned to them OR tasks in projects they manage
@@ -27,7 +27,45 @@ class KanbanController extends Controller
             // Regular members only see tasks assigned to them
             $query->where('assigned_to', $user->id);
         }
-        
+
+        $projectId = $request->project_id;
+        $project = $projectId ? Project::find($projectId) : null;
+
+        $query->when($projectId, function($q) use ($projectId) {
+            return $q->where('project_id', $projectId);
+        })
+        ->when($request->priority, function($q, $priority) {
+            return $q->where('priority', $priority);
+        })
+        ->when($request->assigned_to, function($q, $assigneeId) {
+            return $q->where('assigned_to', $assigneeId);
+        })
+        ->when($request->search, function($q, $search) {
+            return $q->where(function($sub) use ($search) {
+                $sub->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        });
+
+        if ($request->filled('date_filter')) {
+            $dateFilter = $request->date_filter;
+            if ($dateFilter === 'today') {
+                $query->whereDate('created_at', \Carbon\Carbon::today());
+            } elseif ($dateFilter === 'yesterday') {
+                $query->whereDate('created_at', \Carbon\Carbon::yesterday());
+            } elseif ($dateFilter === 'this_week') {
+                $query->whereBetween('created_at', [\Carbon\Carbon::now()->startOfWeek(), \Carbon\Carbon::now()->endOfWeek()]);
+            } elseif ($dateFilter === 'this_month') {
+                $query->whereMonth('created_at', \Carbon\Carbon::now()->month)
+                       ->whereYear('created_at', \Carbon\Carbon::now()->year);
+            } elseif ($dateFilter === 'custom' && $request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('created_at', [
+                    \Carbon\Carbon::parse($request->start_date)->startOfDay(),
+                    \Carbon\Carbon::parse($request->end_date)->endOfDay()
+                ]);
+            }
+        }
+
         $tasks = $query->orderBy('order')->get();
 
         $columns = [
@@ -39,7 +77,24 @@ class KanbanController extends Controller
 
         $groupedTasks = $tasks->groupBy('status');
 
-        return view('teamportal::kanban.index', compact('groupedTasks', 'columns'));
+        if ($request->ajax()) {
+            return view('teamportal::kanban.board', compact('groupedTasks', 'columns'))->render();
+        }
+
+        if ($user->isProjectManager()) {
+            $projects = Project::where('manager_id', $user->id)
+                ->orWhereHas('members', function($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })->get();
+            $assignees = \App\Models\User::where('status', 'active')->orderBy('name')->get();
+        } else {
+            $projects = Project::whereHas('members', function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->get();
+            $assignees = collect([$user]);
+        }
+
+        return view('teamportal::kanban.index', compact('groupedTasks', 'columns', 'projects', 'project', 'assignees'));
     }
 
     public function updateOrder(Request $request)

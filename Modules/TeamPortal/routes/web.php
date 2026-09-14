@@ -37,6 +37,7 @@ Route::prefix('team')->name('team.')->group(function () {
         // Tasks
         Route::get('my-tasks', [TaskController::class, 'index'])->name('tasks.index');
         Route::get('kanban', [\Modules\TeamPortal\Http\Controllers\KanbanController::class, 'index'])->name('kanban.index');
+        Route::post('kanban/filter', [\Modules\TeamPortal\Http\Controllers\KanbanController::class, 'index'])->name('kanban.filter');
         Route::post('kanban/update-order', [\Modules\TeamPortal\Http\Controllers\KanbanController::class, 'updateOrder'])->name('kanban.update-order');
         Route::get('tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
