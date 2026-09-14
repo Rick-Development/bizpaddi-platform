@@ -103,8 +103,9 @@
             <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Available Variables (Click to select & copy):</span>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    @foreach($vars as $var                         )
-                        <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2.5 py-1 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                    @foreach($vars as $var)
+                        @php $varTag = '{{' . $var . '}}'; @endphp
+                        <code onclick="insertVariable('{{ $varTag }}');" class="px-2.5 py-1 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                     @endforeach
                 </div>
             </div>
