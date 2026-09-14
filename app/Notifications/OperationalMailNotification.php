@@ -80,10 +80,14 @@ class OperationalMailNotification extends Notification implements ShouldQueue
         // Replace placeholders in content body
         $body = $template->replaceVariables($mergedPlaceholders);
 
-        // Render mail inside standard layout wrapper
+        // Render mail inside standard layout wrapper with plain text alternative for high email deliverability
         $email = (new MailMessage)
             ->subject($subject)
             ->view('emails.single-contact', [
+                'contentBody' => $body,
+                'subject' => $subject,
+            ])
+            ->text('emails.single-contact-text', [
                 'contentBody' => $body,
                 'subject' => $subject,
             ]);
