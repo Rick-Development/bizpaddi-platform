@@ -72,7 +72,8 @@
                     <span class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Global Variables</span>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['site_name', 'site_url', 'name'] as $var)
-                            <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                            @php $varTag = '{{' . $var . '}}'; @endphp
+                            <code onclick="insertVariable('{{ $varTag }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                         @endforeach
                     </div>
                 </div>
@@ -81,7 +82,8 @@
                     <span class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Attendance & Clocking</span>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['checkin_url', 'checkout_url', 'start_time', 'end_time', 'duration', 'completed_tasks', 'points_earned'] as $var)
-                            <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                            @php $varTag = '{{' . $var . '}}'; @endphp
+                            <code onclick="insertVariable('{{ $varTag }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                         @endforeach
                     </div>
                 </div>
@@ -90,7 +92,8 @@
                     <span class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Tasks & Projects</span>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['assignee_name', 'task_title', 'task_description', 'task_due_date', 'task_url', 'reason', 'reviews_url', 'milestone_title', 'project_name', 'project_url', 'due_date', 'pending_percentage'] as $var)
-                            <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                            @php $varTag = '{{' . $var . '}}'; @endphp
+                            <code onclick="insertVariable('{{ $varTag }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                         @endforeach
                     </div>
                 </div>
@@ -99,7 +102,8 @@
                     <span class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Reports & Metrics</span>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['total_members', 'on_time', 'late', 'absent', 'projects_summary', 'projects_status', 'invoices_total', 'leads_count', 'avg_score', 'table_rows', 'projects_audit', 'pm_name', 'new_leads', 'invoices_count', 'open_tickets', 'active_clock_ins'] as $var)
-                            <code onclick="insertVariable('{{ '{{' . $var . '}' . '}' }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ '{{' . $var . '}' . '}' }}</code>
+                            @php $varTag = '{{' . $var . '}}'; @endphp
+                            <code onclick="insertVariable('{{ $varTag }}');" class="px-2 py-0.5 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                         @endforeach
                     </div>
                 </div>
