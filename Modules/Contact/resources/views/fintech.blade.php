@@ -1044,6 +1044,9 @@
 
                         if (response.ok && result.status === 'success') {
                             this.formSubmitted = true;
+                            if (typeof fbq === 'function') {
+                                fbq('track', 'Lead', { content_name: 'Fintech Project Request' });
+                            }
                         } else {
                             this.formError = result.message || 'An error occurred during submission. Please check your inputs and try again.';
                         }

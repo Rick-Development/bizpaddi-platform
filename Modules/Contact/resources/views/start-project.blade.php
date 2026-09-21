@@ -73,6 +73,9 @@
                     if (response.ok) {
                         this.success = true;
                         this.step = 4;
+                        if (typeof fbq === 'function') {
+                            fbq('track', 'Lead', { content_name: 'Start Project Request' });
+                        }
                     } else {
                         if (data.errors) {
                             this.errors = data.errors;

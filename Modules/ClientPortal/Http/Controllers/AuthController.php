@@ -25,7 +25,7 @@ class AuthController extends Controller
         if (Auth::guard('client')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
             
-            return redirect()->intended(route('client.dashboard'));
+            return redirect()->intended(route('client.dashboard'))->with('login_event', true);
         }
 
         throw ValidationException::withMessages([
@@ -56,7 +56,7 @@ class AuthController extends Controller
         Auth::guard('client')->login($client);
         $request->session()->regenerate();
 
-        return redirect()->route('client.dashboard');
+        return redirect()->route('client.dashboard')->with('registered_event', true);
     }
 
     public function showLinkRequestForm()
