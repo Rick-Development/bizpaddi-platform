@@ -48,4 +48,17 @@ class TaskController extends Controller
 
         return back()->with('success', 'Task status updated.');
     }
+
+    public function destroy(Task $task)
+    {
+        $user = auth()->user();
+
+        if (!$user->isAdmin() && !$user->isProjectManager() && $task->assigned_to !== $user->id && $task->assigned_by !== $user->id) {
+            return back()->with('error', 'You are not authorized to delete this task.');
+        }
+
+        $task->delete();
+
+        return back()->with('success', 'Task deleted successfully.');
+    }
 }

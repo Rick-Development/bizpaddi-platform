@@ -41,6 +41,7 @@ Route::prefix('team')->name('team.')->group(function () {
         Route::post('kanban/update-order', [\Modules\TeamPortal\Http\Controllers\KanbanController::class, 'updateOrder'])->name('kanban.update-order');
         Route::get('tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
+        Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
         // Reports (Legacy)
         Route::resource('reports', Modules\TeamPortal\Http\Controllers\ReportController::class);
