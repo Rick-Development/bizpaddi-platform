@@ -151,6 +151,10 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        if (in_array($task->status, ['review', 'done', 'completed'])) {
+            return back()->with('error', 'Tasks in review or completed status cannot be deleted.');
+        }
+
         $task->delete();
         return back()->with('success', 'Task deleted successfully.');
     }

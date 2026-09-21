@@ -53,6 +53,10 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
+        if (in_array($task->status, ['review', 'done', 'completed'])) {
+            return back()->with('error', 'Tasks in review or completed status cannot be deleted.');
+        }
+
         if (!$user->isAdmin() && !$user->isProjectManager() && $task->assigned_to !== $user->id && $task->assigned_by !== $user->id) {
             return back()->with('error', 'You are not authorized to delete this task.');
         }

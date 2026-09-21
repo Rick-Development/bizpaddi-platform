@@ -29,6 +29,7 @@
                                     🏔️ {{ Str::limit($task->milestone->title, 10) }}
                                 </span>
                                 @endif
+                                @if(!in_array($task->status, ['review', 'done', 'completed']))
                                 <form action="{{ route('team.tasks.destroy', $task) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this task?');">
                                     @csrf
                                     @method('DELETE')
@@ -38,6 +39,7 @@
                                         </svg>
                                     </button>
                                 </form>
+                                @endif
                             </div>
                         </div>
                         <h4 class="text-sm font-bold text-gray-900 mb-1 group-hover:text-black transition-colors">
