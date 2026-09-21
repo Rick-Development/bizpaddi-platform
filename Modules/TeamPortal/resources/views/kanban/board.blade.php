@@ -29,7 +29,7 @@
                                     🏔️ {{ Str::limit($task->milestone->title, 10) }}
                                 </span>
                                 @endif
-                                @if(!in_array($task->status, ['review', 'done', 'completed']))
+                                @if((auth()->user()->isAdmin() || auth()->user()->isProjectManager()) && !in_array($task->status, ['review', 'done', 'completed']))
                                 <form action="{{ route('team.tasks.destroy', $task) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this task?');">
                                     @csrf
                                     @method('DELETE')

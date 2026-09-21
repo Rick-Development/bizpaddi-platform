@@ -57,8 +57,8 @@ class TaskController extends Controller
             return back()->with('error', 'Tasks in review or completed status cannot be deleted.');
         }
 
-        if (!$user->isAdmin() && !$user->isProjectManager() && $task->assigned_to !== $user->id && $task->assigned_by !== $user->id) {
-            return back()->with('error', 'You are not authorized to delete this task.');
+        if (!$user->isAdmin() && !$user->isProjectManager()) {
+            return back()->with('error', 'Only Admins and Project Managers can delete tasks.');
         }
 
         $task->delete();
