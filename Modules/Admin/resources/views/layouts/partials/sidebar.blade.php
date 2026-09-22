@@ -338,6 +338,11 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('admin.accounting.payroll.index') }}" class="{{ request()->routeIs('admin.accounting.payroll.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Staff Payroll
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('admin.accounting.salaries.index') }}" class="{{ request()->routeIs('admin.accounting.salaries.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
                                     Salary Disbursement
                                 </a>

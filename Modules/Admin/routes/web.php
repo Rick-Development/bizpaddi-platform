@@ -106,6 +106,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             // Feature Pricing
             Route::resource('feature-pricing', \Modules\Admin\Http\Controllers\FeaturePricingController::class);
 
+            // Staff Payroll & Salaries
+            Route::resource('payroll', \Modules\Admin\Http\Controllers\StaffSalaryController::class);
+            Route::patch('payroll/{payroll}/toggle-status', [\Modules\Admin\Http\Controllers\StaffSalaryController::class, 'toggleStatus'])->name('payroll.toggle-status');
+
             // Salary Disbursements
             Route::resource('salaries', \Modules\Admin\Http\Controllers\SalaryController::class);
 

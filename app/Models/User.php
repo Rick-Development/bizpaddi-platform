@@ -66,6 +66,21 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(\Modules\TeamPortal\Models\TeamMemberBankAccount::class);
     }
 
+    public function salaries()
+    {
+        return $this->hasMany(\Modules\Admin\Models\StaffSalary::class);
+    }
+
+    public function salary()
+    {
+        return $this->hasOne(\Modules\Admin\Models\StaffSalary::class)->latestOfMany();
+    }
+
+    public function activeSalary()
+    {
+        return $this->hasOne(\Modules\Admin\Models\StaffSalary::class)->where('status', 'active')->latestOfMany();
+    }
+
     public function reports()
     {
         return $this->hasMany(\Modules\TeamPortal\Models\DailyReport::class);
