@@ -15,9 +15,19 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $tasks = Task::with(['project', 'assignee'])
-            ->when($request->status, function ($query, $status) {
+            ->when($request->status ?? $request->due_filter, function ($query, $status) {
                 if ($status === 'overdue') {
-                    $query->where('status', '!=', 'completed')->whereNotNull('due_date')->where('due_date', '<', Carbon::now());
+                    $query->whereNotIn('status', ['done', 'completed'])->whereNotNull('due_date')->where('due_date', '<', Carbon::now());
+                } elseif ($status === 'due_soon') {
+                    $query->whereNotIn('status', ['done', 'completed'])->whereNotNull('due_date')->whereBetween('due_date', [Carbon::now(), Carbon::now()->addHours(48)]);
+                } elseif ($status === 'due_today') {
+                    $query->whereNotIn('status', ['done', 'completed'])->whereNotNull('due_date')->whereDate('due_date', Carbon::today());
+                } elseif ($status === 'due_this_week') {
+                    $query->whereNotIn('status', ['done', 'completed'])->whereNotNull('due_date')->whereBetween('due_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                } elseif ($status === 'has_due_date') {
+                    $query->whereNotNull('due_date');
+                } elseif ($status === 'no_due_date') {
+                    $query->whereNull('due_date');
                 } else {
                     $query->where('status', $status);
                 }

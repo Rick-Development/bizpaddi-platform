@@ -11,7 +11,7 @@
             <p class="text-sm text-gray-500 mt-1">Manage and track project progress</p>
         </div>
         <div class="flex items-center flex-wrap gap-3">
-            <!-- Project Filter -->
+            <!-- Project & Deadline Filter -->
             <form method="GET" class="flex items-center gap-2">
                 <div class="relative">
                     <select name="project_id" onchange="this.form.submit()" class="appearance-none pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary shadow-sm transition-all cursor-pointer hover:border-gray-300">
@@ -26,6 +26,30 @@
                         </svg>
                     </div>
                 </div>
+
+                <div class="relative">
+                    <select name="status" onchange="this.form.submit()" class="appearance-none pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary shadow-sm transition-all cursor-pointer hover:border-gray-300">
+                        <option value="">All Deadlines / Status</option>
+                        <option value="overdue" {{ request('status') == 'overdue' ? 'selected' : '' }}>🚨 Overdue Tasks</option>
+                        <option value="due_soon" {{ request('status') == 'due_soon' ? 'selected' : '' }}>⏰ Due Soon (Next 48h)</option>
+                        <option value="due_today" {{ request('status') == 'due_today' ? 'selected' : '' }}>📅 Due Today</option>
+                        <option value="due_this_week" {{ request('status') == 'due_this_week' ? 'selected' : '' }}>📆 Due This Week</option>
+                        <option value="todo" {{ request('status') == 'todo' ? 'selected' : '' }}>To Do</option>
+                        <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                        <option value="review" {{ request('status') == 'review' ? 'selected' : '' }}>Review</option>
+                        <option value="done" {{ request('status') == 'done' ? 'selected' : '' }}>Done</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+                @if(request('project_id') || request('status'))
+                    <a href="{{ route('admin.tasks.index') }}" class="px-3 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-xs font-semibold transition-colors" title="Reset Filters">
+                        ✕ Reset
+                    </a>
+                @endif
             </form>
 
             <!-- Export Task PDF & CSV Buttons -->

@@ -83,6 +83,19 @@
                     </select>
                 </div>
 
+                <!-- Due Date / Deadline Filter -->
+                <div class="w-full sm:w-52">
+                    <select name="due_filter" id="due_filter" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white font-medium text-gray-700">
+                        <option value="">All Deadlines</option>
+                        <option value="overdue" {{ request('due_filter') == 'overdue' ? 'selected' : '' }}>🚨 Overdue Tasks</option>
+                        <option value="due_soon" {{ request('due_filter') == 'due_soon' ? 'selected' : '' }}>⏰ Due Soon (Next 48h)</option>
+                        <option value="due_today" {{ request('due_filter') == 'due_today' ? 'selected' : '' }}>📅 Due Today</option>
+                        <option value="due_this_week" {{ request('due_filter') == 'due_this_week' ? 'selected' : '' }}>📆 Due This Week</option>
+                        <option value="has_due_date" {{ request('due_filter') == 'has_due_date' ? 'selected' : '' }}>📌 Has Due Date</option>
+                        <option value="no_due_date" {{ request('due_filter') == 'no_due_date' ? 'selected' : '' }}>⚪ No Due Date</option>
+                    </select>
+                </div>
+
                 <!-- Custom Date Range Pickers -->
                 <div id="custom-date-container" class="hidden flex items-center gap-2">
                     <input type="date" name="start_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">

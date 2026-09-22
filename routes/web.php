@@ -76,6 +76,20 @@ Route::get('/storage/{path}', function ($path) {
         }
     }
 
+    try {
+        $liveUrl = 'https://rickdevelopment.com/storage/' . $path;
+        $remoteResponse = \Illuminate\Support\Facades\Http::timeout(5)->get($liveUrl);
+        if ($remoteResponse->successful()) {
+            $localSavePath = storage_path('app/public/' . $path);
+            @mkdir(dirname($localSavePath), 0755, true);
+            @file_put_contents($localSavePath, $remoteResponse->body());
+            $contentType = $remoteResponse->header('Content-Type') ?: 'application/octet-stream';
+            return response($remoteResponse->body(), 200, ['Content-Type' => $contentType]);
+        }
+    } catch (\Throwable $e) {
+        // ignore and fallback to 404
+    }
+
     abort(404, 'File not found on storage server');
 })->where('path', '.*');
 

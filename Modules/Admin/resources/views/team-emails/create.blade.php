@@ -32,11 +32,18 @@
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Select Template (Optional)</label>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-sm font-semibold text-gray-700">Select Template (Optional)</label>
+                    <span class="text-xs text-gray-500 font-medium">Team & Staff Only</span>
+                </div>
                 <select id="template_selector" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm">
-                    <option value="">-- Choose a template --</option>
-                    @foreach($templates as $template)
-                        <option value="{{ $template->id }}">{{ $template->name }}</option>
+                    <option value="">-- Choose a team template --</option>
+                    @foreach($templates->groupBy('category') as $category => $items)
+                        <optgroup label="{{ $category ?: 'General Announcements' }}">
+                            @foreach($items as $template)
+                                <option value="{{ $template->id }}">{{ $template->name }}</option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </select>
             </div>
@@ -115,6 +122,90 @@
             <textarea name="message" id="email_message" rows="12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-sm">{{ old('message') }}</textarea>
         </div>
 
+        <!-- Available Shortcuts / Placeholders -->
+        <div class="rounded-xl border border-gray-200 bg-gray-50/80 p-4 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span class="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Available Shortcuts (Click to Insert)
+                </span>
+                <span class="text-[11px] text-gray-500">Click any shortcut tag below to insert it at your cursor</span>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <!-- Performance Tags -->
+                <button type="button" onclick="insertShortcut('&#123;&#123;score&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Member Performance Score %">
+                    <span>&#123;&#123;score&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 font-sans">Score %</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;performance_url&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Performance Scorecard Link">
+                    <span>&#123;&#123;performance_url&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 font-sans">Scorecard</span>
+                </button>
+
+                <!-- Project Tags -->
+                <button type="button" onclick="insertShortcut('&#123;&#123;project_name&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Project Name">
+                    <span>&#123;&#123;project_name&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-sans">Project</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;due_date&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Due Date">
+                    <span>&#123;&#123;due_date&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 font-sans">Due Date</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;pending_percentage&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Pending %">
+                    <span>&#123;&#123;pending_percentage&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 font-sans">Pending %</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;project_url&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Project URL">
+                    <span>&#123;&#123;project_url&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-sans">Link</span>
+                </button>
+
+                <!-- Recipient Info Tags -->
+                <button type="button" onclick="insertShortcut('&#123;&#123;name&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Member Full Name">
+                    <span>&#123;&#123;name&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-50 text-green-700 font-sans">Member Name</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;first_name&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Member First Name">
+                    <span>&#123;&#123;first_name&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-50 text-green-700 font-sans">First Name</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;department&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Department">
+                    <span>&#123;&#123;department&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 font-sans">Department</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;role&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Role">
+                    <span>&#123;&#123;role&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 font-sans">Role</span>
+                </button>
+
+                <!-- Company & General -->
+                <button type="button" onclick="insertShortcut('&#123;&#123;site_name&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Company Name">
+                    <span>&#123;&#123;site_name&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 font-sans">Company</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;date&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Current Date">
+                    <span>&#123;&#123;date&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 font-sans">Date</span>
+                </button>
+
+                <button type="button" onclick="insertShortcut('&#123;&#123;dashboard_url&#125;&#125;')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold bg-white hover:bg-brand-primary hover:text-white border border-gray-200 text-gray-800 shadow-sm transition-all hover:scale-105" title="Dashboard Link">
+                    <span>&#123;&#123;dashboard_url&#125;&#125;</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 font-sans">Dashboard</span>
+                </button>
+            </div>
+        </div>
+
         <div class="flex justify-end gap-x-3 pt-4 border-t border-gray-100">
             <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-brand-primary text-white rounded-xl text-sm font-bold hover:bg-brand-primary/80 shadow-md hover:shadow-lg transition-all active:scale-95">
                 <i class="fa-solid fa-paper-plane mr-2"></i>
@@ -141,6 +232,21 @@
 
 <script>
     const emailTemplates = {!! json_encode($templates->keyBy('id')) !!};
+
+    window.insertShortcut = function(tag) {
+        try {
+            $('#email_message').summernote('focus');
+            $('#email_message').summernote('insertText', tag);
+        } catch (e) {
+            const textarea = document.getElementById('email_message');
+            if (textarea) {
+                textarea.focus();
+                const start = textarea.selectionStart || 0;
+                const end = textarea.selectionEnd || 0;
+                textarea.value = textarea.value.substring(0, start) + tag + textarea.value.substring(end);
+            }
+        }
+    };
 
     $(document).ready(function() {
         $.summernote.options.sanitize = function(html) { return html; };

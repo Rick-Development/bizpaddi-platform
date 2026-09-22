@@ -297,6 +297,11 @@
                                     Roles (RBAC)
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('admin.team-emails.create') }}" class="{{ request()->routeIs('admin.team-emails.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Email Team
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

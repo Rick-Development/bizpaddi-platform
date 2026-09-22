@@ -52,6 +52,36 @@ class KanbanController extends Controller
             });
         });
 
+        if ($request->filled('due_filter')) {
+            $dueFilter = $request->due_filter;
+            $now = \Carbon\Carbon::now();
+            $incompleteStatuses = function($q) {
+                $q->whereNotIn('status', ['done', 'completed']);
+            };
+
+            if ($dueFilter === 'overdue') {
+                $query->where($incompleteStatuses)
+                      ->whereNotNull('due_date')
+                      ->where('due_date', '<', $now);
+            } elseif ($dueFilter === 'due_soon') {
+                $query->where($incompleteStatuses)
+                      ->whereNotNull('due_date')
+                      ->whereBetween('due_date', [$now, $now->copy()->addHours(48)]);
+            } elseif ($dueFilter === 'due_today') {
+                $query->where($incompleteStatuses)
+                      ->whereNotNull('due_date')
+                      ->whereDate('due_date', \Carbon\Carbon::today());
+            } elseif ($dueFilter === 'due_this_week') {
+                $query->where($incompleteStatuses)
+                      ->whereNotNull('due_date')
+                      ->whereBetween('due_date', [\Carbon\Carbon::now()->startOfWeek(), \Carbon\Carbon::now()->endOfWeek()]);
+            } elseif ($dueFilter === 'has_due_date') {
+                $query->whereNotNull('due_date');
+            } elseif ($dueFilter === 'no_due_date') {
+                $query->whereNull('due_date');
+            }
+        }
+
         if ($request->filled('date_filter')) {
             $dateFilter = $request->date_filter;
             if ($dateFilter === 'today') {

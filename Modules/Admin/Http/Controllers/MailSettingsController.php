@@ -161,6 +161,11 @@ class MailSettingsController extends Controller
         Config::set('mail.mailers.smtp.scheme', $scheme);
         Config::set('mail.from.address', $from);
         Config::set('mail.from.name', $name);
+
+        Mail::purge('smtp');
+        if ($mailer !== 'smtp') {
+            Mail::purge($mailer);
+        }
     }
 
     /**
