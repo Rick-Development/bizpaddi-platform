@@ -15,6 +15,7 @@ class StaffSalary extends Model
     protected $fillable = [
         'user_id',
         'amount',
+        'incentive_amount',
         'currency',
         'payment_cycle',
         'payment_day',
@@ -27,6 +28,7 @@ class StaffSalary extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'incentive_amount' => 'decimal:2',
         'effective_date' => 'date',
         'payment_day' => 'integer',
     ];
@@ -46,6 +48,11 @@ class StaffSalary extends Model
         return $query->where('status', 'active');
     }
 
+    public function getTotalAmountAttribute(): float
+    {
+        return (float) $this->amount + (float) ($this->incentive_amount ?? 0);
+    }
+
     public function getFormattedAmountAttribute(): string
     {
         $symbol = match(strtoupper($this->currency)) {
@@ -59,9 +66,35 @@ class StaffSalary extends Model
         return $symbol . number_format((float) $this->amount, 2);
     }
 
+    public function getFormattedIncentiveAttribute(): string
+    {
+        $symbol = match(strtoupper($this->currency)) {
+            'NGN' => '₦',
+            'USD' => '$',
+            'GBP' => '£',
+            'EUR' => '€',
+            default => $this->currency . ' ',
+        };
+
+        return $symbol . number_format((float) ($this->incentive_amount ?? 0), 2);
+    }
+
+    public function getFormattedTotalAttribute(): string
+    {
+        $symbol = match(strtoupper($this->currency)) {
+            'NGN' => '₦',
+            'USD' => '$',
+            'GBP' => '£',
+            'EUR' => '€',
+            default => $this->currency . ' ',
+        };
+
+        return $symbol . number_format($this->total_amount, 2);
+    }
+
     public function getAnnualAmountAttribute(): float
     {
-        return (float) $this->amount * 12;
+        return (float) $this->total_amount * 12;
     }
 
     public function getFormattedAnnualAmountAttribute(): string

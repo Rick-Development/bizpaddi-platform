@@ -25,7 +25,9 @@ class StaffSalaryController extends Controller
 
         // 1. Core Payroll Metrics (Current Active Commitments)
         $activeSalariesQuery = StaffSalary::where('status', 'active');
-        $totalActiveSalaries = (float) (clone $activeSalariesQuery)->sum('amount');
+        $totalBaseSalaries = (float) (clone $activeSalariesQuery)->sum('amount');
+        $totalIncentives = (float) (clone $activeSalariesQuery)->sum('incentive_amount');
+        $totalActiveSalaries = $totalBaseSalaries + $totalIncentives;
         $activeStaffCount = (int) (clone $activeSalariesQuery)->count();
         $averageSalary = $activeStaffCount > 0 ? ($totalActiveSalaries / $activeStaffCount) : 0;
         $annualProjection = $totalActiveSalaries * 12;
@@ -97,6 +99,8 @@ class StaffSalaryController extends Controller
         return view('admin::salaries.staff-salaries', compact(
             'salaries',
             'totalActiveSalaries',
+            'totalBaseSalaries',
+            'totalIncentives',
             'activeStaffCount',
             'averageSalary',
             'annualProjection',
@@ -116,6 +120,7 @@ class StaffSalaryController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:0',
+            'incentive_amount' => 'nullable|numeric|min:0',
             'currency' => 'required|string|max:10',
             'payment_cycle' => 'required|in:monthly,bi-weekly,weekly',
             'payment_day' => 'nullable|integer|min:1|max:31',
@@ -133,6 +138,7 @@ class StaffSalaryController extends Controller
         }
 
         $validated['created_by'] = auth()->id();
+        $validated['incentive_amount'] = $validated['incentive_amount'] ?? 0;
         $validated['effective_date'] = $validated['effective_date'] ?? now()->toDateString();
         $validated['payment_day'] = $validated['payment_day'] ?? 28;
 
@@ -149,6 +155,7 @@ class StaffSalaryController extends Controller
     {
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0',
+            'incentive_amount' => 'nullable|numeric|min:0',
             'currency' => 'required|string|max:10',
             'payment_cycle' => 'required|in:monthly,bi-weekly,weekly',
             'payment_day' => 'nullable|integer|min:1|max:31',
@@ -157,6 +164,8 @@ class StaffSalaryController extends Controller
             'designation' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
         ]);
+
+        $validated['incentive_amount'] = $validated['incentive_amount'] ?? 0;
 
         $payroll->update($validated);
 

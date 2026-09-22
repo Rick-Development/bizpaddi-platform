@@ -74,7 +74,7 @@
                     ₦{{ number_format($totalActiveSalaries, 2) }}
                 </div>
                 <div class="mt-1 flex items-center justify-between text-xs text-gray-500">
-                    <span>Sum of active staff salaries</span>
+                    <span>Base: ₦{{ number_format($totalBaseSalaries, 0) }}@if($totalIncentives > 0) + ₦{{ number_format($totalIncentives, 0) }} bonus@endif</span>
                     <span class="font-bold text-emerald-700">Every Month</span>
                 </div>
             </div>
@@ -284,11 +284,20 @@
                         <!-- Salary Amount -->
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-base font-black text-gray-900 font-mono">
-                                {{ $salary->formatted_amount }}
+                                {{ $salary->formatted_total }}
                             </div>
+                            @if($salary->incentive_amount > 0)
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="text-[11px] text-gray-500 font-mono">Base: {{ $salary->formatted_amount }}</span>
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 font-mono">
+                                    +{{ $salary->formatted_incentive }} bonus
+                                </span>
+                            </div>
+                            @else
                             <div class="text-[11px] text-gray-400 font-mono mt-0.5">
                                 {{ $salary->formatted_annual_amount }} / yr
                             </div>
+                            @endif
                         </td>
 
                         <!-- Schedule -->
@@ -341,7 +350,7 @@
                         <td class="py-4 pl-3 pr-4 sm:pr-6 whitespace-nowrap text-right text-sm">
                             <div class="flex items-center justify-end gap-2">
                                 <!-- Disburse / Pay Now Shortcut -->
-                                <a href="{{ route('admin.accounting.salaries.create', ['user_id' => $salary->user_id, 'amount' => $salary->amount]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all border border-emerald-200" title="Disburse via SafeHaven">
+                                <a href="{{ route('admin.accounting.salaries.create', ['user_id' => $salary->user_id, 'amount' => $salary->total_amount]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all border border-emerald-200" title="Disburse via SafeHaven">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
@@ -445,23 +454,42 @@
                             </select>
                         </div>
 
-                        <!-- Amount & Currency -->
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="col-span-2">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Monthly Salary <span class="text-red-500">*</span></label>
-                                <div class="relative flex items-stretch rounded-xl shadow-xs">
-                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(createCurrency)">₦</span>
-                                    <input type="number" step="0.01" min="0" name="amount" required placeholder="50000.00" class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                        <!-- Amount, Incentive & Currency -->
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="col-span-2">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Base Monthly Salary <span class="text-red-500">*</span></label>
+                                    <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                        <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(createCurrency)">₦</span>
+                                        <input type="number" step="0.01" min="0" name="amount" x-model.number="createAmount" required placeholder="150000.00" class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Currency</label>
+                                    <select name="currency" x-model="createCurrency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
+                                        <option value="NGN">NGN (₦)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                    </select>
                                 </div>
                             </div>
+
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Currency</label>
-                                <select name="currency" x-model="createCurrency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
-                                    <option value="NGN">NGN (₦)</option>
-                                    <option value="USD">USD ($)</option>
-                                    <option value="GBP">GBP (£)</option>
-                                    <option value="EUR">EUR (€)</option>
-                                </select>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Incentive / Bonus Amount <span class="text-xs text-gray-400 font-normal lowercase">(optional)</span></label>
+                                <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-purple-50 text-purple-700 font-bold text-sm select-none" x-text="getCurrencySymbol(createCurrency)">₦</span>
+                                    <input type="number" step="0.01" min="0" name="incentive_amount" x-model.number="createIncentive" placeholder="0.00" class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                                </div>
+                            </div>
+
+                            <!-- Live Total Payout Calculation Strip -->
+                            <div class="rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 p-3 flex items-center justify-between text-xs" x-show="(createAmount > 0 || createIncentive > 0)">
+                                <div>
+                                    <span class="font-bold text-emerald-900 block">Total Monthly Compensation</span>
+                                    <span class="text-[11px] text-emerald-700" x-text="'Base: ' + getCurrencySymbol(createCurrency) + Number(createAmount || 0).toLocaleString('en-US', {minimumFractionDigits: 2}) + (createIncentive > 0 ? ' + Incentive: ' + getCurrencySymbol(createCurrency) + Number(createIncentive || 0).toLocaleString('en-US', {minimumFractionDigits: 2}) : '')"></span>
+                                </div>
+                                <span class="font-black text-emerald-800 font-mono text-base" x-text="getCurrencySymbol(createCurrency) + (Number(createAmount || 0) + Number(createIncentive || 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})">₦0.00</span>
                             </div>
                         </div>
 
@@ -543,23 +571,42 @@
                     </div>
 
                     <div class="p-6 space-y-4">
-                        <!-- Amount & Currency -->
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="col-span-2">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Monthly Salary <span class="text-red-500">*</span></label>
-                                <div class="relative flex items-stretch rounded-xl shadow-xs">
-                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(editData.currency)">₦</span>
-                                    <input type="number" step="0.01" min="0" name="amount" x-model="editData.amount" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                        <!-- Amount, Incentive & Currency -->
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="col-span-2">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Base Monthly Salary <span class="text-red-500">*</span></label>
+                                    <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                        <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(editData.currency)">₦</span>
+                                        <input type="number" step="0.01" min="0" name="amount" x-model.number="editData.amount" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Currency</label>
+                                    <select name="currency" x-model="editData.currency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
+                                        <option value="NGN">NGN (₦)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="EUR">EUR (€)</option>
+                                    </select>
                                 </div>
                             </div>
+
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Currency</label>
-                                <select name="currency" x-model="editData.currency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
-                                    <option value="NGN">NGN (₦)</option>
-                                    <option value="USD">USD ($)</option>
-                                    <option value="GBP">GBP (£)</option>
-                                    <option value="EUR">EUR (€)</option>
-                                </select>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Monthly Incentive / Bonus <span class="text-xs text-gray-400 font-normal lowercase">(optional)</span></label>
+                                <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-purple-50 text-purple-700 font-bold text-sm select-none" x-text="getCurrencySymbol(editData.currency)">₦</span>
+                                    <input type="number" step="0.01" min="0" name="incentive_amount" x-model.number="editData.incentive_amount" placeholder="0.00" class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
+                                </div>
+                            </div>
+
+                            <!-- Live Total Payout Calculation Strip -->
+                            <div class="rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 p-3 flex items-center justify-between text-xs" x-show="(editData.amount > 0 || editData.incentive_amount > 0)">
+                                <div>
+                                    <span class="font-bold text-emerald-900 block">Total Monthly Compensation</span>
+                                    <span class="text-[11px] text-emerald-700" x-text="'Base: ' + getCurrencySymbol(editData.currency) + Number(editData.amount || 0).toLocaleString('en-US', {minimumFractionDigits: 2}) + (editData.incentive_amount > 0 ? ' + Incentive: ' + getCurrencySymbol(editData.currency) + Number(editData.incentive_amount || 0).toLocaleString('en-US', {minimumFractionDigits: 2}) : '')"></span>
+                                </div>
+                                <span class="font-black text-emerald-800 font-mono text-base" x-text="getCurrencySymbol(editData.currency) + (Number(editData.amount || 0) + Number(editData.incentive_amount || 0)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})">₦0.00</span>
                             </div>
                         </div>
 
@@ -630,6 +677,8 @@
             editStaffName: '',
             editActionUrl: '',
             createCurrency: 'NGN',
+            createAmount: '',
+            createIncentive: '',
             currencySymbols: {
                 'NGN': '₦',
                 'USD': '$',
@@ -641,6 +690,7 @@
             },
             editData: {
                 amount: '',
+                incentive_amount: '',
                 currency: 'NGN',
                 payment_cycle: 'monthly',
                 payment_day: 28,
@@ -651,6 +701,8 @@
             },
             openCreateModal() {
                 this.createCurrency = 'NGN';
+                this.createAmount = '';
+                this.createIncentive = '';
                 this.showCreateModal = true;
             },
             openEditModal(salary) {
@@ -658,6 +710,7 @@
                 this.editActionUrl = `{{ url('admin/accounting/payroll') }}/${salary.id}`;
                 this.editData = {
                     amount: salary.amount,
+                    incentive_amount: salary.incentive_amount || '',
                     currency: salary.currency || 'NGN',
                     payment_cycle: salary.payment_cycle || 'monthly',
                     payment_day: salary.payment_day || 28,
