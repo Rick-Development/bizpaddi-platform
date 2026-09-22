@@ -449,14 +449,14 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div class="col-span-2">
                                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Monthly Salary <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 font-bold">₦</span>
-                                    <input type="number" step="0.01" min="0" name="amount" required placeholder="150000.00" class="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono shadow-xs">
+                                <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(createCurrency)">₦</span>
+                                    <input type="number" step="0.01" min="0" name="amount" required placeholder="50000.00" class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Currency</label>
-                                <select name="currency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
+                                <select name="currency" x-model="createCurrency" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary bg-white shadow-xs">
                                     <option value="NGN">NGN (₦)</option>
                                     <option value="USD">USD ($)</option>
                                     <option value="GBP">GBP (£)</option>
@@ -547,9 +547,9 @@
                         <div class="grid grid-cols-3 gap-3">
                             <div class="col-span-2">
                                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Monthly Salary <span class="text-red-500">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 font-bold">₦</span>
-                                    <input type="number" step="0.01" min="0" name="amount" x-model="editData.amount" required class="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono shadow-xs">
+                                <div class="relative flex items-stretch rounded-xl shadow-xs">
+                                    <span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-700 font-bold text-sm select-none" x-text="getCurrencySymbol(editData.currency)">₦</span>
+                                    <input type="number" step="0.01" min="0" name="amount" x-model="editData.amount" required class="block w-full min-w-0 flex-1 rounded-none rounded-r-xl border border-gray-300 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary font-mono text-gray-900 bg-white" style="padding-left: 0.85rem; padding-right: 0.85rem;">
                                 </div>
                             </div>
                             <div>
@@ -629,6 +629,16 @@
             showEditModal: false,
             editStaffName: '',
             editActionUrl: '',
+            createCurrency: 'NGN',
+            currencySymbols: {
+                'NGN': '₦',
+                'USD': '$',
+                'GBP': '£',
+                'EUR': '€'
+            },
+            getCurrencySymbol(code) {
+                return this.currencySymbols[code] || '₦';
+            },
             editData: {
                 amount: '',
                 currency: 'NGN',
@@ -640,6 +650,7 @@
                 notes: ''
             },
             openCreateModal() {
+                this.createCurrency = 'NGN';
                 this.showCreateModal = true;
             },
             openEditModal(salary) {
