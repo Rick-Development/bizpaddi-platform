@@ -74,7 +74,7 @@
                     ₦{{ number_format($totalActiveSalaries, 2) }}
                 </div>
                 <div class="mt-1 flex items-center justify-between text-xs text-gray-500">
-                    <span>Base: ₦{{ number_format($totalBaseSalaries, 0) }}@if($totalIncentives > 0) + ₦{{ number_format($totalIncentives, 0) }} bonus@endif</span>
+                    <span>Base: ₦{{ number_format($totalBaseSalaries, 0) }}{{ $totalIncentives > 0 ? ' + ₦' . number_format($totalIncentives, 0) . ' bonus' : '' }}</span>
                     <span class="font-bold text-emerald-700">Every Month</span>
                 </div>
             </div>
