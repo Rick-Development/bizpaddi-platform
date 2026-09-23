@@ -4,9 +4,7 @@ namespace Modules\Careers\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Modules\Careers\Models\Job;
-
 use Modules\Careers\Models\Application;
 use Modules\Careers\Models\Candidate;
 
@@ -63,7 +61,7 @@ class CareersController extends Controller
             'status' => 'pending',
         ]);
 
-        return back()->with('success', 'Your application has been submitted successfully!');
+        return back()->with('success', 'Your application has been submitted successfully! Our talent acquisition team will review your profile and reach out shortly.');
     }
 
     /**
@@ -71,8 +69,28 @@ class CareersController extends Controller
      */
     public function show($id)
     {
-        $job = Job::where('is_active', true)->findOrFail($id);
-        return view('careers::show', compact('job'));
+        $job = Job::where('is_active', true)
+            ->where(function ($q) use ($id) {
+                $q->where('id', $id)->orWhere('slug', $id);
+            })
+            ->firstOrFail();
+
+        $relatedJobs = Job::where('is_active', true)
+            ->where('id', '!=', $job->id)
+            ->where('department', $job->department)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        if ($relatedJobs->isEmpty()) {
+            $relatedJobs = Job::where('is_active', true)
+                ->where('id', '!=', $job->id)
+                ->latest()
+                ->take(3)
+                ->get();
+        }
+
+        return view('careers::show', compact('job', 'relatedJobs'));
     }
 
     /**
