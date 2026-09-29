@@ -88,11 +88,31 @@
                     </select>
                 </div>
 
-                <!-- Custom Date Range Pickers -->
+                <!-- ✅ Completed Date Filter -->
+                <div class="w-full sm:w-52">
+                    <select name="completed_filter" id="completed_filter" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white font-medium text-gray-700">
+                        <option value="">✅ All Completed</option>
+                        <option value="completed_today">✅ Completed Today</option>
+                        <option value="completed_yesterday">✅ Completed Yesterday</option>
+                        <option value="completed_this_week">✅ Completed This Week</option>
+                        <option value="completed_this_month">✅ Completed This Month</option>
+                        <option value="completed_custom">📅 Custom Completed Range</option>
+                    </select>
+                </div>
+
+                <!-- Custom Created Date Range Pickers -->
                 <div id="custom-date-container" class="hidden flex items-center gap-2">
                     <input type="date" name="start_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
                     <span class="text-gray-400 text-xs font-medium">to</span>
                     <input type="date" name="end_date" class="rounded-xl border border-gray-300 px-3 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 shadow-sm bg-white">
+                </div>
+
+                <!-- Custom Completed Date Range Pickers -->
+                <div id="custom-completed-container" class="hidden flex items-center gap-2">
+                    <span class="text-xs font-semibold text-emerald-600 whitespace-nowrap">Completed:</span>
+                    <input type="date" name="completed_start" class="rounded-xl border border-emerald-300 px-3 py-1.5 text-sm focus:ring-emerald-500 focus:border-emerald-500 shadow-sm bg-white">
+                    <span class="text-gray-400 text-xs font-medium">to</span>
+                    <input type="date" name="completed_end" class="rounded-xl border border-emerald-300 px-3 py-1.5 text-sm focus:ring-emerald-500 focus:border-emerald-500 shadow-sm bg-white">
                 </div>
             </div>
 
@@ -182,7 +202,9 @@ const filtersForm = document.getElementById('kanban-filters-form');
 const boardContainer = document.getElementById('kanban-board-container');
 const loader = document.getElementById('kanban-loader');
 const dateFilterSelect = document.getElementById('date_filter');
+const completedFilterSelect = document.getElementById('completed_filter');
 const customDateContainer = document.getElementById('custom-date-container');
+const customCompletedContainer = document.getElementById('custom-completed-container');
 const newTaskBtn = document.getElementById('new-task-btn');
 
 function toggleCustomDate() {
@@ -193,8 +215,21 @@ function toggleCustomDate() {
     }
 }
 
+function toggleCustomCompleted() {
+    if (completedFilterSelect.value === 'completed_custom') {
+        customCompletedContainer.classList.remove('hidden');
+    } else {
+        customCompletedContainer.classList.add('hidden');
+    }
+}
+
 dateFilterSelect.addEventListener('change', toggleCustomDate);
-toggleCustomDate(); // Run once on startup
+completedFilterSelect.addEventListener('change', function() {
+    toggleCustomCompleted();
+    fetchFilteredTasks();
+});
+toggleCustomDate();       // Run once on startup
+toggleCustomCompleted();  // Run once on startup
 
 function fetchFilteredTasks() {
     // Show loading spinner
@@ -256,6 +291,7 @@ filtersForm.querySelector('input[name="search"]').addEventListener('input', func
 document.getElementById('reset-filters').addEventListener('click', function() {
     filtersForm.reset();
     toggleCustomDate();
+    toggleCustomCompleted();
     fetchFilteredTasks();
 });
 </script>

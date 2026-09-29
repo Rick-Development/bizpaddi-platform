@@ -80,6 +80,80 @@ class KanbanController extends Controller
             }
         }
 
+        // Completed Date Filter — filters tasks in the "done" column by when they were completed
+        if ($request->filled('completed_filter')) {
+            $completedFilter = $request->completed_filter;
+            $now = \Carbon\Carbon::now();
+
+            // Only apply to done tasks; use COALESCE for legacy records missing completed_at
+            $completionCol = \Illuminate\Support\Facades\DB::raw(
+                "COALESCE(completed_at, status_changed_at, updated_at)"
+            );
+
+            if ($completedFilter === 'completed_today') {
+                $tasksQuery->where(function ($q) use ($now) {
+                    $q->where('status', '!=', 'done')
+                      ->orWhere(function ($sub) use ($now) {
+                          $sub->where('status', 'done')
+                              ->whereDate(\Illuminate\Support\Facades\DB::raw(
+                                  "COALESCE(completed_at, status_changed_at, updated_at)"
+                              ), $now->toDateString());
+                      });
+                });
+            } elseif ($completedFilter === 'completed_yesterday') {
+                $yesterday = $now->copy()->subDay()->toDateString();
+                $tasksQuery->where(function ($q) use ($yesterday) {
+                    $q->where('status', '!=', 'done')
+                      ->orWhere(function ($sub) use ($yesterday) {
+                          $sub->where('status', 'done')
+                              ->whereDate(\Illuminate\Support\Facades\DB::raw(
+                                  "COALESCE(completed_at, status_changed_at, updated_at)"
+                              ), $yesterday);
+                      });
+                });
+            } elseif ($completedFilter === 'completed_this_week') {
+                $weekStart = $now->copy()->startOfWeek();
+                $weekEnd   = $now->copy()->endOfWeek();
+                $tasksQuery->where(function ($q) use ($weekStart, $weekEnd) {
+                    $q->where('status', '!=', 'done')
+                      ->orWhere(function ($sub) use ($weekStart, $weekEnd) {
+                          $sub->where('status', 'done')
+                              ->whereBetween(\Illuminate\Support\Facades\DB::raw(
+                                  "COALESCE(completed_at, status_changed_at, updated_at)"
+                              ), [$weekStart, $weekEnd]);
+                      });
+                });
+            } elseif ($completedFilter === 'completed_this_month') {
+                $monthStart = $now->copy()->startOfMonth();
+                $monthEnd   = $now->copy()->endOfMonth();
+                $tasksQuery->where(function ($q) use ($monthStart, $monthEnd) {
+                    $q->where('status', '!=', 'done')
+                      ->orWhere(function ($sub) use ($monthStart, $monthEnd) {
+                          $sub->where('status', 'done')
+                              ->whereBetween(\Illuminate\Support\Facades\DB::raw(
+                                  "COALESCE(completed_at, status_changed_at, updated_at)"
+                              ), [$monthStart, $monthEnd]);
+                      });
+                });
+            } elseif (
+                $completedFilter === 'completed_custom'
+                && $request->filled('completed_start')
+                && $request->filled('completed_end')
+            ) {
+                $cStart = \Carbon\Carbon::parse($request->completed_start)->startOfDay();
+                $cEnd   = \Carbon\Carbon::parse($request->completed_end)->endOfDay();
+                $tasksQuery->where(function ($q) use ($cStart, $cEnd) {
+                    $q->where('status', '!=', 'done')
+                      ->orWhere(function ($sub) use ($cStart, $cEnd) {
+                          $sub->where('status', 'done')
+                              ->whereBetween(\Illuminate\Support\Facades\DB::raw(
+                                  "COALESCE(completed_at, status_changed_at, updated_at)"
+                              ), [$cStart, $cEnd]);
+                      });
+                });
+            }
+        }
+
         $tasks = $tasksQuery->orderBy('order')->get();
 
         $columns = [
