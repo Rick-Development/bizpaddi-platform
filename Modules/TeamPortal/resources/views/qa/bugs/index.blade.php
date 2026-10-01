@@ -8,12 +8,14 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Bug Reports</h1>
-            <p class="text-sm text-gray-500 mt-1">All bugs you have reported</p>
+            <p class="text-sm text-gray-500 mt-1">Track and resolve project issues and bug reports</p>
         </div>
+        @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager() || auth()->user()->isQaTester())
         <a href="{{ route('team.qa.bugs.create') }}" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow transition-all">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             Report Bug
         </a>
+        @endif
     </div>
 
     {{-- Filters --}}
@@ -105,7 +107,10 @@
                     </td>
                     <td class="px-4 py-4 text-xs text-gray-400">{{ $bug->created_at->diffForHumans() }}</td>
                     <td class="px-4 py-4 text-right">
-                        <a href="{{ route('team.qa.bugs.edit', $bug) }}" class="text-xs text-gray-400 hover:text-gray-800 font-medium transition">Edit</a>
+                        <a href="{{ route('team.qa.bugs.show', $bug) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-brand-primary hover:text-red-700 transition">
+                            View Details
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                        </a>
                     </td>
                 </tr>
                 @empty
@@ -115,7 +120,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75z"/>
                         </svg>
                         <p class="text-sm text-gray-400">No bug reports found.</p>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager() || auth()->user()->isQaTester())
                         <a href="{{ route('team.qa.bugs.create') }}" class="mt-2 inline-block text-sm text-brand-primary font-semibold hover:underline">Report a bug →</a>
+                        @endif
                     </td>
                 </tr>
                 @endforelse

@@ -217,6 +217,7 @@ Route::prefix('team/qa')
         Route::get('bugs/create', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'create'])->name('bugs.create');
         Route::post('bugs', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'store'])->name('bugs.store');
         Route::get('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'show'])->name('bugs.show');
+        Route::patch('bugs/{bug}/status', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'updateStatus'])->name('bugs.update-status');
         Route::get('bugs/{bug}/edit', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'edit'])->name('bugs.edit');
         Route::put('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'update'])->name('bugs.update');
         Route::delete('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'destroy'])->name('bugs.destroy');

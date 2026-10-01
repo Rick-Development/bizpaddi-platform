@@ -10,6 +10,7 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
             Back to Bug Reports
         </a>
+        @if($canManage)
         <div class="flex gap-2">
             <a href="{{ route('team.qa.bugs.edit', $bug) }}" class="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold px-3 py-2 rounded-xl transition">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
@@ -23,6 +24,7 @@
                 </button>
             </form>
         </div>
+        @endif
     </div>
 
     {{-- Bug Header Card --}}
@@ -130,8 +132,38 @@
 
         </div>
 
-        {{-- Sidebar Details --}}
+        {{-- Sidebar Details & Quick Status Update --}}
         <div class="space-y-4">
+
+            {{-- Status Update Card (For Developers, Designers, QA, Admins) --}}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
+                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wide">Update Status</h3>
+                <form action="{{ route('team.qa.bugs.update-status', $bug) }}" method="POST" class="space-y-3">
+                    @csrf @method('PATCH')
+                    <div>
+                        <label for="status" class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                        <select name="status" id="status" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                            <option value="open" {{ $bug->status === 'open' ? 'selected' : '' }}>Open</option>
+                            <option value="in_progress" {{ $bug->status === 'in_progress' ? 'selected' : '' }}>In Progress (Fixing)</option>
+                            <option value="resolved" {{ $bug->status === 'resolved' ? 'selected' : '' }}>Resolved (Fixed / Done)</option>
+                            @if($canManage)
+                            <option value="closed" {{ $bug->status === 'closed' ? 'selected' : '' }}>Closed (Verified)</option>
+                            <option value="wont_fix" {{ $bug->status === 'wont_fix' ? 'selected' : '' }}>Won't Fix</option>
+                            @endif
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="resolution_notes" class="block text-xs font-medium text-gray-500 mb-1">Resolution / Fix Notes</label>
+                        <textarea name="resolution_notes" id="resolution_notes" rows="3" placeholder="Briefly describe what was fixed..." class="w-full rounded-xl border border-gray-300 p-2.5 text-xs focus:ring-brand-primary focus:border-brand-primary">{{ old('resolution_notes', $bug->resolution_notes) }}</textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-primary hover:opacity-90 text-white text-sm font-semibold py-2 px-3 rounded-xl transition shadow-sm">
+                        Update Status
+                    </button>
+                </form>
+            </div>
+
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
                 <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">Details</h3>
                 <div class="space-y-3 text-sm">

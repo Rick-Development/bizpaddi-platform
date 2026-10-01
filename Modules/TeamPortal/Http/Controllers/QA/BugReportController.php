@@ -12,26 +12,92 @@ use Illuminate\Database\Eloquent\Builder;
 class BugReportController extends Controller
 {
     /**
-     * Returns only projects the QA user is directly involved in:
-     * - assigned as a team member on the project, OR
-     * - has at least one task assigned to them in the project.
+     * Check if user is an Administrator or Project Manager with full bug control.
      */
-    private function myProjects(int $userId)
+    private function isAdminOrPm($user): bool
     {
-        return Project::where(function (Builder $q) use ($userId) {
-            // Team member on the project
-            $q->whereHas('teamMembers', fn($t) => $t->where('users.id', $userId))
-              // OR has a task assigned in that project
-              ->orWhereHas('tasks', fn($t) => $t->where('assigned_to', $userId));
-        })->get();
+        return $user->isAdmin() || $user->isProjectManager();
+    }
+
+    /**
+     * Returns accessible projects:
+     * - Admins / PMs: all projects
+     * - Others: only projects they are assigned to (as team member or task assignee).
+     */
+    private function myProjects($user)
+    {
+        if ($this->isAdminOrPm($user)) {
+            return Project::orderBy('name')->get();
+        }
+
+        return Project::where(function (Builder $q) use ($user) {
+            $q->whereHas('teamMembers', fn($t) => $t->where('users.id', $user->id))
+              ->orWhereHas('tasks', fn($t) => $t->where('assigned_to', $user->id));
+        })->orderBy('name')->get();
+    }
+
+    /**
+     * Determine if user is allowed to view this bug report:
+     * - Admins / PMs: any bug
+     * - Reporter or Assignee: yes
+     * - Team members on the project: yes
+     */
+    private function canViewBug(BugReport $bug, $user): bool
+    {
+        if ($this->isAdminOrPm($user)) {
+            return true;
+        }
+
+        if ($bug->reported_by === $user->id || $bug->assigned_to === $user->id) {
+            return true;
+        }
+
+        if ($bug->project_id) {
+            $projectIds = $this->myProjects($user)->pluck('id');
+            return $projectIds->contains($bug->project_id);
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if user has full management rights (edit details, delete):
+     * - Admins / PMs: yes
+     * - The original reporter (e.g. QA tester who filed it): yes
+     * - Developers / Designers / others: NO (view & update status alone).
+     */
+    private function canManageBug(BugReport $bug, $user): bool
+    {
+        if ($this->isAdminOrPm($user)) {
+            return true;
+        }
+
+        return $bug->reported_by === $user->id;
     }
 
     public function index(Request $request)
     {
         $user = auth()->user();
 
-        $query = BugReport::with(['project', 'reporter', 'assignee'])
-            ->where('reported_by', $user->id);
+        $query = BugReport::with(['project', 'reporter', 'assignee']);
+
+        if ($this->isAdminOrPm($user)) {
+            // Admins & PMs have full access across all bug reports
+        } elseif ($user->isQaTester()) {
+            // QA testers see bugs they reported OR bugs in their assigned projects
+            $myProjectIds = $this->myProjects($user)->pluck('id');
+            $query->where(function (Builder $q) use ($user, $myProjectIds) {
+                $q->where('reported_by', $user->id)
+                  ->orWhereIn('project_id', $myProjectIds);
+            });
+        } else {
+            // Developers, designers, etc. see bugs in projects they are on or bugs assigned to them
+            $myProjectIds = $this->myProjects($user)->pluck('id');
+            $query->where(function (Builder $q) use ($user, $myProjectIds) {
+                $q->whereIn('project_id', $myProjectIds)
+                  ->orWhere('assigned_to', $user->id);
+            });
+        }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -40,8 +106,7 @@ class BugReportController extends Controller
             $query->where('severity', $request->severity);
         }
         if ($request->filled('project_id')) {
-            // Make sure the project_id they filter by is one they belong to
-            $myProjectIds = $this->myProjects($user->id)->pluck('id');
+            $myProjectIds = $this->myProjects($user)->pluck('id');
             if ($myProjectIds->contains($request->project_id)) {
                 $query->where('project_id', $request->project_id);
             }
@@ -54,18 +119,22 @@ class BugReportController extends Controller
         }
 
         $bugs     = $query->latest()->paginate(15)->withQueryString();
-        $projects = $this->myProjects($user->id);
+        $projects = $this->myProjects($user);
 
         return view('teamportal::qa.bugs.index', compact('bugs', 'projects'));
     }
 
     public function create()
     {
-        $user     = auth()->user();
-        $projects = $this->myProjects($user->id);
-        $tasks    = Task::where('assigned_to', $user->id)
-                        ->whereIn('status', ['todo', 'in_progress', 'review'])
-                        ->get();
+        $user = auth()->user();
+        $projects = $this->myProjects($user);
+
+        $tasksQuery = Task::whereIn('status', ['todo', 'in_progress', 'review']);
+        if (!$this->isAdminOrPm($user)) {
+            $tasksQuery->where('assigned_to', $user->id);
+        }
+        $tasks = $tasksQuery->get();
+
         return view('teamportal::qa.bugs.create', compact('projects', 'tasks'));
     }
 
@@ -105,23 +174,86 @@ class BugReportController extends Controller
 
     public function show(BugReport $bug)
     {
-        $this->authorizeAccess($bug);
+        $user = auth()->user();
+
+        if (!$this->canViewBug($bug, $user)) {
+            abort(403, 'You do not have permission to view this bug report.');
+        }
+
         $bug->load(['project', 'task', 'reporter', 'assignee', 'media']);
-        return view('teamportal::qa.bugs.show', compact('bug'));
+        $canManage = $this->canManageBug($bug, $user);
+
+        return view('teamportal::qa.bugs.show', compact('bug', 'canManage'));
+    }
+
+    /**
+     * Dedicated status update endpoint for developers, designers, and team members.
+     * Allows updating the status (e.g. In Progress, Resolved / Fixed) and resolution notes alone.
+     */
+    public function updateStatus(Request $request, BugReport $bug)
+    {
+        $user = auth()->user();
+
+        if (!$this->canViewBug($bug, $user)) {
+            abort(403, 'You do not have permission to update this bug report.');
+        }
+
+        $canManage = $this->canManageBug($bug, $user);
+
+        // Admins and reporters can set any status including closed/wont_fix.
+        // Developers and designers can set open, in_progress, resolved.
+        $allowedStatuses = $canManage
+            ? 'open,in_progress,resolved,closed,wont_fix'
+            : 'open,in_progress,resolved';
+
+        $validated = $request->validate([
+            'status'           => 'required|in:' . $allowedStatuses,
+            'resolution_notes' => 'nullable|string',
+        ]);
+
+        $updates = ['status' => $validated['status']];
+
+        if (array_key_exists('resolution_notes', $validated)) {
+            $updates['resolution_notes'] = $validated['resolution_notes'];
+        }
+
+        if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
+            $updates['resolved_at'] = now();
+        } elseif ($validated['status'] !== 'resolved') {
+            $updates['resolved_at'] = null;
+        }
+
+        $bug->update($updates);
+
+        return redirect()->route('team.qa.bugs.show', $bug)
+            ->with('success', 'Bug status updated to "' . $bug->status_label . '" successfully!');
     }
 
     public function edit(BugReport $bug)
     {
-        $this->authorizeAccess($bug);
-        $user     = auth()->user();
-        $projects = $this->myProjects($user->id);
-        $tasks    = Task::where('assigned_to', $user->id)->get();
+        $user = auth()->user();
+
+        if (!$this->canManageBug($bug, $user)) {
+            abort(403, 'Only administrators and the reporter can edit bug details. You can update the bug status from the details view.');
+        }
+
+        $projects = $this->myProjects($user);
+        $tasksQuery = Task::whereIn('status', ['todo', 'in_progress', 'review']);
+        if (!$this->isAdminOrPm($user)) {
+            $tasksQuery->where('assigned_to', $user->id);
+        }
+        $tasks = $tasksQuery->get();
+
         return view('teamportal::qa.bugs.edit', compact('bug', 'projects', 'tasks'));
     }
 
     public function update(Request $request, BugReport $bug)
     {
-        $this->authorizeAccess($bug);
+        $user = auth()->user();
+
+        if (!$this->canManageBug($bug, $user)) {
+            abort(403, 'Only administrators and the reporter can edit bug details.');
+        }
 
         $validated = $request->validate([
             'title'               => 'required|string|max:255',
@@ -143,6 +275,8 @@ class BugReportController extends Controller
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
             $validated['resolved_at'] = now();
+        } elseif ($validated['status'] !== 'resolved') {
+            $validated['resolved_at'] = null;
         }
 
         $bug->update($validated);
@@ -159,16 +293,15 @@ class BugReportController extends Controller
 
     public function destroy(BugReport $bug)
     {
-        $this->authorizeAccess($bug);
+        $user = auth()->user();
+
+        if (!$this->canManageBug($bug, $user)) {
+            abort(403, 'Only administrators and the reporter can delete bug reports.');
+        }
+
         $bug->clearMediaCollection('screenshots');
         $bug->delete();
-        return redirect()->route('team.qa.bugs.index')->with('success', 'Bug report deleted.');
-    }
 
-    private function authorizeAccess(BugReport $bug): void
-    {
-        if ($bug->reported_by !== auth()->id() && !auth()->user()->isAdmin() && !auth()->user()->isProjectManager()) {
-            abort(403, 'You do not have permission to access this bug report.');
-        }
+        return redirect()->route('team.qa.bugs.index')->with('success', 'Bug report deleted.');
     }
 }
