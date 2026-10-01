@@ -19,6 +19,10 @@ class DashboardController extends Controller
         if ($user->isBdm()) {
             return redirect()->route('team.bdm.dashboard');
         }
+
+        if ($user->isQaTester()) {
+            return redirect()->route('team.qa.dashboard');
+        }
         
         $stats = [
             'pending_tasks' => Task::where('assigned_to', $user->id)->whereIn('status', ['todo', 'in_progress'])->count(),

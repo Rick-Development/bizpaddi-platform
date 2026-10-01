@@ -11,12 +11,6 @@
             <p class="mt-1 text-sm text-gray-500">A list of all leads assigned to you.</p>
         </div>
         <div class="mt-4 sm:mt-0 flex space-x-3">
-            <a href="{{ route('team.bdm.leads.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-sm hover:shadow-md transition-all duration-200">
-                <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Record New Lead
-            </a>
             <a href="{{ route('team.bdm.deals.kanban') }}" class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                 Kanban Board
             </a>
@@ -37,7 +31,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($leads as $lead)
-                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('team.bdm.leads.show', $lead) }}'">
+                    <tr class="hover:bg-gray-50 cursor-pointer">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $lead->name }}</div>
                             <div class="text-sm text-gray-500">{{ $lead->company ?? 'No Company' }}</div>

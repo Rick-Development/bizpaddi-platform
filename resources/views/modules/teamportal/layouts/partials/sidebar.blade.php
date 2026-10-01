@@ -40,6 +40,39 @@
                             Dashboard
                         </a>
                     </li>
+                    @elseif(auth()->user()->isQaTester())
+                    <li>
+                        <a href="{{ route('team.qa.dashboard') }}" class="{{ request()->routeIs('team.qa.dashboard') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                            QA Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('team.qa.bugs.index') }}" class="{{ request()->routeIs('team.qa.bugs.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 01-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44a23.916 23.916 0 001.153 6.06M12 12.75a2.25 2.25 0 002.248-2.354M12 12.75a2.25 2.25 0 01-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 00-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 01.4-2.253M12 8.25a2.25 2.25 0 00-2.248 2.146M12 8.25a2.25 2.25 0 012.248 2.146" />
+                            </svg>
+                            Bug Reports
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('team.qa.bugs.create') }}" class="{{ request()->routeIs('team.qa.bugs.create') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Report a Bug
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('team.qa.test-cases.index') }}" class="{{ request()->routeIs('team.qa.test-cases.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            Test Cases
+                        </a>
+                    </li>
                     @else
                     <li>
                         <a href="{{ route('team.dashboard') }}" class="{{ request()->routeIs('team.dashboard') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
@@ -370,7 +403,7 @@
             <li>
                 <div class="text-xs font-semibold leading-6 text-brand-primary uppercase tracking-widest mb-2 font-mono ml-2">Settings</div>
                 <ul role="list" class="-mx-2 space-y-1">
-                     <li>
+                         <li>
                         <a href="{{ route('team.profile.index') }}" class="{{ request()->routeIs('team.profile.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-all duration-200">
                              <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -395,8 +428,6 @@
         </ul>
     </nav>
 </div>
-
-
 
 <script>
     function updateSidebarBadges() {
@@ -439,23 +470,14 @@
         // Poll every 15 seconds
         setInterval(updateSidebarBadges, 15000);
 
-        // Echo listeners for instant sidebar updates & floating toast notifications
+        // Echo listeners for instant sidebar updates
         if (window.Echo) {
             window.Echo.private('task-comments')
                 .listen('.Modules\\ProjectManagement\\Events\\CommentPosted', (e) => {
+                    // Instantly trigger unread count refresh
                     updateSidebarBadges();
-                    // Don't show toast if user is already on comments feed page
-                    if (!window.location.pathname.includes('/team/comments-feed')) {
-                        showGlobalToast(
-                            `New Comment by ${e.user_name}`,
-                            `Commented on ${e.task_title}: "${e.content}"`,
-                            '/team/comments-feed',
-                            'comment'
-                        );
-                    }
                 });
         }
-
     });
 </script>
 

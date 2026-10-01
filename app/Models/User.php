@@ -151,6 +151,16 @@ class User extends Authenticatable implements HasMedia
                $this->hasRole('Bdm');
     }
 
+    public function isQaTester()
+    {
+        $role = strtolower($this->role ?? '');
+        return $role === 'qa' ||
+               $role === 'qa_tester' ||
+               $role === 'quality_assurance' ||
+               $this->hasRole('qa') ||
+               $this->hasRole('qa_tester');
+    }
+
     public function isOnline()
     {
         return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);

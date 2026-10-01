@@ -82,7 +82,7 @@
                             <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             Linked: #{{ $order->quote->quote_number }}
                         </div>
-                        <a href="{{ route('team.bdm.quotes.show', $order->quote->id) }}" class="text-brand-primary text-sm hover:underline">View Quote</a>
+                        <a href="{{ route('admin.accounting.quotes.show', $order->quote->id) }}" class="text-brand-primary text-sm hover:underline">View Quote</a>
                     @else
                         <p class="text-xs text-gray-500 mb-3">Convert this request into a formal quote.</p>
                         <form action="{{ route('team.bdm.service-orders.convert-quote', $order->id) }}" method="POST">
@@ -102,7 +102,7 @@
                             <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             Linked: #{{ $order->invoice->invoice_number }}
                         </div>
-                        <a href="{{ route('team.bdm.invoices.show', $order->invoice->id) }}" class="text-brand-primary text-sm hover:underline">View Invoice</a>
+                        <a href="{{ route('admin.invoices.show', $order->invoice->id) }}" class="text-brand-primary text-sm hover:underline">View Invoice</a>
                     @else
                         <p class="text-xs text-gray-500 mb-3">Convert this request directly to an invoice.</p>
                          <form action="{{ route('team.bdm.service-orders.convert-invoice', $order->id) }}" method="POST">
@@ -123,7 +123,7 @@
                             <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             Linked: {{ $order->contract->contract_number }}
                         </div>
-                        <a href="{{ route('team.bdm.contracts.show', $order->contract->id) }}" class="text-brand-primary text-sm hover:underline">View Contract</a>
+                        <a href="{{ route('admin.contracts.show', $order->contract->id) }}" class="text-brand-primary text-sm hover:underline">View Contract</a>
                     @else
                         <p class="text-xs text-gray-500 mb-3">Draft a customized contract for this order.</p>
                          <form action="{{ route('team.bdm.service-orders.convert-contract', $order->id) }}" method="POST">
@@ -202,7 +202,7 @@
             </dl>
             
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <a href="{{ route('team.bdm.clients.show', $order->client->id) }}" class="text-sm text-brand-primary hover:underline">View Client Profile &rarr;</a>
+                <a href="{{ route('admin.clients.show', $order->client->id) }}" class="text-sm text-brand-primary hover:underline">View Client Profile &rarr;</a>
             </div>
         </div>
     </div>

@@ -201,3 +201,29 @@ Route::prefix('team/pm')->name('team.pm.')->middleware(['auth:web', \Modules\Tea
     Route::delete('projects/{project}/tasks/{task}', [\Modules\TeamPortal\Http\Controllers\PM\TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::post('projects/{project}/tasks/bulk-assign', [\Modules\TeamPortal\Http\Controllers\PM\TaskController::class, 'bulkAssign'])->name('tasks.bulk-assign');
 });
+
+// ─── QA Tester Portal ──────────────────────────────────────────────────────
+Route::prefix('team/qa')
+    ->name('team.qa.')
+    ->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])
+    ->group(function () {
+
+        // QA Dashboard
+        Route::get('dashboard', [\Modules\TeamPortal\Http\Controllers\QA\QaDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', fn() => redirect()->route('team.qa.dashboard'));
+
+        // Bug Reports (full CRUD)
+        Route::get('bugs', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'index'])->name('bugs.index');
+        Route::get('bugs/create', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'create'])->name('bugs.create');
+        Route::post('bugs', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'store'])->name('bugs.store');
+        Route::get('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'show'])->name('bugs.show');
+        Route::get('bugs/{bug}/edit', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'edit'])->name('bugs.edit');
+        Route::put('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'update'])->name('bugs.update');
+        Route::delete('bugs/{bug}', [\Modules\TeamPortal\Http\Controllers\QA\BugReportController::class, 'destroy'])->name('bugs.destroy');
+
+        // Test Cases (assigned tasks for QA review)
+        Route::get('test-cases', [\Modules\TeamPortal\Http\Controllers\QA\QaTestCaseController::class, 'index'])->name('test-cases.index');
+        Route::get('test-cases/{task}', [\Modules\TeamPortal\Http\Controllers\QA\QaTestCaseController::class, 'show'])->name('test-cases.show');
+        Route::patch('test-cases/{task}/status', [\Modules\TeamPortal\Http\Controllers\QA\QaTestCaseController::class, 'updateStatus'])->name('test-cases.update-status');
+    });
+
