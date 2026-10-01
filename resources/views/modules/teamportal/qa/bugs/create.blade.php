@@ -73,6 +73,25 @@
             @php
                 $environments = ['Production', 'Staging', 'Testing / QA', 'Sandbox', 'Development / Local', 'UAT', 'Other'];
                 $browsers = ['Google Chrome', 'Safari', 'Mozilla Firefox', 'Microsoft Edge', 'Opera', 'Brave', 'Mobile Safari (iOS)', 'Mobile Chrome (Android)', 'Mobile App (iOS)', 'Mobile App (Android)', 'Other'];
+
+                $ua = request()->header('User-Agent') ?? '';
+                $detectedBrowser = 'Google Chrome';
+                if (str_contains($ua, 'iPhone') || str_contains($ua, 'iPad') || str_contains($ua, 'iPod')) {
+                    $detectedBrowser = 'Mobile Safari (iOS)';
+                } elseif (str_contains($ua, 'Android')) {
+                    $detectedBrowser = 'Mobile Chrome (Android)';
+                } elseif (str_contains($ua, 'Edg')) {
+                    $detectedBrowser = 'Microsoft Edge';
+                } elseif (str_contains($ua, 'OPR') || str_contains($ua, 'Opera')) {
+                    $detectedBrowser = 'Opera';
+                } elseif (str_contains($ua, 'Firefox')) {
+                    $detectedBrowser = 'Mozilla Firefox';
+                } elseif (str_contains($ua, 'Chrome')) {
+                    $detectedBrowser = 'Google Chrome';
+                } elseif (str_contains($ua, 'Safari')) {
+                    $detectedBrowser = 'Safari';
+                }
+                $selectedBrowser = old('browser', $detectedBrowser);
             @endphp
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -91,7 +110,7 @@
                         class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
                         <option value="">Select Browser / Platform…</option>
                         @foreach($browsers as $br)
-                        <option value="{{ $br }}" {{ strcasecmp(old('browser') ?? '', $br) === 0 ? 'selected' : '' }}>{{ $br }}</option>
+                        <option value="{{ $br }}" {{ strcasecmp($selectedBrowser, $br) === 0 ? 'selected' : '' }}>{{ $br }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -158,6 +177,39 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const browserSelect = document.getElementById('browser');
+    if (browserSelect) {
+        const ua = navigator.userAgent;
+        let detected = 'Google Chrome';
+        if (/iPad|iPhone|iPod/.test(ua)) {
+            detected = 'Mobile Safari (iOS)';
+        } else if (/Android/.test(ua)) {
+            detected = 'Mobile Chrome (Android)';
+        } else if (/Edg\//.test(ua)) {
+            detected = 'Microsoft Edge';
+        } else if (/OPR\/|Opera/.test(ua)) {
+            detected = 'Opera';
+        } else if (/Firefox\//.test(ua)) {
+            detected = 'Mozilla Firefox';
+        } else if (/Chrome\//.test(ua)) {
+            detected = 'Google Chrome';
+        } else if (/Safari\//.test(ua)) {
+            detected = 'Safari';
+        }
+
+        // If not already selected through old input
+        @if(!old('browser'))
+        for (let i = 0; i < browserSelect.options.length; i++) {
+            if (browserSelect.options[i].value === detected) {
+                browserSelect.selectedIndex = i;
+                break;
+            }
+        }
+        @endif
+    }
+});
+
 function previewImages(input) {
     const preview = document.getElementById('screenshot-preview');
     preview.innerHTML = '';
