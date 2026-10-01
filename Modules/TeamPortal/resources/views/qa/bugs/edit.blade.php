@@ -74,16 +74,38 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            @php
+                $environments = ['Production', 'Staging', 'Testing / QA', 'Sandbox', 'Development / Local', 'UAT', 'Other'];
+                $currentEnv = old('environment', $bug->environment);
+                $browsers = ['Google Chrome', 'Safari', 'Mozilla Firefox', 'Microsoft Edge', 'Opera', 'Brave', 'Mobile Safari (iOS)', 'Mobile Chrome (Android)', 'Mobile App (iOS)', 'Mobile App (Android)', 'Other'];
+                $currentBrowser = old('browser', $bug->browser);
+            @endphp
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Environment</label>
-                    <input type="text" name="environment" value="{{ old('environment', $bug->environment) }}"
-                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <label for="environment" class="block text-sm font-semibold text-gray-700 mb-1">Environment</label>
+                    <select name="environment" id="environment"
+                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">Select Environment…</option>
+                        @foreach($environments as $env)
+                        <option value="{{ $env }}" {{ strcasecmp($currentEnv ?? '', $env) === 0 ? 'selected' : '' }}>{{ $env }}</option>
+                        @endforeach
+                        @if($currentEnv && !in_array(strtolower($currentEnv), array_map('strtolower', $environments)))
+                        <option value="{{ $currentEnv }}" selected>{{ $currentEnv }}</option>
+                        @endif
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Browser</label>
-                    <input type="text" name="browser" value="{{ old('browser', $bug->browser) }}"
-                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <label for="browser" class="block text-sm font-semibold text-gray-700 mb-1">Browser / Device</label>
+                    <select name="browser" id="browser"
+                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">Select Browser / Platform…</option>
+                        @foreach($browsers as $br)
+                        <option value="{{ $br }}" {{ strcasecmp($currentBrowser ?? '', $br) === 0 ? 'selected' : '' }}>{{ $br }}</option>
+                        @endforeach
+                        @if($currentBrowser && !in_array(strtolower($currentBrowser), array_map('strtolower', $browsers)))
+                        <option value="{{ $currentBrowser }}" selected>{{ $currentBrowser }}</option>
+                        @endif
+                    </select>
                 </div>
             </div>
         </div>

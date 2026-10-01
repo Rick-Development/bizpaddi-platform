@@ -275,6 +275,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
         Route::patch('tasks/{task}/approval', [TaskController::class, 'updateApproval'])->name('tasks.update-approval');
         Route::get('team-monitoring', [\Modules\Admin\Http\Controllers\TeamMonitoringController::class, 'index'])->name('team-monitoring.index');
+        Route::resource('bugs', \Modules\Admin\Http\Controllers\BugReportController::class);
+        Route::patch('bugs/{bug}/status', [\Modules\Admin\Http\Controllers\BugReportController::class, 'updateStatus'])->name('bugs.update-status');
 
         // Admin Unified Chat
         Route::get('chat/{conversation?}', [\Modules\Admin\Http\Controllers\ChatController::class, 'index'])->name('chat.index');

@@ -17,251 +17,67 @@
                         </a>
                     </li>
 
-                    <!-- Visitor Sessions -->
-                    <li>
-                        <a href="{{ route('admin.visitors.index') }}" 
-                           class="{{ request()->routeIs('admin.visitors.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            Visitor Sessions
-                        </a>
-                    </li>
-
-
-
-                    <!-- AI Center -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.ai.*') ? 'true' : 'false' }} }">
-                        <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.ai.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm leading-6 font-semibold" aria-controls="sub-menu-ai" aria-expanded="false">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-                            </svg>
-                            <span class="flex-1 text-left">AI Center</span>
-                            <svg :class="open ? 'rotate-90 text-gray-500' : 'text-gray-400'" class="ml-auto h-5 w-5 shrink-0 transform transition-transform duration-150 ease-in-out" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <ul x-show="open" x-cloak class="mt-1 px-2 space-y-1" id="sub-menu-ai" style="display: none;">
-                            <li>
-                                <a href="{{ route('admin.mcp.ai-generator') }}" class="{{ request()->routeIs('admin.mcp.ai-generator') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    AI Generator ✨
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.mcp.index') }}" class="{{ request()->routeIs('admin.mcp.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    MCP Dashboard
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.ai.settings.index') }}" class="{{ request()->routeIs('admin.ai.settings.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    Settings
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.ai.models.index') }}" class="{{ request()->routeIs('admin.ai.models.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    AI Models
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.aiemployees.dashboard') }}" class="{{ request()->routeIs('admin.aiemployees.dashboard') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold flex items-center justify-between">
-                                    <span>Pending Actions</span>
-                                    @php
-                                        $pendingCount = \Modules\AiEmployees\Models\AiPendingAction::where('status', 'pending')->count();
-                                    @endphp
-                                    @if($pendingCount > 0)
-                                        <span class="inline-flex items-center justify-center w-5 h-5 ml-2 text-xs font-semibold text-white bg-red-500 rounded-full">
-                                            {{ $pendingCount }}
-                                        </span>
-                                    @endif
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- AI Workforce -->
-                    <li x-data="{ open: false }">
-                        <button @click="open = !open" type="button" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm leading-6 font-semibold" aria-controls="sub-menu-aiworkforce" aria-expanded="false">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                            </svg>
-                            <span class="flex-1 text-left">AI Workforce</span>
-                            <svg :class="open ? 'rotate-90 text-gray-500' : 'text-gray-400'" class="ml-auto h-5 w-5 shrink-0 transform transition-transform duration-150 ease-in-out" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <ul x-show="open" x-cloak class="mt-1 px-2 space-y-1" id="sub-menu-aiworkforce" style="display: none;">
-                            <li>
-                                <a href="{{ route('admin.aiemployees.tasks.index') }}" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    Task Assignments
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.aiemployees.knowledge.index') }}" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    Training & Knowledge
-                                </a>
-                            </li>
-                            @php
-                                $sidebarRoles = \Modules\AiEmployees\Models\AiEmployee::where('is_sub_agent', false)
-                                    ->select('role')
-                                    ->distinct()
-                                    ->orderBy('role')
-                                    ->pluck('role');
-                            @endphp
-                            @foreach($sidebarRoles as $roleKey)
-                            @php
-                                $roleLabel = ucwords(str_replace('_', ' ', $roleKey));
-                            @endphp
-                            <li>
-                                <a href="{{ route('admin.aiemployees.employees.index', ['role' => $roleKey]) }}" class="{{ request()->get('role') == $roleKey ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
-                                    {{ $roleLabel }}
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </li>
-
-                    <!-- Home Page Management -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.hero-sliders.*') || request()->routeIs('admin.featured-content.*') || request()->routeIs('admin.home.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.client-logos.*') || request()->routeIs('admin.trust-badges.*') ? 'true' : 'false' }} }">
+                    <!-- Project Management -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.pm-projects.*') || request()->routeIs('admin.tasks.*') || request()->routeIs('admin.work-logs.*') || request()->routeIs('admin.pm-milestones.*') || request()->routeIs('admin.kanban.*') || request()->routeIs('admin.team-monitoring.*') || request()->routeIs('admin.kpis.*') || request()->routeIs('admin.bugs.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
                             </svg>
-                            <span class="flex-1 text-left">Home Page</span>
+                            <span class="flex-1 text-left">Project Management</span>
                             <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
                         </button>
                         <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
                             <li>
-                                <a href="{{ route('admin.hero-sliders.index') }}" class="{{ request()->routeIs('admin.hero-sliders.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Hero Sliders
+                                <a href="{{ route('admin.pm-projects.index') }}" class="{{ request()->routeIs('admin.pm-projects.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Projects
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.featured-content.index') }}" class="{{ request()->routeIs('admin.featured-content.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Featured Content
+                                <a href="{{ route('admin.pm-milestones.index') }}" class="{{ request()->routeIs('admin.pm-milestones.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Milestones
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.home.stats.index') }}" class="{{ request()->routeIs('admin.home.stats.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Stats
+                                <a href="{{ route('admin.kanban.index') }}" class="{{ request()->routeIs('admin.kanban.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Tasks (Kanban)
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.home.features.index') }}" class="{{ request()->routeIs('admin.home.features.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Features
+                                <a href="{{ route('admin.bugs.index') }}" class="{{ request()->routeIs('admin.bugs.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Bug Reports
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.home.processes.index') }}" class="{{ request()->routeIs('admin.home.processes.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Processes
+                                <a href="{{ route('admin.work-logs.index') }}" class="{{ request()->routeIs('admin.work-logs.index') || request()->routeIs('admin.work-logs.show') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Work Session Logs
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.home.ctas.index') }}" class="{{ request()->routeIs('admin.home.ctas.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    CTAs
+                                <a href="{{ route('admin.work-logs.export-page') }}" class="{{ request()->routeIs('admin.work-logs.export-page') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Export Generator
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.client-logos.index') }}" class="{{ request()->routeIs('admin.client-logos.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Client Logos
+                                <a href="{{ route('admin.team-monitoring.index') }}" class="{{ request()->routeIs('admin.team-monitoring.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Team Monitoring
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.trust-badges.index') }}" class="{{ request()->routeIs('admin.trust-badges.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Trust Badges
+                                <a href="{{ route('admin.kpis.index') }}" class="{{ request()->routeIs('admin.kpis.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    KPI Management
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.navigation.index') }}" class="{{ request()->routeIs('admin.navigation.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Navigation
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Testimonials
+                                <a href="{{ route('admin.team-members.index') }}" class="{{ request()->routeIs('admin.team-members.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Team Workloads
                                 </a>
                             </li>
                         </ul>
                     </li>
-
-
-                    <!-- Social Media -->
-                    <li>
-                        <div x-data="{ open: {{ request()->routeIs('admin.social-media.*') ? 'true' : 'false' }} }">
-                            <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.social-media.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex w-full items-center justify-between gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                                <div class="flex items-center gap-x-3">
-                                    <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-                                    </svg>
-                                    Social Media
-                                </div>
-                                <svg :class="{ 'rotate-90': open }" class="h-5 w-5 shrink-0 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <ul x-show="open" x-collapse class="mt-1 space-y-1">
-                                <li>
-                                    <a href="{{ route('admin.social-media.index') }}" class="{{ request()->routeIs('admin.social-media.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                        Dashboard
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.social-media.inbox') }}" class="{{ request()->routeIs('admin.social-media.inbox') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                        Social Inbox
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.social-media.calendar') }}" class="{{ request()->routeIs('admin.social-media.calendar') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                        Content Calendar
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.social-media.analytics') }}" class="{{ request()->routeIs('admin.social-media.analytics') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                        Analytics
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <!-- Service Orders -->
-                    <li>
-                        <a href="{{ route('admin.accounting.service-orders.index') }}" 
-                           class="{{ request()->routeIs('admin.accounting.service-orders.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                            </svg>
-                            Service Orders
-                        </a>
-                    </li>
-
-                    <!-- Clients -->
-                    <li>
-                        <a href="{{ route('admin.clients.index') }}" 
-                           class="{{ request()->routeIs('admin.clients.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                            </svg>
-                            Clients
-                        </a>
-                    </li>
-
-                    @if(auth('admin')->user()?->isSuperAdmin())
-                    <li>
-                        <a href="{{ route('admin.passwords.index') }}"
-                           class="{{ request()->routeIs('admin.passwords.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 0h10.5A2.25 2.25 0 0119.5 12.75v6A2.25 2.25 0 0117.25 21h-10.5A2.25 2.25 0 014.5 18.75v-6A2.25 2.25 0 016.75 10.5z" />
-                            </svg>
-                            Password Manager
-                        </a>
-                    </li>
-                    @endif
-
                     <!-- Team Management -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.team-members.*') || request()->routeIs('admin.team-performance.*') || request()->routeIs('admin.team-utilities.*') || request()->routeIs('admin.departments.*') || request()->routeIs('admin.roles.*') ? 'true' : 'false' }} }">
+                    <li x-data="{ open: {{ request()->routeIs('admin.team-members.*') || request()->routeIs('admin.team-performance.*') || request()->routeIs('admin.team-utilities.*') || request()->routeIs('admin.departments.*') || request()->routeIs('admin.roles.*') || request()->routeIs('admin.team-emails.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -385,6 +201,245 @@
                         </ul>
                     </li>
 
+                    <!-- Visitor Sessions -->
+                    <li>
+                        <a href="{{ route('admin.visitors.index') }}" 
+                           class="{{ request()->routeIs('admin.visitors.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Visitor Sessions
+                        </a>
+                    </li>
+
+
+
+                    <!-- AI Center -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.ai.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.ai.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm leading-6 font-semibold" aria-controls="sub-menu-ai" aria-expanded="false">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                            </svg>
+                            <span class="flex-1 text-left">AI Center</span>
+                            <svg :class="open ? 'rotate-90 text-gray-500' : 'text-gray-400'" class="ml-auto h-5 w-5 shrink-0 transform transition-transform duration-150 ease-in-out" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul x-show="open" x-cloak class="mt-1 px-2 space-y-1" id="sub-menu-ai" style="display: none;">
+                            <li>
+                                <a href="{{ route('admin.mcp.ai-generator') }}" class="{{ request()->routeIs('admin.mcp.ai-generator') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    AI Generator ✨
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.mcp.index') }}" class="{{ request()->routeIs('admin.mcp.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    MCP Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.ai.settings.index') }}" class="{{ request()->routeIs('admin.ai.settings.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.ai.models.index') }}" class="{{ request()->routeIs('admin.ai.models.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    AI Models
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- AI Workforce -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.aiemployees.*') ? 'true' : 'false' }} }">
+                        <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.aiemployees.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm leading-6 font-semibold" aria-controls="sub-menu-aiworkforce" aria-expanded="false">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            <span class="flex-1 text-left">AI Workforce</span>
+                            <svg :class="open ? 'rotate-90 text-gray-500' : 'text-gray-400'" class="ml-auto h-5 w-5 shrink-0 transform transition-transform duration-150 ease-in-out" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul class="mt-1 space-y-1 px-2" id="sub-menu-aiworkforce" x-show="open" style="display: none;">
+                            <li>
+                                <a href="{{ route('admin.aiemployees.dashboard') }}" class="{{ request()->routeIs('admin.aiemployees.dashboard') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Command Center
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.aiemployees.tasks.index') }}" class="{{ request()->routeIs('admin.aiemployees.tasks.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Task Assignments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.aiemployees.knowledge.index') }}" class="{{ request()->routeIs('admin.aiemployees.knowledge.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    Training & Knowledge
+                                </a>
+                            </li>
+                            @php
+                                $pendingCount = \Modules\AiEmployees\Models\AiPendingAction::where('status', 'pending')->count();
+                            @endphp
+                            <li>
+                                <a href="{{ route('admin.aiemployees.pending-actions.index') }}" class="{{ request()->routeIs('admin.aiemployees.pending-actions.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} flex justify-between items-center rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    <span>Pending Actions</span>
+                                    @if($pendingCount > 0)
+                                    <span class="ml-2 inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-white">{{ $pendingCount }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                            @php
+                                $sidebarRoles = \Modules\AiEmployees\Models\AiEmployee::where('is_sub_agent', false)
+                                    ->select('role')
+                                    ->distinct()
+                                    ->orderBy('role')
+                                    ->pluck('role');
+                            @endphp
+                            @foreach($sidebarRoles as $roleKey)
+                            @php
+                                $roleLabel = ucwords(str_replace('_', ' ', $roleKey));
+                            @endphp
+                            <li>
+                                <a href="{{ route('admin.aiemployees.employees.index', ['role' => $roleKey]) }}" class="{{ request()->get('role') == $roleKey ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} block rounded-md py-2 pr-2 pl-11 text-sm leading-6 font-semibold">
+                                    {{ $roleLabel }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </li>
+
+
+                    <!-- Leads -->
+                    <li>
+                        <a href="{{ route('admin.leads.index') }}" 
+                           class="{{ request()->routeIs('admin.leads.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            Leads
+                        </a>
+                    </li>
+
+
+                    <!-- Home Page Management -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.hero-sliders.*') || request()->routeIs('admin.featured-content.*') || request()->routeIs('admin.home.*') || request()->routeIs('admin.testimonials.*') ? 'true' : 'false' }} }">
+                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            </svg>
+                            <span class="flex-1 text-left">Home Page</span>
+                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
+                            <li>
+                                <a href="{{ route('admin.hero-sliders.index') }}" class="{{ request()->routeIs('admin.hero-sliders.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Hero Sliders
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.featured-content.index') }}" class="{{ request()->routeIs('admin.featured-content.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Featured Content
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.home.stats.index') }}" class="{{ request()->routeIs('admin.home.stats.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Stats
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.home.features.index') }}" class="{{ request()->routeIs('admin.home.features.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Features
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.home.processes.index') }}" class="{{ request()->routeIs('admin.home.processes.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Processes
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.home.ctas.index') }}" class="{{ request()->routeIs('admin.home.ctas.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    CTAs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.navigation.index') }}" class="{{ request()->routeIs('admin.navigation.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Navigation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Testimonials
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <!-- Social Media -->
+                    <li>
+                        <div x-data="{ open: {{ request()->routeIs('admin.social-media.*') ? 'true' : 'false' }} }">
+                            <button @click="open = !open" type="button" class="{{ request()->routeIs('admin.social-media.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex w-full items-center justify-between gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                                <div class="flex items-center gap-x-3">
+                                    <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                                    </svg>
+                                    Social Media
+                                </div>
+                                <svg :class="{ 'rotate-90': open }" class="h-5 w-5 shrink-0 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <ul x-show="open" x-collapse class="mt-1 space-y-1">
+                                <li>
+                                    <a href="{{ route('admin.social-media.index') }}" class="{{ request()->routeIs('admin.social-media.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.inbox') }}" class="{{ request()->routeIs('admin.social-media.inbox') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Social Inbox
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.calendar') }}" class="{{ request()->routeIs('admin.social-media.calendar') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Content Calendar
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.social-media.analytics') }}" class="{{ request()->routeIs('admin.social-media.analytics') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                        Analytics
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+
+                    <!-- Service Orders -->
+                    <li>
+                        <a href="{{ route('admin.accounting.service-orders.index') }}" 
+                           class="{{ request()->routeIs('admin.accounting.service-orders.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
+                            Service Orders
+                        </a>
+                    </li>
+
+                    <!-- Clients -->
+                    <li>
+                        <a href="{{ route('admin.clients.index') }}" 
+                           class="{{ request()->routeIs('admin.clients.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            Clients
+                        </a>
+                    </li>
+
+
                     <!-- Contracts -->
                     <li x-data="{ open: {{ request()->routeIs('admin.contracts.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
@@ -475,61 +530,6 @@
                             <li>
                                 <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
                                     Blog Categories
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Project Management -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.pm-projects.*') || request()->routeIs('admin.tasks.*') || request()->routeIs('admin.work-logs.*') || request()->routeIs('admin.pm-milestones.*') || request()->routeIs('admin.kanban.*') || request()->routeIs('admin.team-monitoring.*') || request()->routeIs('admin.kpis.*') ? 'true' : 'false' }} }">
-                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
-                            </svg>
-                            <span class="flex-1 text-left">Project Management</span>
-                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
-                            <li>
-                                <a href="{{ route('admin.pm-projects.index') }}" class="{{ request()->routeIs('admin.pm-projects.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Projects
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.pm-milestones.index') }}" class="{{ request()->routeIs('admin.pm-milestones.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Milestones
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.kanban.index') }}" class="{{ request()->routeIs('admin.kanban.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Tasks (Kanban)
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.work-logs.index') }}" class="{{ request()->routeIs('admin.work-logs.index') || request()->routeIs('admin.work-logs.show') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Work Session Logs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.work-logs.export-page') }}" class="{{ request()->routeIs('admin.work-logs.export-page') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Export Generator
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.team-monitoring.index') }}" class="{{ request()->routeIs('admin.team-monitoring.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Team Monitoring
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.kpis.index') }}" class="{{ request()->routeIs('admin.kpis.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    KPI Management
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.team-members.index') }}" class="{{ request()->routeIs('admin.team-members.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Team Workloads
                                 </a>
                             </li>
                         </ul>
@@ -638,52 +638,12 @@
 
 
                     <!-- Communications & Support -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.tickets.*') || request()->routeIs('admin.notifications.*') || request()->routeIs('admin.contact-submissions.*') || request()->routeIs('admin.email-templates.*') || request()->routeIs('admin.sms-templates.*') ? 'true' : 'false' }} }">
+                    <li x-data="{ open: {{ request()->routeIs('admin.tickets.*') || request()->routeIs('admin.notifications.*') || request()->routeIs('admin.contact-submissions.*') || request()->routeIs('admin.email-templates.*') || request()->routeIs('admin.sms-templates.*') || request()->routeIs('admin.campaigns.*') || request()->routeIs('admin.contact-lists.*') || request()->routeIs('admin.contacts.*') || request()->routeIs('admin.communication-scripts.*') || request()->routeIs('admin.communication-channels.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.186.06-2.1 1.023-2.1 2.207v4.286c0 1.137.847 2.1 1.98 2.193.34.027.68.052 1.02.072v3.091l3-3c.411.246.85.45 1.31.638m0-8.681c-.551.488-1.293.73-2.02.73-.728 0-1.469-.242-2.02-.73" />
                             </svg>
                             <span class="flex-1 text-left">Communications</span>
-                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
-                            <li>
-                                <a href="{{ route('admin.tickets.index') }}" class="{{ request()->routeIs('admin.tickets.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Support Tickets
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Push Notifications
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.contact-submissions.index') }}" class="{{ request()->routeIs('admin.contact-submissions.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Submissions
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.email-templates.index') }}" class="{{ request()->routeIs('admin.email-templates.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Email Templates
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.sms-templates.index') }}" class="{{ request()->routeIs('admin.sms-templates.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    SMS Templates
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Customer Acquisition -->
-                    <li x-data="{ open: {{ request()->routeIs('admin.campaigns.*') || request()->routeIs('admin.contact-lists.*') || request()->routeIs('admin.contacts.*') ? 'true' : 'false' }} }">
-                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
-                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 018.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.795c0 1.987-.332 3.9-.96 5.714m-12.875 5.714a23.896 23.896 0 01-5.714.96C2.28 17.5 1.5 16.71 1.5 15.75c0-1.07.124-2.107.363-3.113m18.134 3.113a23.9 23.9 0 00-5.714.96c-.957.513-1.745 1.29-1.26 2.22" />
-                            </svg>
-                            <span class="flex-1 text-left">Customer Acquisition</span>
                             <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
@@ -705,13 +665,6 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.leads.index') }}" 
-                                   class="{{ request()->routeIs('admin.leads.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} 
-                                   group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Leads
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{{ route('admin.communication-scripts.index') }}" class="{{ request()->routeIs('admin.communication-scripts.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
                                     Scripts & Playbooks
                                 </a>
@@ -721,9 +674,34 @@
                                     Channels
                                 </a>
                             </li>
-
+                            <li>
+                                <a href="{{ route('admin.contact-submissions.index') }}" class="{{ request()->routeIs('admin.contact-submissions.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Submissions
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.tickets.index') }}" class="{{ request()->routeIs('admin.tickets.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Support Tickets
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.notifications.index') }}" class="{{ request()->routeIs('admin.notifications.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Push Notifications
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.email-templates.index') }}" class="{{ request()->routeIs('admin.email-templates.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Email Templates
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.sms-templates.index') }}" class="{{ request()->routeIs('admin.sms-templates.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    SMS Templates
+                                </a>
+                            </li>
                         </ul>
                     </li>
+
 
                     <!-- Store -->
                     <!-- <li x-data="{ open: {{ request()->routeIs('admin.store.*') ? 'true' : 'false' }} }">
@@ -770,16 +748,35 @@
                         </a>
                     </li>
 
-                    <!-- Settings -->
-                    <li>
-                        <a href="{{ route('admin.settings.index') }}" 
-                           class="{{ request()->routeIs('admin.settings.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                    <!-- Settings Dropdown -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.settings.*') || request()->routeIs('admin.settings.mail.*') || request()->routeIs('admin.lead-settings.*') ? 'true' : 'false' }} }">
+                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            Settings
-                        </a>
+                            <span class="flex-1 text-left">Settings</span>
+                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
+                            <li>
+                                <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    General Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.settings.mail.index') }}" class="{{ request()->routeIs('admin.settings.mail.index') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Mail / SMTP Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.lead-settings.index') }}" class="{{ request()->routeIs('admin.lead-settings.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Lead Form Settings
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <!-- SEO Manager -->
@@ -814,29 +811,11 @@
                             System
                         </a>
                     </li>
-                    <li>
-                    <a href="{{ route('admin.account.password.edit') }}"
-                       class="{{ request()->routeIs('admin.account.password.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
-                        <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 00-5.834-1.01m0 0A3 3 0 105.25 8.25M9.916 4.24A3 3 0 0115.75 5.25M6.75 13.5h10.5A2.25 2.25 0 0119.5 15.75v3A2.25 2.25 0 0117.25 21h-8.5A2.25 2.25 0 016.5 18.75v-3A2.25 2.25 0 018.75 13.5z" />
-                        </svg>
-                        Change Admin Password
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ url('/') }}" target="_blank"
-                       class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-300 hover:bg-brand-primary/50 hover:text-white">
-                        <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                        </svg>
-                        View Website
-                    </a>
-                </li>
                 </ul>
             </li>
         </ul>
 
-        {{-- <div class="stick  bottom-0 mt-4 border-t border-white/10 bg-brand-secondary pt-4">
+        <div class="sticky bottom-0 mt-4 border-t border-white/10 bg-brand-secondary pt-4">
             <ul role="list" class="-mx-2 space-y-1">
                 <li>
                     <a href="{{ route('admin.account.password.edit') }}"
@@ -848,7 +827,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/') }}" target="_blank"
+                    <a href="{{ url('/') }}" target="_blank" 
                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-300 hover:bg-brand-primary/50 hover:text-white">
                         <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -857,7 +836,7 @@
                     </a>
                 </li>
             </ul>
-        </div>  --}}
+        </div>
     </nav>
 </div>
 

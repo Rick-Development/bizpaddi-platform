@@ -70,18 +70,30 @@
                 </div>
             </div>
 
+            @php
+                $environments = ['Production', 'Staging', 'Testing / QA', 'Sandbox', 'Development / Local', 'UAT', 'Other'];
+                $browsers = ['Google Chrome', 'Safari', 'Mozilla Firefox', 'Microsoft Edge', 'Opera', 'Brave', 'Mobile Safari (iOS)', 'Mobile Chrome (Android)', 'Mobile App (iOS)', 'Mobile App (Android)', 'Other'];
+            @endphp
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Environment</label>
-                    <input type="text" name="environment" value="{{ old('environment') }}"
-                        placeholder="e.g. staging, production, local"
-                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <label for="environment" class="block text-sm font-semibold text-gray-700 mb-1">Environment</label>
+                    <select name="environment" id="environment"
+                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">Select Environment…</option>
+                        @foreach($environments as $env)
+                        <option value="{{ $env }}" {{ strcasecmp(old('environment') ?? 'Staging', $env) === 0 ? 'selected' : '' }}>{{ $env }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Browser</label>
-                    <input type="text" name="browser" value="{{ old('browser') }}"
-                        placeholder="e.g. Chrome 120, Safari 17"
-                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <label for="browser" class="block text-sm font-semibold text-gray-700 mb-1">Browser / Device</label>
+                    <select name="browser" id="browser"
+                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">Select Browser / Platform…</option>
+                        @foreach($browsers as $br)
+                        <option value="{{ $br }}" {{ strcasecmp(old('browser') ?? '', $br) === 0 ? 'selected' : '' }}>{{ $br }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
