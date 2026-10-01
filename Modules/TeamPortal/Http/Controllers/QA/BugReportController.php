@@ -7,9 +7,25 @@ use Illuminate\Http\Request;
 use Modules\TeamPortal\Models\BugReport;
 use Modules\ProjectManagement\Models\Project;
 use Modules\ProjectManagement\Models\Task;
+use Illuminate\Database\Eloquent\Builder;
 
 class BugReportController extends Controller
 {
+    /**
+     * Returns only projects the QA user is directly involved in:
+     * - assigned as a team member on the project, OR
+     * - has at least one task assigned to them in the project.
+     */
+    private function myProjects(int $userId)
+    {
+        return Project::where(function (Builder $q) use ($userId) {
+            // Team member on the project
+            $q->whereHas('teamMembers', fn($t) => $t->where('users.id', $userId))
+              // OR has a task assigned in that project
+              ->orWhereHas('tasks', fn($t) => $t->where('assigned_to', $userId));
+        })->get();
+    }
+
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -24,7 +40,11 @@ class BugReportController extends Controller
             $query->where('severity', $request->severity);
         }
         if ($request->filled('project_id')) {
-            $query->where('project_id', $request->project_id);
+            // Make sure the project_id they filter by is one they belong to
+            $myProjectIds = $this->myProjects($user->id)->pluck('id');
+            if ($myProjectIds->contains($request->project_id)) {
+                $query->where('project_id', $request->project_id);
+            }
         }
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -33,8 +53,8 @@ class BugReportController extends Controller
             });
         }
 
-        $bugs    = $query->latest()->paginate(15)->withQueryString();
-        $projects = Project::all();
+        $bugs     = $query->latest()->paginate(15)->withQueryString();
+        $projects = $this->myProjects($user->id);
 
         return view('teamportal::qa.bugs.index', compact('bugs', 'projects'));
     }
@@ -42,8 +62,10 @@ class BugReportController extends Controller
     public function create()
     {
         $user     = auth()->user();
-        $projects = Project::all();
-        $tasks    = Task::where('assigned_to', $user->id)->whereIn('status', ['todo', 'in_progress', 'review'])->get();
+        $projects = $this->myProjects($user->id);
+        $tasks    = Task::where('assigned_to', $user->id)
+                        ->whereIn('status', ['todo', 'in_progress', 'review'])
+                        ->get();
         return view('teamportal::qa.bugs.create', compact('projects', 'tasks'));
     }
 
@@ -92,7 +114,7 @@ class BugReportController extends Controller
     {
         $this->authorizeAccess($bug);
         $user     = auth()->user();
-        $projects = Project::all();
+        $projects = $this->myProjects($user->id);
         $tasks    = Task::where('assigned_to', $user->id)->get();
         return view('teamportal::qa.bugs.edit', compact('bug', 'projects', 'tasks'));
     }
