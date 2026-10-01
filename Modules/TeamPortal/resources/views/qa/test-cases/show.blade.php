@@ -67,7 +67,7 @@
             @if($task->description)
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                 <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3">Description</h3>
-                <div class="prose prose-sm max-w-none text-gray-700">{!! nl2br(e($task->description)) !!}</div>
+                <div class="prose prose-sm max-w-none text-gray-700">{!! $task->description !!}</div>
             </div>
             @endif
 
