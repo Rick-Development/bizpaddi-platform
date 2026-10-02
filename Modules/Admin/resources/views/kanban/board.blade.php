@@ -51,14 +51,20 @@
                         <p class="text-[10px] text-gray-500 line-clamp-2 mb-3">{{ Str::limit(strip_tags($task->description), 100) }}</p>
                         
                         <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div class="flex -space-x-1">
+                            <div class="flex items-center gap-2">
                                @if($task->assignee)
-                               <div class="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500 border-2 border-white ring-1 ring-gray-100" title="{{ $task->assignee->name }}">
-                                   {{ substr($task->assignee->name, 0, 1) }}
+                               <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-50 border border-gray-200 text-gray-700 max-w-[130px]" title="Assigned to: {{ $task->assignee->name }}">
+                                   <svg class="w-3 h-3 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                   </svg>
+                                   <span class="text-[11px] font-medium truncate">{{ $task->assignee->name }}</span>
                                </div>
                                @else
-                               <div class="h-6 w-6 rounded-full bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center text-[10px] text-gray-300">
-                                   ?
+                               <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-50/50 border border-dashed border-gray-200 text-gray-400 text-[11px]" title="Unassigned">
+                                   <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                   </svg>
+                                   <span class="italic">Unassigned</span>
                                </div>
                                @endif
                             </div>

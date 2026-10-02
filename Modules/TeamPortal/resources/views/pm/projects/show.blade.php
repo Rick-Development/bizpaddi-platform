@@ -49,13 +49,21 @@
                 <h4 class="text-sm font-semibold text-gray-900 group-hover:text-brand-primary transition-colors">{{ $task->title }}</h4>
                 
                 <div class="mt-4 flex items-center justify-between">
-                    <div class="flex -space-x-2">
+                    <div class="flex items-center">
                         @if($task->assignee)
-                        <div class="h-6 w-6 rounded-full bg-brand-primary flex items-center justify-center text-[10px] text-white font-bold ring-2 ring-white" title="{{ $task->assignee->name }}">
-                            {{ substr($task->assignee->name, 0, 1) }}
+                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-primary/5 border border-brand-primary/20 text-brand-primary max-w-[130px]" title="Assigned to: {{ $task->assignee->name }}">
+                            <svg class="w-3 h-3 text-brand-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="text-[11px] font-medium truncate">{{ $task->assignee->name }}</span>
                         </div>
                         @else
-                        <div class="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 font-bold ring-2 ring-white">?</div>
+                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-50/50 border border-dashed border-gray-200 text-gray-400 text-[11px]" title="Unassigned">
+                            <svg class="w-3 h-3 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span class="italic">Unassigned</span>
+                        </div>
                         @endif
                     </div>
                     <div class="flex items-center gap-1 text-[10px] {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-500' }}">
