@@ -102,15 +102,20 @@
                             <x-bell-notification />
                             
                             <!-- User menu -->
-                            <div class="flex items-center gap-x-4">
-                                <div class="hidden sm:block">
-                                    <p class="text-sm font-semibold text-gray-900">{{ auth('admin')->user()->name }}</p>
-                                    <p class="text-xs text-gray-500">Administrator</p>
-                                </div>
+                            <div class="flex items-center gap-x-3">
+                                <a href="{{ route('admin.account.profile.edit') }}" class="flex items-center gap-x-2.5 px-2.5 py-1.5 rounded-xl hover:bg-gray-100 transition-colors group" title="Edit Admin Profile & Details">
+                                    <div class="w-8 h-8 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-xs group-hover:bg-brand-primary group-hover:text-white transition">
+                                        {{ strtoupper(substr(auth('admin')->user()->name, 0, 2)) }}
+                                    </div>
+                                    <div class="hidden sm:block text-left">
+                                        <p class="text-sm font-semibold text-gray-900 group-hover:text-brand-primary transition-colors leading-tight">{{ auth('admin')->user()->name }}</p>
+                                        <p class="text-[11px] text-gray-500 font-medium leading-tight">{{ str_replace('_', ' ', ucfirst(auth('admin')->user()->role)) }} &bull; <span class="text-brand-primary underline">Edit Details</span></p>
+                                    </div>
+                                </a>
                                 <form method="POST" action="{{ route('admin.logout') }}">
                                     @csrf
-                                    <button type="submit" class="flex items-center gap-x-2 rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <button type="submit" class="flex items-center gap-x-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                                         </svg>
                                         <span class="hidden sm:inline">Logout</span>

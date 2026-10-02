@@ -28,9 +28,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-        // Account
+        // Account Profile & Details
+        Route::get('account/profile', [\Modules\Admin\Http\Controllers\AdminProfileController::class, 'edit'])->name('account.profile.edit');
+        Route::put('account/profile', [\Modules\Admin\Http\Controllers\AdminProfileController::class, 'update'])->name('account.profile.update');
         Route::get('account/password', [\Modules\Admin\Http\Controllers\AdminPasswordController::class, 'edit'])->name('account.password.edit');
         Route::put('account/password', [\Modules\Admin\Http\Controllers\AdminPasswordController::class, 'update'])->name('account.password.update');
+
+        // Administrators Management (Admin CRUD)
+        Route::resource('administrators', \Modules\Admin\Http\Controllers\AdminManagementController::class);
+        Route::patch('administrators/{administrator}/status', [\Modules\Admin\Http\Controllers\AdminManagementController::class, 'updateStatus'])->name('administrators.update-status');
+        Route::redirect('admins', '/admin/administrators');
         
         // Push Notifications
         Route::get('notifications', [\Modules\Admin\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');

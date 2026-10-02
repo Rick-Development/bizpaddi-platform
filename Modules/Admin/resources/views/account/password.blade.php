@@ -3,10 +3,36 @@
 @section('title', 'Change Password')
 
 @section('content')
-<div class="mx-auto max-w-3xl">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Change Password</h1>
-        <p class="mt-2 text-sm text-gray-500">Update your own admin login password here. You will need your current password before setting a new one.</p>
+<div class="mx-auto max-w-4xl">
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Change Password</h1>
+            <p class="mt-2 text-sm text-gray-500">Update your own admin login password here. You will need your current password before setting a new one.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.administrators.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 shadow-sm transition">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Manage Administrators
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="mb-6 flex border-b border-gray-200 space-x-8">
+        <a href="{{ route('admin.account.profile.edit') }}" class="border-b-2 border-transparent pb-3 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Profile Details
+        </a>
+        <a href="{{ route('admin.account.password.edit') }}" class="border-b-2 border-brand-primary pb-3 text-sm font-bold text-brand-primary flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
+            Change Password
+        </a>
     </div>
 
     <div class="mb-6 grid gap-4 md:grid-cols-2">
