@@ -16,6 +16,11 @@ namespace Modules\TeamPortal\Http\Middleware;
 	     */
 	    public function handle(Request $request, Closure $next)
 	    {
+	        // Allow admin impersonation to inspect the account regardless of status
+	        if (session()->has('admin_impersonator_id') || auth('admin')->check()) {
+	            return $next($request);
+	        }
+
 	        if (auth()->check() && auth()->user()->status !== 'active') {
 	            // Allow logout and account-status routes
 	            if ($request->routeIs('team.account-status') || $request->routeIs('team.logout')) {

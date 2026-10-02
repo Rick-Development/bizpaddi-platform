@@ -230,9 +230,17 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right">
-                            <a href="{{ route('admin.team-members.show', $perf->user) }}" class="text-brand-primary hover:text-brand-primary/80 font-medium text-sm">
-                                View Profile →
-                            </a>
+                            <div class="inline-flex items-center gap-3">
+                                <a href="{{ route('admin.team-members.impersonate', $perf->user) }}" target="_blank" class="text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 px-2.5 py-1 rounded-lg transition-colors inline-flex items-center gap-1 shadow-sm">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                    </svg>
+                                    Login
+                                </a>
+                                <a href="{{ route('admin.team-members.show', $perf->user) }}" class="text-brand-primary hover:text-brand-primary/80 font-medium text-sm">
+                                    View Profile →
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @endforeach

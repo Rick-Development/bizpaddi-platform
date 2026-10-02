@@ -23,6 +23,7 @@ Route::prefix('team')->name('team.')->group(function () {
     Route::middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])->group(function () {
         Route::get('account-status', [DashboardController::class, 'accountStatus'])->name('account-status');
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('exit-to-admin', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'stopImpersonate'])->name('exit-to-admin');
         
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('api/overdue-tasks-count', [DashboardController::class, 'getOverdueTasksCount'])->name('api.overdue-tasks-count');

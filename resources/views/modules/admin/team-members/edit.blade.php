@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<form action="{{ route('admin.team-members.update', $teamMember) }}" method="POST">
+<form action="{{ route('admin.team-members.update', $teamMember) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -83,6 +83,23 @@
                             @endforeach
                         </select>
                         @error('department') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                        <textarea name="bio" id="bio" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent">{{ old('bio', $teamMember->bio) }}</textarea>
+                        @error('bio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="avatar" class="block text-sm font-medium text-gray-700 mb-1">Avatar / Photo</label>
+                        @if($teamMember->avatar)
+                            <div class="mt-2 mb-4">
+                                <img src="{{ asset('storage/' . $teamMember->avatar) }}" alt="Current Avatar" class="h-20 w-20 object-cover rounded-full shadow-sm">
+                            </div>
+                        @endif
+                        <input type="file" name="avatar" id="avatar" accept="image/*" class="w-full text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-red-700">
+                        @error('avatar') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>

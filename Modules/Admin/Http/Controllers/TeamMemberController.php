@@ -5,6 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -373,5 +374,45 @@ class TeamMemberController extends Controller
         }
 
         return $pdf->download('Team_Performance_Report.pdf');
+    }
+
+    /**
+     * One-click login to a user's account / team account (Admin Impersonation).
+     */
+    public function impersonate(User $user)
+    {
+        $admin = Auth::guard('admin')->user();
+        if (!$admin) {
+            abort(403, 'Unauthorized.');
+        }
+
+        // Store impersonation metadata in session
+        session([
+            'admin_impersonator_id'   => $admin->id,
+            'admin_impersonator_name' => $admin->name,
+        ]);
+
+        // Login as the user into the web guard
+        Auth::guard('web')->login($user);
+
+        return redirect()->route('team.dashboard')
+            ->with('success', "Logged into {$user->name}'s account successfully!");
+    }
+
+    /**
+     * Stop impersonating and return to Admin panel.
+     */
+    public function stopImpersonate()
+    {
+        session()->forget(['admin_impersonator_id', 'admin_impersonator_name']);
+        Auth::guard('web')->logout();
+
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.team-members.index')
+                ->with('success', 'Returned to Admin Panel.');
+        }
+
+        return redirect()->route('admin.login')
+            ->with('success', 'Session ended.');
     }
 }

@@ -47,6 +47,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Team Members Management
         Route::resource('team-members', \Modules\Admin\Http\Controllers\TeamMemberController::class);
         Route::patch('team-members/{user}/status', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'updateStatus'])->name('team-members.update-status');
+        Route::get('team-members/{user}/login-as', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'impersonate'])->name('team-members.impersonate');
+        Route::get('impersonate/stop', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'stopImpersonate'])->name('impersonate.stop');
         Route::get('team-performance', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'performance'])->name('team-performance.index');
         Route::get('team-performance/export-pdf', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'exportPdf'])->name('team-performance.export-pdf');
 
