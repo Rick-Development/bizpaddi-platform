@@ -70,6 +70,20 @@
                 </div>
             </div>
 
+            @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager())
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Assign Developer / Team Member</label>
+                <select name="assigned_to" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                    <option value="">Unassigned</option>
+                    @foreach($assignableUsers as $u)
+                    <option value="{{ $u->id }}" {{ old('assigned_to') == $u->id ? 'selected' : '' }}>
+                        {{ $u->name }} ({{ ucfirst(str_replace('_', ' ', $u->role ?? 'Team')) }})
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
             @php
                 $environments = ['Production', 'Staging', 'Testing / QA', 'Sandbox', 'Development / Local', 'UAT', 'Other'];
                 $browsers = ['Google Chrome', 'Safari', 'Mozilla Firefox', 'Microsoft Edge', 'Opera', 'Brave', 'Mobile Safari (iOS)', 'Mobile Chrome (Android)', 'Mobile App (iOS)', 'Mobile App (Android)', 'Other'];

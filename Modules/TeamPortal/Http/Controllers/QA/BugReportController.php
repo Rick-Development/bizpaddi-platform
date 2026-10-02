@@ -8,6 +8,7 @@ use Modules\TeamPortal\Models\BugReport;
 use Modules\ProjectManagement\Models\Project;
 use Modules\ProjectManagement\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 
 class BugReportController extends Controller
 {
@@ -134,13 +135,16 @@ class BugReportController extends Controller
             $tasksQuery->where('assigned_to', $user->id);
         }
         $tasks = $tasksQuery->get();
+        $assignableUsers = User::where('status', 'active')->orderBy('name')->get();
 
-        return view('teamportal::qa.bugs.create', compact('projects', 'tasks'));
+        return view('teamportal::qa.bugs.create', compact('projects', 'tasks', 'assignableUsers'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $user = auth()->user();
+
+        $rules = [
             'title'               => 'required|string|max:255',
             'description'         => 'required|string',
             'severity'            => 'required|in:low,medium,high,critical',
@@ -154,13 +158,25 @@ class BugReportController extends Controller
             'actual_result'       => 'nullable|string',
             'screenshots'         => 'nullable|array',
             'screenshots.*'       => 'file|mimes:jpg,jpeg,png,gif,webp|max:5120',
-        ]);
+        ];
 
-        $bug = BugReport::create([
+        if ($this->isAdminOrPm($user)) {
+            $rules['assigned_to'] = 'nullable|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
+
+        $data = [
             ...$validated,
-            'reported_by' => auth()->id(),
+            'reported_by' => $user->id,
             'status'      => 'open',
-        ]);
+        ];
+
+        if ($this->isAdminOrPm($user) && $request->filled('assigned_to')) {
+            $data['assigned_to'] = $request->input('assigned_to');
+        }
+
+        $bug = BugReport::create($data);
 
         if ($request->hasFile('screenshots')) {
             foreach ($request->file('screenshots') as $file) {
@@ -182,13 +198,14 @@ class BugReportController extends Controller
 
         $bug->load(['project', 'task', 'reporter', 'assignee', 'media']);
         $canManage = $this->canManageBug($bug, $user);
+        $canAssign = $this->isAdminOrPm($user);
+        $assignableUsers = User::where('status', 'active')->orderBy('name')->get();
 
-        return view('teamportal::qa.bugs.show', compact('bug', 'canManage'));
+        return view('teamportal::qa.bugs.show', compact('bug', 'canManage', 'canAssign', 'assignableUsers'));
     }
 
     /**
-     * Dedicated status update endpoint for developers, designers, and team members.
-     * Allows updating the status (e.g. In Progress, Resolved / Fixed) and resolution notes alone.
+     * Dedicated status and assignment update endpoint for developers, designers, PMs, and team members.
      */
     public function updateStatus(Request $request, BugReport $bug)
     {
@@ -206,15 +223,26 @@ class BugReportController extends Controller
             ? 'open,in_progress,resolved,closed,wont_fix'
             : 'open,in_progress,resolved';
 
-        $validated = $request->validate([
+        $rules = [
             'status'           => 'required|in:' . $allowedStatuses,
             'resolution_notes' => 'nullable|string',
-        ]);
+        ];
+
+        // PMs and Admins are permitted to assign or reassign bugs
+        if ($this->isAdminOrPm($user)) {
+            $rules['assigned_to'] = 'nullable|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
 
         $updates = ['status' => $validated['status']];
 
         if (array_key_exists('resolution_notes', $validated)) {
             $updates['resolution_notes'] = $validated['resolution_notes'];
+        }
+
+        if ($this->isAdminOrPm($user) && $request->has('assigned_to')) {
+            $updates['assigned_to'] = $validated['assigned_to'] ?: null;
         }
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
@@ -225,8 +253,16 @@ class BugReportController extends Controller
 
         $bug->update($updates);
 
+        $msg = 'Bug status updated to "' . $bug->status_label . '" successfully!';
+        if ($this->isAdminOrPm($user) && !empty($updates['assigned_to'])) {
+            $assignee = User::find($updates['assigned_to']);
+            if ($assignee) {
+                $msg = 'Bug assigned to ' . $assignee->name . ' and status updated to "' . $bug->status_label . '"!';
+            }
+        }
+
         return redirect()->route('team.qa.bugs.show', $bug)
-            ->with('success', 'Bug status updated to "' . $bug->status_label . '" successfully!');
+            ->with('success', $msg);
     }
 
     public function edit(BugReport $bug)
@@ -243,8 +279,9 @@ class BugReportController extends Controller
             $tasksQuery->where('assigned_to', $user->id);
         }
         $tasks = $tasksQuery->get();
+        $assignableUsers = User::where('status', 'active')->orderBy('name')->get();
 
-        return view('teamportal::qa.bugs.edit', compact('bug', 'projects', 'tasks'));
+        return view('teamportal::qa.bugs.edit', compact('bug', 'projects', 'tasks', 'assignableUsers'));
     }
 
     public function update(Request $request, BugReport $bug)
@@ -255,7 +292,7 @@ class BugReportController extends Controller
             abort(403, 'Only administrators and the reporter can edit bug details.');
         }
 
-        $validated = $request->validate([
+        $rules = [
             'title'               => 'required|string|max:255',
             'description'         => 'required|string',
             'severity'            => 'required|in:low,medium,high,critical',
@@ -271,7 +308,13 @@ class BugReportController extends Controller
             'resolution_notes'    => 'nullable|string',
             'screenshots'         => 'nullable|array',
             'screenshots.*'       => 'file|mimes:jpg,jpeg,png,gif,webp|max:5120',
-        ]);
+        ];
+
+        if ($this->isAdminOrPm($user)) {
+            $rules['assigned_to'] = 'nullable|exists:users,id';
+        }
+
+        $validated = $request->validate($rules);
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
             $validated['resolved_at'] = now();

@@ -153,6 +153,20 @@
                         </select>
                     </div>
 
+                    @if(!empty($canAssign) || auth()->user()->isAdmin() || auth()->user()->isProjectManager())
+                    <div>
+                        <label for="assigned_to" class="block text-xs font-medium text-gray-500 mb-1">Assign Developer / Team Member</label>
+                        <select name="assigned_to" id="assigned_to" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                            <option value="">Unassigned</option>
+                            @foreach($assignableUsers as $u)
+                            <option value="{{ $u->id }}" {{ old('assigned_to', $bug->assigned_to) == $u->id ? 'selected' : '' }}>
+                                {{ $u->name }} ({{ ucfirst(str_replace('_', ' ', $u->role ?? 'Team')) }})
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
                     <div>
                         <label for="resolution_notes" class="block text-xs font-medium text-gray-500 mb-1">Resolution / Fix Notes</label>
                         <textarea name="resolution_notes" id="resolution_notes" rows="3" placeholder="Briefly describe what was fixed..." class="w-full rounded-xl border border-gray-300 p-2.5 text-xs focus:ring-brand-primary focus:border-brand-primary">{{ old('resolution_notes', $bug->resolution_notes) }}</textarea>
@@ -189,12 +203,10 @@
                         <span class="font-medium text-gray-800">{{ $bug->browser }}</span>
                     </div>
                     @endif
-                    @if($bug->assignee)
                     <div class="flex justify-between">
                         <span class="text-gray-500">Assigned To</span>
-                        <span class="font-medium text-gray-800">{{ $bug->assignee->name }}</span>
+                        <span class="font-medium {{ $bug->assignee ? 'text-gray-800' : 'text-gray-400 italic' }}">{{ $bug->assignee?->name ?? 'Unassigned' }}</span>
                     </div>
-                    @endif
                     <div class="flex justify-between">
                         <span class="text-gray-500">Reported By</span>
                         <span class="font-medium text-gray-800">{{ $bug->reporter->name }}</span>
