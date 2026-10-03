@@ -16,14 +16,19 @@ class CheckProjectManager
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check()) {
+        // Allow admin impersonation or admin auth to inspect project manager routes
+        if (session()->has('admin_impersonator_id') || \Illuminate\Support\Facades\Auth::guard('admin')->check()) {
+            return $next($request);
+        }
+
+        if (!\Illuminate\Support\Facades\Auth::guard('web')->check()) {
             return redirect()->route('team.login');
         }
 
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::guard('web')->user();
 
         // Check if user has project manager role or permissions
-        if (!$user->isProjectManager()) {
+        if (!$user?->isProjectManager()) {
             abort(403, 'Access denied. Project Manager role required.');
         }
 

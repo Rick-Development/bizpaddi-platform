@@ -383,7 +383,9 @@ class TeamMemberController extends Controller
     {
         $admin = Auth::guard('admin')->user();
         if (!$admin) {
-            abort(403, 'Unauthorized.');
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Please log in as an administrator first.',
+            ]);
         }
 
         // Store impersonation metadata in session
@@ -395,7 +397,18 @@ class TeamMemberController extends Controller
         // Login as the user into the web guard
         Auth::guard('web')->login($user);
 
-        return redirect()->route('team.dashboard')
+        // Commit session to storage immediately so headers and cookies persist
+        session()->save();
+
+        // Redirect directly to the appropriate team portal section to avoid chained 302 redirects
+        $targetRoute = match (true) {
+            $user->isProjectManager() => route('team.pm.dashboard'),
+            $user->isBdm()            => route('team.bdm.dashboard'),
+            $user->isQaTester()       => route('team.qa.dashboard'),
+            default                   => route('team.dashboard'),
+        };
+
+        return redirect()->to($targetRoute)
             ->with('success', "Logged into {$user->name}'s account successfully!");
     }
 
@@ -406,6 +419,7 @@ class TeamMemberController extends Controller
     {
         session()->forget(['admin_impersonator_id', 'admin_impersonator_name']);
         Auth::guard('web')->logout();
+        session()->save();
 
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.team-members.index')

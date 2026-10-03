@@ -10,7 +10,7 @@
             <p class="text-sm text-gray-500 font-medium lowercase tracking-wide mt-1">{{ $teamMember->email }} &bull; {{ $teamMember->department }}</p>
         </div>
         <div class="flex gap-3">
-             <a href="{{ route('admin.team-members.impersonate', $teamMember) }}" target="_blank" class="px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-bold hover:bg-brand-primary/90 transition-all flex items-center gap-2 shadow-sm">
+             <a href="{{ route('admin.team-members.impersonate', $teamMember) }}" class="px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-bold hover:bg-brand-primary/90 transition-all flex items-center gap-2 shadow-sm">
                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                  </svg>
