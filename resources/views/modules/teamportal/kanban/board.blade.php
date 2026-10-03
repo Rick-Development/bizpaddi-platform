@@ -48,7 +48,7 @@
                         <p class="text-[10px] text-gray-500 mb-2 truncate">{{ $task->project ? $task->project->name : 'N/A' }}</p>
                         
                         <div class="flex items-center justify-between pt-3 border-t border-gray-50">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
                                 @if($task->assignee)
                                 <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-primary/5 border border-brand-primary/20 text-brand-primary max-w-[130px]" title="Assigned to: {{ $task->assignee->name }}">
                                     <svg class="w-3 h-3 text-brand-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,6 +65,7 @@
                                 </div>
                                 @endif
                             </div>
+                            <div class="flex items-center gap-2 shrink-0">
                                 <div class="text-[10px] flex items-center gap-1.5 {{ $task->due_date && $task->due_date->isPast() && !in_array($task->status, ['done','completed']) ? 'text-red-500 font-semibold' : 'text-gray-400' }} font-medium font-mono">
                                     @if($task->due_date)
                                         @if(!in_array($task->status, ['done','completed']))
@@ -85,12 +86,12 @@
                                         No due date
                                     @endif
                                 </div>
+                                @if($task->requires_client_approval)
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Client Review</span>
+                                </div>
+                                @endif
                             </div>
-                            @if($task->requires_client_approval)
-                            <div class="flex items-center gap-1">
-                                <span class="text-[8px] font-bold text-blue-500 uppercase tracking-tighter">Client Review</span>
-                            </div>
-                            @endif
                         </div>
                         @if($task->status_changed_at)
                         <div class="mt-2.5 pt-2.5 border-t border-gray-50 flex items-center text-[9px] text-gray-400 font-mono">
