@@ -107,6 +107,15 @@
                             @if($bug->environment)
                             <span class="inline-flex items-center text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ $bug->environment }}</span>
                             @endif
+                            @if($bug->due_date)
+                            <span class="inline-flex items-center gap-1 text-[11px] {{ $bug->is_overdue ? 'text-red-600 font-bold' : 'text-gray-500' }}" title="Deadline: {{ $bug->due_date->format('M j, Y • g:i A') }}">
+                                <svg class="w-3 h-3 {{ $bug->is_overdue ? 'text-red-500' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                {{ $bug->due_date->format('M d, g:i A') }}
+                                @if($bug->is_overdue)
+                                <span class="text-[9px] bg-red-100 text-red-700 px-1 rounded font-bold uppercase">Overdue</span>
+                                @endif
+                            </span>
+                            @endif
                         </div>
                     </td>
 

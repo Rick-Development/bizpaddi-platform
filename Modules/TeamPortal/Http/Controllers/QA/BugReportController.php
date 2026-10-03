@@ -9,6 +9,7 @@ use Modules\ProjectManagement\Models\Project;
 use Modules\ProjectManagement\Models\Task;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
+use Carbon\Carbon;
 
 class BugReportController extends Controller
 {
@@ -162,6 +163,7 @@ class BugReportController extends Controller
 
         if ($this->isAdminOrPm($user)) {
             $rules['assigned_to'] = 'nullable|exists:users,id';
+            $rules['due_date']    = 'nullable|date';
         }
 
         $validated = $request->validate($rules);
@@ -174,6 +176,10 @@ class BugReportController extends Controller
 
         if ($this->isAdminOrPm($user) && $request->filled('assigned_to')) {
             $data['assigned_to'] = $request->input('assigned_to');
+        }
+
+        if ($this->isAdminOrPm($user) && $request->has('due_date')) {
+            $data['due_date'] = !empty($request->due_date) ? Carbon::parse($request->due_date) : null;
         }
 
         $bug = BugReport::create($data);
@@ -228,9 +234,10 @@ class BugReportController extends Controller
             'resolution_notes' => 'nullable|string',
         ];
 
-        // PMs and Admins are permitted to assign or reassign bugs
+        // PMs and Admins are permitted to assign or reassign bugs and set deadline
         if ($this->isAdminOrPm($user)) {
             $rules['assigned_to'] = 'nullable|exists:users,id';
+            $rules['due_date']    = 'nullable|date';
         }
 
         $validated = $request->validate($rules);
@@ -243,6 +250,10 @@ class BugReportController extends Controller
 
         if ($this->isAdminOrPm($user) && $request->has('assigned_to')) {
             $updates['assigned_to'] = $validated['assigned_to'] ?: null;
+        }
+
+        if ($this->isAdminOrPm($user) && $request->has('due_date')) {
+            $updates['due_date'] = !empty($validated['due_date']) ? Carbon::parse($validated['due_date']) : null;
         }
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
@@ -312,9 +323,14 @@ class BugReportController extends Controller
 
         if ($this->isAdminOrPm($user)) {
             $rules['assigned_to'] = 'nullable|exists:users,id';
+            $rules['due_date']    = 'nullable|date';
         }
 
         $validated = $request->validate($rules);
+
+        if ($this->isAdminOrPm($user) && $request->has('due_date')) {
+            $validated['due_date'] = !empty($request->due_date) ? Carbon::parse($request->due_date) : null;
+        }
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
             $validated['resolved_at'] = now();

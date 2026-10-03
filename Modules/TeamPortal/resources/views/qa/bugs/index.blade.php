@@ -72,9 +72,20 @@
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4">
                         <a href="{{ route('team.qa.bugs.show', $bug) }}" class="font-medium text-gray-900 hover:text-brand-primary transition text-sm">{{ $bug->title }}</a>
-                        @if($bug->environment)
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $bug->environment }}</p>
-                        @endif
+                        <div class="flex items-center gap-2 mt-1">
+                            @if($bug->environment)
+                            <span class="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{{ $bug->environment }}</span>
+                            @endif
+                            @if($bug->due_date)
+                            <span class="inline-flex items-center gap-1 text-[11px] {{ $bug->is_overdue ? 'text-red-600 font-bold' : 'text-gray-500' }}" title="Deadline: {{ $bug->due_date->format('M j, Y • g:i A') }}">
+                                <svg class="w-3 h-3 {{ $bug->is_overdue ? 'text-red-500' : 'text-gray-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                {{ $bug->due_date->format('M d, g:i A') }}
+                                @if($bug->is_overdue)
+                                <span class="text-[9px] bg-red-100 text-red-700 px-1 rounded font-bold uppercase">Overdue</span>
+                                @endif
+                            </span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-4 py-4 text-sm text-gray-600">{{ $bug->project?->name ?? '—' }}</td>
                     <td class="px-4 py-4">

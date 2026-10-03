@@ -54,6 +54,17 @@
                         @else border-red-200 bg-red-50 text-red-700 @endif">
                         {{ $bug->status_label }}
                     </span>
+                    @if($bug->due_date)
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border {{ $bug->is_overdue ? 'border-red-300 bg-red-50 text-red-700' : 'border-purple-200 bg-purple-50 text-purple-700' }}">
+                        <svg class="w-3.5 h-3.5 {{ $bug->is_overdue ? 'text-red-500' : 'text-purple-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Deadline: {{ $bug->due_date->format('M j, Y • g:i A') }}
+                        @if($bug->is_overdue)
+                        <span class="text-[10px] bg-red-200 text-red-800 font-bold px-1.5 py-0.2 rounded ml-0.5 uppercase">Overdue</span>
+                        @endif
+                    </span>
+                    @endif
                 </div>
             </div>
             <div class="text-right text-xs text-gray-400">
@@ -165,6 +176,12 @@
                             @endforeach
                         </select>
                     </div>
+                    <div>
+                        <label for="due_date" class="block text-xs font-medium text-gray-500 mb-1">Deadline / Timeframe</label>
+                        <input type="datetime-local" name="due_date" id="due_date"
+                            value="{{ old('due_date', $bug->due_date ? $bug->due_date->format('Y-m-d\TH:i') : '') }}"
+                            class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                    </div>
                     @endif
 
                     <div>
@@ -214,6 +231,19 @@
                     <div class="flex justify-between">
                         <span class="text-gray-500">Created</span>
                         <span class="font-medium text-gray-800">{{ $bug->created_at->format('M j, Y') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-gray-50">
+                        <span class="text-gray-500">Deadline</span>
+                        @if($bug->due_date)
+                        <span class="font-medium text-xs text-right {{ $bug->is_overdue ? 'text-red-600 font-bold' : 'text-gray-800' }}">
+                            {{ $bug->due_date->format('M j, Y \a\t g:i A') }}
+                            @if($bug->is_overdue)
+                            <span class="block text-[10px] text-red-500 font-bold uppercase">Overdue</span>
+                            @endif
+                        </span>
+                        @else
+                        <span class="font-medium text-gray-400 italic">None set</span>
+                        @endif
                     </div>
                 </div>
             </div>

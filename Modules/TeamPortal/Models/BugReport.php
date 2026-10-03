@@ -14,13 +14,22 @@ class BugReport extends Model implements HasMedia
     protected $fillable = [
         'project_id', 'task_id', 'reported_by', 'assigned_to',
         'title', 'description', 'severity', 'priority', 'status',
+        'due_date',
         'environment', 'browser', 'steps_to_reproduce',
         'expected_result', 'actual_result', 'resolution_notes', 'resolved_at',
     ];
 
     protected $casts = [
+        'due_date'    => 'datetime',
         'resolved_at' => 'datetime',
     ];
+
+    public function getIsOverdueAttribute(): bool
+    {
+        return $this->due_date
+            && $this->due_date->isPast()
+            && !in_array($this->status, ['resolved', 'closed', 'wont_fix']);
+    }
 
     // ─── Relationships ─────────────────────────────────────────────────────────
 

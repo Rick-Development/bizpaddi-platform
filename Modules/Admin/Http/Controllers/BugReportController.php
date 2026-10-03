@@ -8,6 +8,7 @@ use Modules\TeamPortal\Models\BugReport;
 use Modules\ProjectManagement\Models\Project;
 use Modules\ProjectManagement\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 
 class BugReportController extends Controller
 {
@@ -70,6 +71,7 @@ class BugReportController extends Controller
             'project_id'          => 'nullable|exists:pm_projects,id',
             'task_id'             => 'nullable|exists:pm_tasks,id',
             'assigned_to'         => 'nullable|exists:users,id',
+            'due_date'            => 'nullable|date',
             'environment'         => 'nullable|string|max:100',
             'browser'             => 'nullable|string|max:100',
             'steps_to_reproduce'  => 'nullable|string',
@@ -83,6 +85,12 @@ class BugReportController extends Controller
         $data = $validated;
         // If reported by is not set, set to first admin or null
         $data['reported_by'] = auth('admin')->id();
+
+        if (!empty($validated['due_date'])) {
+            $data['due_date'] = Carbon::parse($validated['due_date']);
+        } else {
+            $data['due_date'] = null;
+        }
 
         if ($data['status'] === 'resolved') {
             $data['resolved_at'] = now();
@@ -128,6 +136,7 @@ class BugReportController extends Controller
             'project_id'          => 'nullable|exists:pm_projects,id',
             'task_id'             => 'nullable|exists:pm_tasks,id',
             'assigned_to'         => 'nullable|exists:users,id',
+            'due_date'            => 'nullable|date',
             'environment'         => 'nullable|string|max:100',
             'browser'             => 'nullable|string|max:100',
             'steps_to_reproduce'  => 'nullable|string',
@@ -137,6 +146,12 @@ class BugReportController extends Controller
             'screenshots'         => 'nullable|array',
             'screenshots.*'       => 'file|mimes:jpg,jpeg,png,gif,webp|max:5120',
         ]);
+
+        if (!empty($validated['due_date'])) {
+            $validated['due_date'] = Carbon::parse($validated['due_date']);
+        } else {
+            $validated['due_date'] = null;
+        }
 
         if ($validated['status'] === 'resolved' && $bug->status !== 'resolved') {
             $validated['resolved_at'] = now();
@@ -161,6 +176,7 @@ class BugReportController extends Controller
         $validated = $request->validate([
             'status'           => 'required|in:open,in_progress,resolved,closed,wont_fix',
             'assigned_to'      => 'nullable|exists:users,id',
+            'due_date'         => 'nullable|date',
             'resolution_notes' => 'nullable|string',
         ]);
 
@@ -168,6 +184,9 @@ class BugReportController extends Controller
 
         if ($request->has('assigned_to')) {
             $updates['assigned_to'] = $validated['assigned_to'];
+        }
+        if ($request->has('due_date')) {
+            $updates['due_date'] = !empty($validated['due_date']) ? Carbon::parse($validated['due_date']) : null;
         }
         if ($request->has('resolution_notes')) {
             $updates['resolution_notes'] = $validated['resolution_notes'];

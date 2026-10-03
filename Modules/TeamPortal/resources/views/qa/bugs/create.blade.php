@@ -71,16 +71,29 @@
             </div>
 
             @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager())
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Assign Developer / Team Member</label>
-                <select name="assigned_to" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
-                    <option value="">Unassigned</option>
-                    @foreach($assignableUsers as $u)
-                    <option value="{{ $u->id }}" {{ old('assigned_to') == $u->id ? 'selected' : '' }}>
-                        {{ $u->name }} ({{ ucfirst(str_replace('_', ' ', $u->role ?? 'Team')) }})
-                    </option>
-                    @endforeach
-                </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Assign Developer / Team Member</label>
+                    <select name="assigned_to" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <option value="">Unassigned</option>
+                        @foreach($assignableUsers as $u)
+                        <option value="{{ $u->id }}" {{ old('assigned_to') == $u->id ? 'selected' : '' }}>
+                            {{ $u->name }} ({{ ucfirst(str_replace('_', ' ', $u->role ?? 'Team')) }})
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('assigned_to') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="due_date" class="block text-sm font-semibold text-gray-700 mb-1">
+                        Deadline / Timeframe <span class="text-xs font-normal text-gray-500">(Full Date & Time)</span>
+                    </label>
+                    <input type="datetime-local" name="due_date" id="due_date"
+                        value="{{ old('due_date') }}"
+                        class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                    <p class="text-xs text-gray-400 mt-1">Specify target date and time for fixing this bug</p>
+                    @error('due_date') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
             </div>
             @endif
 

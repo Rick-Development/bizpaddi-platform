@@ -49,8 +49,8 @@
             </div>
         </div>
 
-        {{-- Severity, Priority, Status, Assignee --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {{-- Severity, Priority, Status --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
                 <label for="severity" class="block text-sm font-semibold text-gray-700 mb-1">Severity <span class="text-red-500">*</span></label>
                 <select name="severity" id="severity" required class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
@@ -81,15 +81,30 @@
                     <option value="wont_fix" {{ old('status', $bug->status) === 'wont_fix' ? 'selected' : '' }}>Won't Fix</option>
                 </select>
             </div>
+        </div>
 
+        {{-- Assignee & Deadline / Timeframe --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-                <label for="assigned_to" class="block text-sm font-semibold text-gray-700 mb-1">Assign Developer</label>
+                <label for="assigned_to" class="block text-sm font-semibold text-gray-700 mb-1">Assign Developer / Team Member</label>
                 <select name="assigned_to" id="assigned_to" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
                     <option value="">Unassigned</option>
                     @foreach($users as $user)
-                    <option value="{{ $user->id }}" {{ old('assigned_to', $bug->assigned_to) == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                    <option value="{{ $user->id }}" {{ old('assigned_to', $bug->assigned_to) == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ ucfirst($user->role ?? 'Team') }})</option>
                     @endforeach
                 </select>
+                @error('assigned_to')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="due_date" class="block text-sm font-semibold text-gray-700 mb-1">
+                    Deadline / Timeframe <span class="text-xs font-normal text-gray-500">(Full Date & Time)</span>
+                </label>
+                <input type="datetime-local" name="due_date" id="due_date"
+                    value="{{ old('due_date', $bug->due_date ? $bug->due_date->format('Y-m-d\TH:i') : '') }}"
+                    class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                <p class="text-xs text-gray-400 mt-1">Specify target date and time for fixing this bug</p>
+                @error('due_date')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
             </div>
         </div>
 
