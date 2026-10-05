@@ -7,7 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+use App\Mail\WeeklyTeamReviewMail;
+use Modules\ProjectManagement\Services\PerformanceEngine;
 
 class TeamMemberController extends Controller
 {
@@ -266,6 +269,12 @@ class TeamMemberController extends Controller
         $averageScore = $totalMembers > 0 ? $performances->avg('score') : 0;
         $topPerformer = $performances->first();
 
+        // If an individual team member is selected, compute their comprehensive assessment report
+        $memberAssessment = null;
+        if (!empty($teamMemberId) && is_numeric($teamMemberId)) {
+            $memberAssessment = PerformanceEngine::getMemberAssessment($teamMemberId, $startDate, $endDate);
+        }
+
         return view('admin::team-members.performance', compact(
             'performances',
             'teamMembers',
@@ -277,7 +286,8 @@ class TeamMemberController extends Controller
             'topPerformer',
             'totalTasksCompleted',
             'startDate',
-            'endDate'
+            'endDate',
+            'memberAssessment'
         ));
     }
 
@@ -374,6 +384,98 @@ class TeamMemberController extends Controller
         }
 
         return $pdf->download('Team_Performance_Report.pdf');
+    }
+
+    /**
+     * Display a dedicated comprehensive performance assessment for a team member.
+     */
+    public function assessment(Request $request, User $user)
+    {
+        $period = $request->input('period', 'weekly');
+        $refDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date) : \Carbon\Carbon::now();
+
+        if ($period === 'monthly') {
+            $startDate = $refDate->copy()->startOfMonth();
+            $endDate = $refDate->copy()->endOfMonth();
+        } elseif ($period === 'custom' && ($request->filled('start_date') || $request->filled('end_date'))) {
+            $startDate = $request->filled('start_date') ? \Carbon\Carbon::parse($request->start_date)->startOfDay() : \Carbon\Carbon::now()->subDays(30)->startOfDay();
+            $endDate = $request->filled('end_date') ? \Carbon\Carbon::parse($request->end_date)->endOfDay() : \Carbon\Carbon::now()->endOfDay();
+        } else {
+            // Default Weekly
+            $startDate = $refDate->copy()->startOfWeek();
+            $endDate = $refDate->copy()->endOfWeek();
+        }
+
+        $assessment = PerformanceEngine::getMemberAssessment($user->id, $startDate, $endDate);
+        $teamMembers = User::orderBy('name')->get();
+
+        return view('admin::team-members.assessment', compact('user', 'assessment', 'period', 'startDate', 'endDate', 'teamMembers'));
+    }
+
+    /**
+     * Dispatch weekly performance review email(s) manually from the Admin portal.
+     */
+    public function sendWeeklyReviewEmail(Request $request)
+    {
+        $request->validate([
+            'target'      => 'required', // 'all', or numeric user ID
+            'week'        => 'nullable|date',
+            'custom_note' => 'nullable|string|max:1000',
+        ]);
+
+        if ($request->filled('week')) {
+            $refDate = \Carbon\Carbon::parse($request->week);
+            $startDate = $refDate->copy()->startOfWeek();
+            $endDate = $refDate->copy()->endOfWeek();
+        } else {
+            // Default to past completed week
+            $startDate = \Carbon\Carbon::now()->subWeek()->startOfWeek();
+            $endDate = \Carbon\Carbon::now()->subWeek()->endOfWeek();
+        }
+
+        $periodLabel = $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y');
+        $customNote = $request->input('custom_note');
+
+        if ($request->target === 'all') {
+            $users = User::where('status', 'active')->get();
+            $count = 0;
+            foreach ($users as $member) {
+                try {
+                    $assessment = PerformanceEngine::getMemberAssessment($member->id, $startDate, $endDate);
+                    Mail::to($member->email)->send(new WeeklyTeamReviewMail($member, $assessment, $customNote));
+                    $count++;
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error("Failed to send review email to {$member->email}: " . $e->getMessage());
+                }
+            }
+            return redirect()->back()->with('success', "Dispatched weekly performance review emails to {$count} active team member(s) for {$periodLabel}!");
+        } else {
+            $targetUser = User::findOrFail($request->target);
+            $assessment = PerformanceEngine::getMemberAssessment($targetUser->id, $startDate, $endDate);
+            Mail::to($targetUser->email)->send(new WeeklyTeamReviewMail($targetUser, $assessment, $customNote));
+            return redirect()->back()->with('success', "Weekly performance review email successfully sent to {$targetUser->name} ({$targetUser->email}) for {$periodLabel}!");
+        }
+    }
+
+    /**
+     * Preview the weekly performance review email in the browser.
+     */
+    public function previewWeeklyReviewEmail(Request $request, User $user)
+    {
+        if ($request->filled('week')) {
+            $refDate = \Carbon\Carbon::parse($request->week);
+            $startDate = $refDate->copy()->startOfWeek();
+            $endDate = $refDate->copy()->endOfWeek();
+        } else {
+            $startDate = \Carbon\Carbon::now()->subWeek()->startOfWeek();
+            $endDate = \Carbon\Carbon::now()->subWeek()->endOfWeek();
+        }
+
+        $customNote = $request->input('custom_note', 'This is a preview of your weekly performance review email.');
+        $assessment = PerformanceEngine::getMemberAssessment($user->id, $startDate, $endDate);
+
+        $mail = new WeeklyTeamReviewMail($user, $assessment, $customNote);
+        return $mail->render();
     }
 
     /**

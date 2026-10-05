@@ -23,4 +23,10 @@ Schedule::command('reports:send-weekly')
     ->timezone('UTC')
     ->description('Send weekly project progress reports to all active clients');
 
+// Schedule weekly team performance review emails every Monday at 8:30 AM
+Schedule::command('team:send-weekly-reviews')
+    ->weeklyOn(1, '8:30')
+    ->timezone('UTC')
+    ->description('Send automated weekly performance review emails to active team members');
+
 Schedule::command('queue:work --stop-when-empty')->everyMinute();

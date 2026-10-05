@@ -4,6 +4,7 @@ namespace Modules\ProjectManagement\Services;
 
 use Modules\ProjectManagement\Models\Task;
 use Modules\TeamPortal\Models\WorkLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
@@ -147,6 +148,126 @@ class PerformanceEngine
             ],
             'total_bonus' => $taskBonusPoints,
             'total_penalty' => $totalPenalty
+        ];
+    }
+
+    /**
+     * Generate a comprehensive assessment report for a team member in a given timeframe.
+     * Includes score, grade, completed tasks, pending tasks, overdue tasks, work logs, and actionable insights.
+     */
+    public static function getMemberAssessment($userId, Carbon $startDate, Carbon $endDate)
+    {
+        $user = User::findOrFail($userId);
+
+        // 1. Calculate base metrics & scores
+        $metrics = self::calculate($userId, $startDate, $endDate);
+        $score = $metrics['score'];
+
+        // 2. Grade and status
+        $grade = match (true) {
+            $score >= 95 => ['label' => 'Excellent', 'class' => 'emerald', 'badge' => '🏆 Excellent', 'letter' => 'A+'],
+            $score >= 80 => ['label' => 'Good', 'class' => 'blue', 'badge' => '✨ Good', 'letter' => 'A'],
+            $score >= 60 => ['label' => 'Fair', 'class' => 'amber', 'badge' => '⚠️ Fair', 'letter' => 'B'],
+            default      => ['label' => 'Needs Improvement', 'class' => 'rose', 'badge' => '📉 Needs Improvement', 'letter' => 'C'],
+        };
+
+        // 3. Completed Tasks in this period
+        $completedTasks = Task::with('project')
+            ->where('assigned_to', $userId)
+            ->where('status', 'done')
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('completed_at', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
+                  ->orWhere(function ($sub) use ($startDate, $endDate) {
+                      $sub->whereNull('completed_at')
+                          ->whereBetween('updated_at', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()]);
+                  });
+            })
+            ->orderBy('completed_at', 'desc')
+            ->get()
+            ->map(function ($task) {
+                $timing = 'on_time';
+                if ($task->due_date) {
+                    if ($task->completed_at && $task->completed_at > $task->due_date) {
+                        $timing = 'late';
+                    } elseif ($task->completed_at && $task->completed_at->copy()->startOfDay()->diffInDays($task->due_date->copy()->startOfDay(), false) >= 1) {
+                        $timing = 'early';
+                    }
+                }
+                $task->timing = $timing;
+                return $task;
+            });
+
+        // 4. Pending / In-Progress Tasks (unfinished)
+        $pendingTasks = Task::with('project')
+            ->where('assigned_to', $userId)
+            ->whereIn('status', ['todo', 'in_progress', 'review', 'testing'])
+            ->orderByRaw("CASE WHEN due_date IS NOT NULL AND due_date < NOW() THEN 0 ELSE 1 END")
+            ->orderBy('due_date', 'asc')
+            ->get()
+            ->map(function ($task) {
+                $task->is_overdue = $task->due_date && $task->due_date->isPast();
+                $task->days_overdue = $task->is_overdue ? (int) $task->due_date->diffInDays(now()) : 0;
+                return $task;
+            });
+
+        // 5. Overdue Tasks subset
+        $overdueTasks = $pendingTasks->filter(fn($t) => $t->is_overdue)->values();
+
+        // 6. Work Logs in this period
+        $workLogs = WorkLog::where('user_id', $userId)
+            ->whereBetween('start_time', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
+            ->orderBy('start_time', 'desc')
+            ->get();
+
+        $totalMinutes = $workLogs->sum('duration_minutes');
+        $totalHours = round($totalMinutes / 60, 1);
+        $daysPresent = $workLogs->groupBy(fn($l) => Carbon::parse($l->start_time)->format('Y-m-d'))->count();
+
+        // 7. KPIs
+        $totalAssignedActive = $completedTasks->count() + $pendingTasks->count();
+        $completionRate = $totalAssignedActive > 0 ? round(($completedTasks->count() / $totalAssignedActive) * 100, 1) : 0;
+        $onTimeCount = $completedTasks->whereIn('timing', ['on_time', 'early'])->count();
+        $onTimeRate = $completedTasks->count() > 0 ? round(($onTimeCount / $completedTasks->count()) * 100, 1) : 100;
+
+        // 8. Generate Constructive Manager Summary
+        $summaryPoints = [];
+        if ($completedTasks->count() > 0) {
+            $summaryPoints[] = "Completed {$completedTasks->count()} task(s) during this period with {$onTimeRate}% on-time rate.";
+        } else {
+            $summaryPoints[] = "No tasks were marked as completed during this evaluation period.";
+        }
+
+        if ($overdueTasks->count() > 0) {
+            $summaryPoints[] = "⚠️ Attention required: {$overdueTasks->count()} pending task(s) are overdue.";
+        } else {
+            $summaryPoints[] = "✓ Zero overdue tasks currently pending. Excellent turnaround!";
+        }
+
+        if ($pendingTasks->count() > 0) {
+            $summaryPoints[] = "Carrying over {$pendingTasks->count()} unfinished / in-progress task(s).";
+        }
+
+        if ($totalHours > 0) {
+            $summaryPoints[] = "Logged {$totalHours} hours across {$daysPresent} active work day(s).";
+        }
+
+        return [
+            'user'           => $user,
+            'startDate'      => $startDate,
+            'endDate'        => $endDate,
+            'periodLabel'    => $startDate->format('M d, Y') . ' - ' . $endDate->format('M d, Y'),
+            'metrics'        => $metrics,
+            'score'          => $score,
+            'grade'          => $grade,
+            'completedTasks' => $completedTasks,
+            'pendingTasks'   => $pendingTasks,
+            'overdueTasks'   => $overdueTasks,
+            'workLogs'       => $workLogs,
+            'totalHours'     => $totalHours,
+            'daysPresent'    => $daysPresent,
+            'completionRate' => $completionRate,
+            'onTimeRate'     => $onTimeRate,
+            'summaryPoints'  => $summaryPoints,
         ];
     }
 }

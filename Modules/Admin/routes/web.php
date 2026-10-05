@@ -58,6 +58,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('impersonate/stop', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'stopImpersonate'])->name('impersonate.stop');
         Route::get('team-performance', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'performance'])->name('team-performance.index');
         Route::get('team-performance/export-pdf', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'exportPdf'])->name('team-performance.export-pdf');
+        Route::get('team-performance/assessment/{user}', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'assessment'])->name('team-performance.assessment');
+        Route::post('team-performance/send-weekly-review', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'sendWeeklyReviewEmail'])->name('team-performance.send-weekly-review');
+        Route::get('team-performance/preview-review-email/{user}', [\Modules\Admin\Http\Controllers\TeamMemberController::class, 'previewWeeklyReviewEmail'])->name('team-performance.preview-review-email');
 
         // Team Emails
         Route::get('team-emails/create', [\Modules\Admin\Http\Controllers\TeamEmailController::class, 'create'])->name('team-emails.create');
