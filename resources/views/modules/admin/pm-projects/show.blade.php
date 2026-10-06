@@ -256,6 +256,7 @@
                         @csrf
                         <input type="hidden" name="commentable_id" value="{{ $project->id }}">
                         <input type="hidden" name="commentable_type" value="project">
+                        <input type="hidden" name="guard" value="admin">
                         <div>
                             <textarea name="content" rows="3" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm" placeholder="Add a comment..."></textarea>
                         </div>
@@ -280,13 +281,16 @@
                         @forelse($project->comments as $comment)
                         <div class="flex space-x-3">
                             <div class="flex-shrink-0">
-                                <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+                                <div class="h-8 w-8 rounded-full {{ $comment->user_type === 'App\Models\Admin' ? 'bg-red-100 text-red-600' : 'bg-gray-200 text-gray-600' }} flex items-center justify-center text-xs font-bold">
                                     {{ substr($comment->user->name ?? 'U', 0, 1) }}
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <div class="text-sm">
                                     <span class="font-medium text-gray-900">{{ $comment->user->name ?? 'User' }}</span>
+                                    @if($comment->user_type === 'App\Models\Admin')
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase">Admin</span>
+                                    @endif
                                     @if($comment->is_internal)
                                     <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Internal</span>
                                     @endif

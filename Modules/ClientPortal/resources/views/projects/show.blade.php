@@ -92,6 +92,7 @@
                         @csrf
                         <input type="hidden" name="commentable_id" value="{{ $project->id }}">
                         <input type="hidden" name="commentable_type" value="project">
+                        <input type="hidden" name="guard" value="client">
                         <textarea name="content" rows="3" class="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black sm:text-sm" placeholder="Ask a question or provide feedback..."></textarea>
                         <div class="mt-3 flex justify-end">
                             <button type="submit" class="px-4 py-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">
@@ -109,6 +110,9 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="text-sm font-bold text-gray-900">{{ $comment->user->name ?? 'Client' }}</span>
+                                    @if($comment->user_type === 'App\Models\Admin')
+                                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-red-100 text-red-700 font-bold uppercase">Admin</span>
+                                    @endif
                                     <span class="text-xs text-gray-400">{{ $comment->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="text-sm text-gray-600 leading-relaxed">{{ $comment->content }}</p>

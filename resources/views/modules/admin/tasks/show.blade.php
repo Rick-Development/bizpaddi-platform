@@ -52,6 +52,7 @@
                         @csrf
                         <input type="hidden" name="commentable_id" value="{{ $task->id }}">
                         <input type="hidden" name="commentable_type" value="task">
+                        <input type="hidden" name="guard" value="admin">
                         <textarea name="content" rows="3" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm" placeholder="Add a comment..."></textarea>
                         <div class="mt-3 flex items-center justify-between">
                             <div class="flex flex-col space-y-2">
@@ -88,12 +89,15 @@
                     <div class="space-y-6">
                         @forelse($task->comments as $comment)
                         <div class="flex space-x-3">
-                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600">
+                            <div class="flex-shrink-0 h-8 w-8 rounded-full {{ $comment->user_type === 'App\Models\Admin' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600' }} flex items-center justify-center text-xs font-bold">
                                 {{ substr($comment->user->name ?? 'U', 0, 1) }}
                             </div>
                             <div class="flex-1">
                                 <div class="flex items-center space-x-2">
                                     <div class="text-sm font-medium text-gray-900">{{ $comment->user->name ?? 'User' }}</div>
+                                    @if($comment->user_type === 'App\Models\Admin')
+                                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-red-100 text-red-700 font-bold uppercase">Admin</span>
+                                    @endif
                                     @if($comment->is_internal)
                                     <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-gray-100 text-gray-500 font-bold uppercase">Internal</span>
                                     @endif

@@ -195,6 +195,7 @@
                 @csrf
                 <input type="hidden" name="commentable_id" value="{{ $task->id }}">
                 <input type="hidden" name="commentable_type" value="task">
+                <input type="hidden" name="guard" value="web">
                 <textarea name="content" rows="3" class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-gray-500 text-sm" placeholder="Post an update or question..."></textarea>
                 <div class="mt-3 flex items-center justify-between">
                     <div class="flex flex-col space-y-2">
@@ -237,6 +238,9 @@
                     <div class="flex-1">
                          <div class="flex items-center gap-2 mb-1">
                             <span class="text-sm font-bold text-gray-900">{{ $comment->user->name ?? 'Unknown' }}</span>
+                            @if($comment->user_type === 'App\Models\Admin')
+                            <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-red-100 text-red-700 font-bold uppercase">Admin</span>
+                            @endif
                             @if($comment->is_internal)
                             <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-gray-100 text-gray-500 font-bold uppercase">Internal</span>
                             @endif
