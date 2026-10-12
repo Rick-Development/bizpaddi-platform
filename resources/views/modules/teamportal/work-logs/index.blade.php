@@ -94,7 +94,7 @@
                         </div>
                     @else
                         <!-- DEVELOPER CHECK OUT FORM -->
-                        <h4 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">Session Task Outcomes & Evidence</h4>
+                        <h4 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 mb-6">Session Task Outcomes & Evidence <span class="text-xs font-normal text-gray-400 font-sans ml-2">(Optional)</span></h4>
                         
                         <div class="space-y-8">
                             <!-- Loop through activeLog tasks -->
@@ -124,8 +124,8 @@
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div>
                                             <label class="block text-sm font-semibold text-gray-700">Result Status</label>
-                                            <select name="tasks_data[{{ $index }}][result]" onchange="toggleTaskResultDetails(this.value, {{ $index }}, {{ $task->id }})" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required>
-                                                <option value="">Select...</option>
+                                            <select name="tasks_data[{{ $index }}][result]" onchange="toggleTaskResultDetails(this.value, {{ $index }}, {{ $task->id }})" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm">
+                                                <option value="">Select (Optional)...</option>
                                                 <option value="Completed">Completed</option>
                                                 <option value="Partial">Partial</option>
                                                 <option value="Blocked">Blocked</option>
@@ -134,12 +134,12 @@
 
                                         <div>
                                             <label class="block text-sm font-semibold text-gray-700">Progress %</label>
-                                            <input type="number" name="tasks_data[{{ $index }}][progress_percent]" min="0" max="100" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required>
+                                            <input type="number" name="tasks_data[{{ $index }}][progress_percent]" min="0" max="100" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm">
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-semibold text-gray-700">What Changed?</label>
-                                            <input type="text" name="tasks_data[{{ $index }}][what_changed]" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required placeholder="Quick description of update">
+                                            <input type="text" name="tasks_data[{{ $index }}][what_changed]" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" placeholder="Quick description of update">
                                         </div>
                                     </div>
 

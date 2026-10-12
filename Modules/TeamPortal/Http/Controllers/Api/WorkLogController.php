@@ -141,44 +141,51 @@ class WorkLogController extends ApiController
                 'actual_tasks' => 'required|string',
                 'challenges'   => 'nullable|string',
                 'kpi_metrics'  => 'nullable|array',
-                'tasks_data'   => 'required|array',
+                'tasks_data'   => 'nullable|array',
             ]);
 
             $tasksData = $request->tasks_data;
 
-            foreach ($tasksData as &$task) {
-                $taskId = $task['task_id'] ?? null;
-                $result = $task['result'] ?? null;
-                $evidence = $task['evidence'] ?? null;
+            if (is_array($tasksData) && !empty($tasksData)) {
+                $processedTasks = [];
+                foreach ($tasksData as $task) {
+                    $taskId = $task['task_id'] ?? null;
+                    $result = $task['result'] ?? null;
+                    $evidence = $task['evidence'] ?? null;
 
-                if (!$taskId || !$result) {
-                    return $this->sendError('Invalid task data structure. Each task must have task_id and result.', 400);
-                }
-
-                // Tiered Evidence validations
-                if ($result === 'Completed' && empty($evidence)) {
-                    return $this->sendError("Evidence is required for completed task (ID: {$taskId}).", 400);
-                }
-
-                if ($result === 'Partial') {
-                    if ($workLog->hasPartialWithoutEvidenceThreshold($taskId, 3) && empty($evidence)) {
-                        return $this->sendError("Evidence is required for task (ID: {$taskId}) as it has been partial for 3+ consecutive sessions.", 400);
+                    if (!$taskId || empty($result)) {
+                        continue;
                     }
-                }
 
-                if ($result === 'Blocked') {
-                    if (empty($task['blocker_details']['blocked_by']) || empty($task['blocker_details']['blocking_item'])) {
-                        return $this->sendError("Blocker details (blocked_by, blocking_item) are required for blocked task (ID: {$taskId}).", 400);
+                    // Tiered Evidence validations
+                    if ($result === 'Completed' && empty($evidence)) {
+                        return $this->sendError("Evidence is required for completed task (ID: {$taskId}).", 400);
                     }
+
+                    if ($result === 'Partial') {
+                        if ($workLog->hasPartialWithoutEvidenceThreshold($taskId, 3) && empty($evidence)) {
+                            return $this->sendError("Evidence is required for task (ID: {$taskId}) as it has been partial for 3+ consecutive sessions.", 400);
+                        }
+                    }
+
+                    if ($result === 'Blocked') {
+                        if (empty($task['blocker_details']['blocked_by']) || empty($task['blocker_details']['blocking_item'])) {
+                            return $this->sendError("Blocker details (blocked_by, blocking_item) are required for blocked task (ID: {$taskId}).", 400);
+                        }
+                    }
+
+                    // Dynamic duration calculation from pm_time_logs
+                    $duration = \Modules\ProjectManagement\Models\TimeLog::where('task_id', $taskId)
+                        ->where('user_id', $user->id)
+                        ->where('start_time', '>=', $workLog->start_time)
+                        ->sum('duration_minutes');
+
+                    $task['time_spent_minutes'] = (int)$duration;
+                    $processedTasks[] = $task;
                 }
-
-                // Dynamic duration calculation from pm_time_logs
-                $duration = \Modules\ProjectManagement\Models\TimeLog::where('task_id', $taskId)
-                    ->where('user_id', $user->id)
-                    ->where('start_time', '>=', $workLog->start_time)
-                    ->sum('duration_minutes');
-
-                $task['time_spent_minutes'] = (int)$duration;
+                $tasksData = !empty($processedTasks) ? $processedTasks : null;
+            } else {
+                $tasksData = null;
             }
 
             $workLog->update([

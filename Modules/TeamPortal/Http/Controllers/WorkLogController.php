@@ -176,7 +176,7 @@ class WorkLogController extends Controller
                 'challenges'   => 'nullable|string',
                 'challenges_encoded' => 'nullable|string',
                 'kpi_metrics'  => 'nullable|array',
-                'tasks_data'   => 'required|array',
+                'tasks_data'   => 'nullable|array',
             ]);
 
             $actualTasks = $this->decodeWorkLogField(
@@ -194,39 +194,46 @@ class WorkLogController extends Controller
 
             $tasksData = $request->tasks_data;
 
-            foreach ($tasksData as &$task) {
-                $taskId = $task['task_id'] ?? null;
-                $result = $task['result'] ?? null;
-                $evidence = $task['evidence'] ?? null;
+            if (is_array($tasksData) && !empty($tasksData)) {
+                $processedTasks = [];
+                foreach ($tasksData as $task) {
+                    $taskId = $task['task_id'] ?? null;
+                    $result = $task['result'] ?? null;
+                    $evidence = $task['evidence'] ?? null;
 
-                if (!$taskId || !$result) {
-                    return back()->withErrors(['tasks_data' => 'Invalid task data. Each task must have a result.'])->withInput();
-                }
-
-                // Tiered Evidence validation
-                if ($result === 'Completed' && empty($evidence)) {
-                    return back()->withErrors(["tasks_data" => "Evidence is required for completed task (ID: {$taskId})."])->withInput();
-                }
-
-                if ($result === 'Partial') {
-                    if ($workLog->hasPartialWithoutEvidenceThreshold($taskId, 3) && empty($evidence)) {
-                        return back()->withErrors(["tasks_data" => "Evidence is required for task (ID: {$taskId}) as it has been partial for 3+ consecutive sessions."])->withInput();
+                    if (!$taskId || empty($result)) {
+                        continue;
                     }
-                }
 
-                if ($result === 'Blocked') {
-                    if (empty($task['blocker_details']['blocked_by']) || empty($task['blocker_details']['blocking_item'])) {
-                        return back()->withErrors(["tasks_data" => "Blocker details are required for blocked task (ID: {$taskId})."])->withInput();
+                    // Tiered Evidence validation
+                    if ($result === 'Completed' && empty($evidence)) {
+                        return back()->withErrors(["tasks_data" => "Evidence is required for completed task (ID: {$taskId})."])->withInput();
                     }
+
+                    if ($result === 'Partial') {
+                        if ($workLog->hasPartialWithoutEvidenceThreshold($taskId, 3) && empty($evidence)) {
+                            return back()->withErrors(["tasks_data" => "Evidence is required for task (ID: {$taskId}) as it has been partial for 3+ consecutive sessions."])->withInput();
+                        }
+                    }
+
+                    if ($result === 'Blocked') {
+                        if (empty($task['blocker_details']['blocked_by']) || empty($task['blocker_details']['blocking_item'])) {
+                            return back()->withErrors(["tasks_data" => "Blocker details are required for blocked task (ID: {$taskId})."])->withInput();
+                        }
+                    }
+
+                    // Calculate time spent from pm_time_logs
+                    $duration = TimeLog::where('task_id', $taskId)
+                        ->where('user_id', $user->id)
+                        ->where('start_time', '>=', $workLog->start_time)
+                        ->sum('duration_minutes');
+
+                    $task['time_spent_minutes'] = (int)$duration;
+                    $processedTasks[] = $task;
                 }
-
-                // Calculate time spent from pm_time_logs
-                $duration = TimeLog::where('task_id', $taskId)
-                    ->where('user_id', $user->id)
-                    ->where('start_time', '>=', $workLog->start_time)
-                    ->sum('duration_minutes');
-
-                $task['time_spent_minutes'] = (int)$duration;
+                $tasksData = !empty($processedTasks) ? $processedTasks : null;
+            } else {
+                $tasksData = null;
             }
 
             $workLog->update([
