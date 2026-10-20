@@ -12,8 +12,15 @@ class QaDashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $isAdminOrPm = $user->isAdmin() || $user->isProjectManager();
 
-        $myBugs = BugReport::where('reported_by', $user->id);
+        $myBugs = BugReport::query();
+        if (!$isAdminOrPm) {
+            $myBugs->where(function ($q) use ($user) {
+                $q->where('reported_by', $user->id)
+                  ->orWhere('assigned_to', $user->id);
+            });
+        }
 
         $stats = [
             'total_bugs'       => (clone $myBugs)->count(),
@@ -24,11 +31,14 @@ class QaDashboardController extends Controller
             'my_tasks'         => Task::where('assigned_to', $user->id)->whereIn('status', ['todo', 'in_progress', 'review'])->count(),
         ];
 
-        $recentBugs = BugReport::with('project')
-            ->where('reported_by', $user->id)
-            ->latest()
-            ->take(6)
-            ->get();
+        $recentBugsQuery = BugReport::with(['project', 'assignee', 'reporter']);
+        if (!$isAdminOrPm) {
+            $recentBugsQuery->where(function ($q) use ($user) {
+                $q->where('reported_by', $user->id)
+                  ->orWhere('assigned_to', $user->id);
+            });
+        }
+        $recentBugs = $recentBugsQuery->latest()->take(6)->get();
 
         // Severity breakdown for chart
         $severityChart = [

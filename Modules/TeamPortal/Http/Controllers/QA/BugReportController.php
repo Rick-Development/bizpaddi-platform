@@ -40,9 +40,9 @@ class BugReportController extends Controller
 
     /**
      * Determine if user is allowed to view this bug report:
-     * - Admins / PMs: any bug
-     * - Reporter or Assignee: yes
-     * - Team members on the project: yes
+     * - Admins / PMs: any bug (oversee all)
+     * - Developers / Designers / Team members: only bugs related to them (assigned to them or reported by them)
+     * - QA testers: bugs related to them OR bugs in projects they are assigned to
      */
     private function canViewBug(BugReport $bug, $user): bool
     {
@@ -54,7 +54,7 @@ class BugReportController extends Controller
             return true;
         }
 
-        if ($bug->project_id) {
+        if ($user->isQaTester() && $bug->project_id) {
             $projectIds = $this->myProjects($user)->pluck('id');
             return $projectIds->contains($bug->project_id);
         }
@@ -82,22 +82,30 @@ class BugReportController extends Controller
         $user = auth()->user();
 
         $query = BugReport::with(['project', 'reporter', 'assignee']);
+        $isPmOrAdmin = $this->isAdminOrPm($user);
 
-        if ($this->isAdminOrPm($user)) {
-            // Admins & PMs have full access across all bug reports
+        if ($isPmOrAdmin) {
+            // Admins & PMs have full oversight across all bug reports
+            if ($request->filled('assigned_to')) {
+                if ($request->assigned_to === 'unassigned') {
+                    $query->whereNull('assigned_to');
+                } else {
+                    $query->where('assigned_to', $request->assigned_to);
+                }
+            }
         } elseif ($user->isQaTester()) {
-            // QA testers see bugs they reported OR bugs in their assigned projects
+            // QA testers see bugs they reported, bugs assigned to them, or bugs in their assigned projects
             $myProjectIds = $this->myProjects($user)->pluck('id');
             $query->where(function (Builder $q) use ($user, $myProjectIds) {
                 $q->where('reported_by', $user->id)
+                  ->orWhere('assigned_to', $user->id)
                   ->orWhereIn('project_id', $myProjectIds);
             });
         } else {
-            // Developers, designers, etc. see bugs in projects they are on or bugs assigned to them
-            $myProjectIds = $this->myProjects($user)->pluck('id');
-            $query->where(function (Builder $q) use ($user, $myProjectIds) {
-                $q->whereIn('project_id', $myProjectIds)
-                  ->orWhere('assigned_to', $user->id);
+            // Developers and team members ONLY see bugs related to them (assigned to them or reported by them)
+            $query->where(function (Builder $q) use ($user) {
+                $q->where('assigned_to', $user->id)
+                  ->orWhere('reported_by', $user->id);
             });
         }
 
@@ -107,10 +115,17 @@ class BugReportController extends Controller
         if ($request->filled('severity')) {
             $query->where('severity', $request->severity);
         }
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
         if ($request->filled('project_id')) {
-            $myProjectIds = $this->myProjects($user)->pluck('id');
-            if ($myProjectIds->contains($request->project_id)) {
+            if ($isPmOrAdmin) {
                 $query->where('project_id', $request->project_id);
+            } else {
+                $myProjectIds = $this->myProjects($user)->pluck('id');
+                if ($myProjectIds->contains($request->project_id)) {
+                    $query->where('project_id', $request->project_id);
+                }
             }
         }
         if ($request->filled('search')) {
@@ -120,10 +135,11 @@ class BugReportController extends Controller
             });
         }
 
-        $bugs     = $query->latest()->paginate(15)->withQueryString();
-        $projects = $this->myProjects($user);
+        $bugs        = $query->latest()->paginate(15)->withQueryString();
+        $projects    = $this->myProjects($user);
+        $teamMembers = $isPmOrAdmin ? User::where('status', 'active')->orderBy('name')->get() : collect();
 
-        return view('teamportal::qa.bugs.index', compact('bugs', 'projects'));
+        return view('teamportal::qa.bugs.index', compact('bugs', 'projects', 'isPmOrAdmin', 'teamMembers'));
     }
 
     public function create()

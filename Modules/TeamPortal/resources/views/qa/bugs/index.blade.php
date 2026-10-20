@@ -46,8 +46,17 @@
                 <option value="{{ $proj->id }}" {{ request('project_id') == $proj->id ? 'selected' : '' }}>{{ $proj->name }}</option>
                 @endforeach
             </select>
+            @if(!empty($isPmOrAdmin) && isset($teamMembers) && $teamMembers->isNotEmpty())
+            <select name="assigned_to" class="rounded-xl border border-gray-300 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                <option value="">All Assignees</option>
+                <option value="unassigned" {{ request('assigned_to') === 'unassigned' ? 'selected' : '' }}>Unassigned</option>
+                @foreach($teamMembers as $m)
+                <option value="{{ $m->id }}" {{ request('assigned_to') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
+                @endforeach
+            </select>
+            @endif
             <button type="submit" class="bg-gray-900 hover:bg-black text-white text-sm font-semibold px-4 py-2 rounded-xl transition">Filter</button>
-            @if(request()->hasAny(['search','status','severity','project_id']))
+            @if(request()->hasAny(['search','status','severity','project_id','assigned_to']))
             <a href="{{ route('team.qa.bugs.index') }}" class="text-sm text-gray-500 hover:text-gray-800 px-3 py-2">Reset</a>
             @endif
         </div>
@@ -60,6 +69,7 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Title</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Project</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Assigned To</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Severity</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Priority</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
@@ -73,6 +83,11 @@
                     <td class="px-6 py-4">
                         <a href="{{ route('team.qa.bugs.show', $bug) }}" class="font-medium text-gray-900 hover:text-brand-primary transition text-sm">{{ $bug->title }}</a>
                         <div class="flex items-center gap-2 mt-1">
+                            @if($bug->assigned_to === auth()->id())
+                            <span class="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded font-semibold">Assigned to you</span>
+                            @elseif($bug->reported_by === auth()->id())
+                            <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-1.5 py-0.5 rounded font-semibold">Reported by you</span>
+                            @endif
                             @if($bug->environment)
                             <span class="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">{{ $bug->environment }}</span>
                             @endif
@@ -88,6 +103,20 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 text-sm text-gray-600">{{ $bug->project?->name ?? '—' }}</td>
+                    <td class="px-4 py-4 text-sm">
+                        @if($bug->assignee)
+                            <div class="flex items-center gap-1.5">
+                                <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
+                                    {{ substr($bug->assignee->name, 0, 1) }}
+                                </span>
+                                <span class="text-xs font-medium {{ $bug->assigned_to == auth()->id() ? 'text-brand-primary font-bold' : 'text-gray-900' }}">
+                                    {{ $bug->assigned_to == auth()->id() ? 'You' : $bug->assignee->name }}
+                                </span>
+                            </div>
+                        @else
+                            <span class="text-xs text-gray-400 italic">Unassigned</span>
+                        @endif
+                    </td>
                     <td class="px-4 py-4">
                         <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full
                             @if($bug->severity === 'critical') bg-red-100 text-red-700
@@ -126,11 +155,17 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-16 text-center">
+                    <td colspan="8" class="px-6 py-16 text-center">
                         <svg class="w-12 h-12 text-gray-200 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75z"/>
                         </svg>
-                        <p class="text-sm text-gray-400">No bug reports found.</p>
+                        <p class="text-sm text-gray-400">
+                            @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager())
+                                No bug reports found.
+                            @else
+                                No bug reports assigned to or reported by you.
+                            @endif
+                        </p>
                         @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager() || auth()->user()->isQaTester())
                         <a href="{{ route('team.qa.bugs.create') }}" class="mt-2 inline-block text-sm text-brand-primary font-semibold hover:underline">Report a bug →</a>
                         @endif

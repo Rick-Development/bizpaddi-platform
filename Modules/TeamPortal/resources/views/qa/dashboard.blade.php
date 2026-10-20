@@ -110,7 +110,13 @@
                 </span>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-800 truncate group-hover:text-brand-primary">{{ $bug->title }}</p>
-                    <p class="text-xs text-gray-400">{{ $bug->project?->name ?? 'No Project' }} • {{ $bug->created_at->diffForHumans() }}</p>
+                    <p class="text-xs text-gray-400">
+                        {{ $bug->project?->name ?? 'No Project' }}
+                        @if($bug->assignee)
+                        • Assigned: <span class="{{ $bug->assigned_to == auth()->id() ? 'font-bold text-brand-primary' : 'text-gray-600' }}">{{ $bug->assigned_to == auth()->id() ? 'You' : $bug->assignee->name }}</span>
+                        @endif
+                        • {{ $bug->created_at->diffForHumans() }}
+                    </p>
                 </div>
                 <span class="flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border
                     @if($bug->status === 'open') border-blue-200 bg-blue-50 text-blue-700
