@@ -163,7 +163,7 @@
                             @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager())
                                 No bug reports found.
                             @else
-                                No bug reports assigned to or reported by you.
+                                No bug reports assigned to you.
                             @endif
                         </p>
                         @if(auth()->user()->isAdmin() || auth()->user()->isProjectManager() || auth()->user()->isQaTester())

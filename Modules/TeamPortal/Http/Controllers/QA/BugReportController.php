@@ -102,11 +102,8 @@ class BugReportController extends Controller
                   ->orWhereIn('project_id', $myProjectIds);
             });
         } else {
-            // Developers and team members ONLY see bugs related to them (assigned to them or reported by them)
-            $query->where(function (Builder $q) use ($user) {
-                $q->where('assigned_to', $user->id)
-                  ->orWhere('reported_by', $user->id);
-            });
+            // Developers and team members ONLY see bugs assigned to them
+            $query->where('assigned_to', $user->id);
         }
 
         if ($request->filled('status')) {

@@ -16,10 +16,7 @@ class QaDashboardController extends Controller
 
         $myBugs = BugReport::query();
         if (!$isAdminOrPm) {
-            $myBugs->where(function ($q) use ($user) {
-                $q->where('reported_by', $user->id)
-                  ->orWhere('assigned_to', $user->id);
-            });
+            $myBugs->where('assigned_to', $user->id);
         }
 
         $stats = [
@@ -33,10 +30,7 @@ class QaDashboardController extends Controller
 
         $recentBugsQuery = BugReport::with(['project', 'assignee', 'reporter']);
         if (!$isAdminOrPm) {
-            $recentBugsQuery->where(function ($q) use ($user) {
-                $q->where('reported_by', $user->id)
-                  ->orWhere('assigned_to', $user->id);
-            });
+            $recentBugsQuery->where('assigned_to', $user->id);
         }
         $recentBugs = $recentBugsQuery->latest()->take(6)->get();
 
