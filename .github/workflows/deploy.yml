@@ -23,7 +23,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            cd /home/billway/rickdevelopment
+            cd /home/rickdevelopment/rickdevelopment
             
             # Helper to run PHP and tolerate core dumps (exit status 134) on exit
             run_php() {
