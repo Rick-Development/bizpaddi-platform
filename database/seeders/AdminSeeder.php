@@ -13,8 +13,9 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear existing admins
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         Admin::truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         // Create super admin
         Admin::create([

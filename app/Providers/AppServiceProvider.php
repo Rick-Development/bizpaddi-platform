@@ -20,6 +20,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Load all module migrations regardless of directory casing on Linux (database/migrations vs Database/Migrations)
+        $moduleMigrationDirs = array_merge(
+            glob(base_path('Modules/*/database/migrations'), GLOB_ONLYDIR) ?: [],
+            glob(base_path('Modules/*/Database/Migrations'), GLOB_ONLYDIR) ?: []
+        );
+        if (!empty($moduleMigrationDirs)) {
+            $this->loadMigrationsFrom(array_unique($moduleMigrationDirs));
+        }
+
         \Modules\ProjectManagement\Models\Task::observe(\App\Observers\TaskObserver::class);
         \Modules\ProjectManagement\Models\Project::observe(\App\Observers\ProjectObserver::class);
         \Modules\ProjectManagement\Models\Comment::observe(\App\Observers\CommentObserver::class);

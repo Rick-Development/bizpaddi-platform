@@ -25,7 +25,7 @@ return new class extends Migration
                 $table->string('workplace_type', 50)->nullable()->default('remote')->after('type');
             }
             if (!Schema::hasColumn('career_jobs', 'salary_period')) {
-                $table->string('salary_period', 20)->nullable()->default('month')->after('currency');
+                $table->string('salary_period', 20)->nullable()->default('month');
             }
             if (!Schema::hasColumn('career_jobs', 'skills')) {
                 $table->text('skills')->nullable()->after('salary_period');
