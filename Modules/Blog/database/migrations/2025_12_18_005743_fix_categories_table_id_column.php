@@ -12,8 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Fix the id column to be auto-increment
-        DB::statement('ALTER TABLE categories MODIFY id BIGINT UNSIGNED AUTO_INCREMENT');
+        try {
+            Schema::disableForeignKeyConstraints();
+            DB::statement('ALTER TABLE categories MODIFY id BIGINT UNSIGNED AUTO_INCREMENT');
+            Schema::enableForeignKeyConstraints();
+        } catch (\Throwable $e) {
+            Schema::enableForeignKeyConstraints();
+        }
     }
 
     /**

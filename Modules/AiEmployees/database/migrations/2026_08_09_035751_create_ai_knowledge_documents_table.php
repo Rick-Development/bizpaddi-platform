@@ -18,8 +18,9 @@ return new class extends Migration
             $table->text('content');
             $table->timestamps();
             
-            // Adding Fulltext search index
-            $table->fullText(['title', 'content']);
+            if (\Illuminate\Support\Facades\DB::getDriverName() === 'mysql') {
+                $table->fullText(['title', 'content']);
+            }
         });
     }
 

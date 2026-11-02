@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pm_projects', function (Blueprint $table) {
-            $table->foreignId('currency_id')->nullable()->after('budget')->constrained('currencies')->onDelete('set null');
-        });
+        if (!Schema::hasColumn('pm_projects', 'currency_id')) {
+            Schema::table('pm_projects', function (Blueprint $table) {
+                $table->unsignedBigInteger('currency_id')->nullable()->after('budget');
+            });
+        }
     }
 
     /**

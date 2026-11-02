@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('rate_limits', function (Blueprint $table) {
-            $table->bigIncrements('id')->primary()->change();
-        });
+        try {
+            Schema::table('rate_limits', function (Blueprint $table) {
+                $table->bigIncrements('id')->change();
+            });
+        } catch (\Throwable $e) {
+            // Already primary/auto-increment
+        }
     }
 
     /**

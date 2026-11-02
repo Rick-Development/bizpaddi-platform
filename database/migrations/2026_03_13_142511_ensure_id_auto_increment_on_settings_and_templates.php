@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->id()->change();
-        });
-
-        Schema::table('email_templates', function (Blueprint $table) {
-            $table->id()->change();
-        });
+        try {
+            Schema::table('settings', function (Blueprint $table) {
+                $table->id()->change();
+            });
+            Schema::table('email_templates', function (Blueprint $table) {
+                $table->id()->change();
+            });
+        } catch (\Throwable $e) {
+            // Already auto-increment
+        }
     }
 
     /**

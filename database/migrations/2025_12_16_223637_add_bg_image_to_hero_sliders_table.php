@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('hero_sliders', function (Blueprint $table) {
-            $table->string('bg_image')->nullable()->after('button_link');
-        });
+        if (!Schema::hasColumn('hero_sliders', 'bg_image')) {
+            Schema::table('hero_sliders', function (Blueprint $table) {
+                $table->string('bg_image')->nullable()->after('button_link');
+            });
+        }
     }
 
     /**

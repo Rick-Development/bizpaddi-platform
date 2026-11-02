@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Use raw SQL to fix the id column constraint
-        \Illuminate\Support\Facades\DB::statement('ALTER TABLE settings MODIFY id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY');
+        try {
+            \Illuminate\Support\Facades\DB::statement('ALTER TABLE settings MODIFY id BIGINT UNSIGNED AUTO_INCREMENT');
+        } catch (\Throwable $e) {
+            // Already primary/auto-increment
+        }
     }
 
     /**

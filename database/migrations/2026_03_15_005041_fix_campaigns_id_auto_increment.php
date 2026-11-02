@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('ALTER TABLE campaigns MODIFY id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT');
+        try {
+            Schema::disableForeignKeyConstraints();
+            DB::statement('ALTER TABLE campaigns MODIFY id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT');
+            Schema::enableForeignKeyConstraints();
+        } catch (\Throwable $e) {
+            Schema::enableForeignKeyConstraints();
+        }
     }
 
     /**

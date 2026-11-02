@@ -12,9 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            // Make email unique if not already
-            $table->string('email')->unique()->change();
-            
             // Add missing lead management fields without positional constraints
             if (!Schema::hasColumn('leads', 'source')) {
                 $table->string('source')->nullable()->comment('e.g., Website Form, Referral, Cold Call, Social Media');

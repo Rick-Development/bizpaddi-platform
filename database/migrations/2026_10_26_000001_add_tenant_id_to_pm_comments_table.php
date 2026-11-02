@@ -18,28 +18,29 @@ return new class extends Migration
                 $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
             });
 
-            // Backfill from Task
-            DB::statement("
-                UPDATE pm_comments c
-                JOIN pm_tasks t ON c.commentable_id = t.id AND c.commentable_type LIKE '%Task%'
-                SET c.tenant_id = t.tenant_id
-                WHERE t.tenant_id IS NOT NULL
-            ");
+            if (DB::getDriverName() === 'mysql' && DB::table('tenants')->where('id', 1)->exists()) {
+                // Backfill from Task
+                DB::statement("
+                    UPDATE pm_comments c
+                    JOIN pm_tasks t ON c.commentable_id = t.id AND c.commentable_type LIKE '%Task%'
+                    SET c.tenant_id = t.tenant_id
+                    WHERE t.tenant_id IS NOT NULL
+                ");
 
-            // Backfill from Project
-            DB::statement("
-                UPDATE pm_comments c
-                JOIN pm_projects p ON c.commentable_id = p.id AND c.commentable_type LIKE '%Project%'
-                SET c.tenant_id = p.tenant_id
-                WHERE p.tenant_id IS NOT NULL
-            ");
+                // Backfill from Project
+                DB::statement("
+                    UPDATE pm_comments c
+                    JOIN pm_projects p ON c.commentable_id = p.id AND c.commentable_type LIKE '%Project%'
+                    SET c.tenant_id = p.tenant_id
+                    WHERE p.tenant_id IS NOT NULL
+                ");
 
-            // For any remaining legacy comments, associate with Tenant 1 (Rick Development Platform Workspace)
-            DB::statement("
-                UPDATE pm_comments
-                SET tenant_id = 1
-                WHERE tenant_id IS NULL
-            ");
+                DB::statement("
+                    UPDATE pm_comments
+                    SET tenant_id = 1
+                    WHERE tenant_id IS NULL
+                ");
+            }
         }
     }
 
