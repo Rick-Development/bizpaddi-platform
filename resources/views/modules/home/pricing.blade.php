@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="flex-shrink-0">
-                        <a href="{{ route('register') }}?plan=pay_as_you_go" class="inline-flex items-center space-x-2 px-8 py-4 rounded-2xl text-sm font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-xl transition transform hover:-translate-y-0.5">
+                        <a href="{{ route('register') }}?plan=pay_as_you_go" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 px-8 py-4 rounded-2xl text-sm font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-xl transition transform hover:-translate-y-0.5">
                             <span>Activate Operating Wallet</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </a>
@@ -335,7 +335,7 @@
                     </div>
 
                     <div class="text-center pt-2">
-                        <a href="{{ route('register') }}?plan=pay_as_you_go" class="inline-flex items-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
+                        <a href="{{ route('register') }}?plan=pay_as_you_go" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
                             <span>Get Started with Pay-As-You-Transact Wallet</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                         </a>
@@ -433,7 +433,7 @@
                     </div>
 
                     <div class="mt-10 pt-4">
-                        <a href="{{ route('register') }}?plan={{ $plan->code }}" class="block w-full py-4 rounded-2xl text-center text-sm font-extrabold {{ $plan->enable_ai ? 'bg-[#F2A900] text-[#08110e] hover:bg-amber-300' : 'bg-[#0E5E4A] text-white hover:bg-[#0c4e3e]' }} shadow-xl transition transform hover:-translate-y-0.5 border border-emerald-400/30">
+                        <a href="{{ route('register') }}?plan={{ $plan->code }}" target="_blank" rel="noopener" class="block w-full py-4 rounded-2xl text-center text-sm font-extrabold {{ $plan->enable_ai ? 'bg-[#F2A900] text-[#08110e] hover:bg-amber-300' : 'bg-[#0E5E4A] text-white hover:bg-[#0c4e3e]' }} shadow-xl transition transform hover:-translate-y-0.5 border border-emerald-400/30">
                             Select {{ $plan->name }}
                         </a>
                     </div>
@@ -567,7 +567,7 @@
                 No credit card required. Instant account activation in 60 seconds.
             </p>
             <div class="pt-4">
-                <a href="{{ route('register') }}" class="inline-flex items-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
+                <a href="{{ route('register') }}" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
                     <span>Get Started Now</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </a>

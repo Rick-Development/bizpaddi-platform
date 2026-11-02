@@ -17,7 +17,7 @@
                 Everything you need to invoice clients, collect payments automatically, coordinate remote teams, disburse payroll, and publish your branded storefront.
             </p>
             <div class="pt-4 flex items-center justify-center space-x-4">
-                <a href="{{ route('register') }}" class="px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white shadow-xl hover:shadow-emerald-900/40 transition transform hover:-translate-y-0.5 border border-emerald-400/30">
+                <a href="{{ route('register') }}" target="_blank" rel="noopener" class="px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white shadow-xl hover:shadow-emerald-900/40 transition transform hover:-translate-y-0.5 border border-emerald-400/30">
                     Get Started Now
                 </a>
                 <a href="{{ route('pricing') }}" class="px-7 py-3.5 rounded-2xl text-sm font-bold bg-white/[0.05] hover:bg-white/[0.08] text-white border border-white/10 transition">
@@ -243,7 +243,7 @@
                 Launch your business workspace in 60 seconds. Full 14-day free access to all features.
             </p>
             <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="{{ route('register') }}" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
+                <a href="{{ route('register') }}" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
                     <span>Launch Your Workspace</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </a>

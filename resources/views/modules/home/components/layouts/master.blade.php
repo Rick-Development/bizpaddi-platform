@@ -88,10 +88,10 @@
                     </div>
 
                     <div class="flex items-center space-x-4 pl-4 border-l border-white/10">
-                        <a href="{{ route('admin.login') }}" class="text-sm font-bold text-gray-200 hover:text-white transition">
+                        <a href="{{ route('admin.login') }}" target="_blank" rel="noopener" class="text-sm font-bold text-gray-200 hover:text-white transition">
                             Sign In
                         </a>
-                        <a href="{{ route('register') }}" class="px-5 py-2.5 rounded-xl text-sm font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white border border-emerald-400/30 shadow-lg hover:shadow-emerald-900/40 transition transform hover:-translate-y-0.5">
+                        <a href="{{ route('register') }}" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-xl text-sm font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white border border-emerald-400/30 shadow-lg hover:shadow-emerald-900/40 transition transform hover:-translate-y-0.5">
                             Get Started Now
                         </a>
                     </div>
@@ -99,7 +99,7 @@
 
                 <!-- Mobile Menu Button (Below 768px) -->
                 <div class="md:hidden flex items-center space-x-2.5">
-                    <a href="{{ route('register') }}" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold bg-[#0E5E4A] text-white border border-emerald-400/30">
+                    <a href="{{ route('register') }}" target="_blank" rel="noopener" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold bg-[#0E5E4A] text-white border border-emerald-400/30">
                         Get Started
                     </a>
                     <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 focus:outline-none">
@@ -119,8 +119,8 @@
             <a href="{{ route('features') }}" class="block py-2 text-gray-300 hover:text-white">Features</a>
             <a href="{{ route('pricing') }}" class="block py-2 text-gray-300 hover:text-white">Pricing</a>
             <a href="{{ route('faq') }}" class="block py-2 text-gray-300 hover:text-white">FAQ</a>
-            <a href="{{ route('admin.login') }}" class="block py-2 text-gray-300 hover:text-white">Sign In</a>
-            <a href="{{ route('register') }}" class="block text-center py-3 rounded-xl bg-[#0E5E4A] text-white font-bold border border-emerald-400/30">Get Started Now</a>
+            <a href="{{ route('admin.login') }}" target="_blank" rel="noopener" class="block py-2 text-gray-300 hover:text-white">Sign In</a>
+            <a href="{{ route('register') }}" target="_blank" rel="noopener" class="block text-center py-3 rounded-xl bg-[#0E5E4A] text-white font-bold border border-emerald-400/30">Get Started Now</a>
         </div>
     </nav>
 
@@ -153,11 +153,11 @@
                 <div>
                     <h3 class="text-xs font-extrabold text-amber-300 tracking-wider uppercase">Portals & Product</h3>
                     <ul class="mt-4 space-y-2.5 text-xs text-gray-300">
-                        <li><a href="{{ route('register') }}" class="hover:text-white transition">Get Started</a></li>
+                        <li><a href="{{ route('register') }}" target="_blank" rel="noopener" class="hover:text-white transition">Get Started</a></li>
                         <li><a href="{{ route('pricing') }}" class="hover:text-white transition">Pricing Plans</a></li>
-                        <li><a href="{{ route('admin.login') }}" class="hover:text-white transition">Business Workspace</a></li>
-                        <li><a href="{{ route('team.login') }}" class="hover:text-white transition">Staff & Team Portal</a></li>
-                        <li><a href="{{ route('client.login') }}" class="hover:text-white transition">Client Portal</a></li>
+                        <li><a href="{{ route('admin.login') }}" target="_blank" rel="noopener" class="hover:text-white transition">Business Workspace</a></li>
+                        <li><a href="{{ route('team.login') }}" target="_blank" rel="noopener" class="hover:text-white transition">Staff & Team Portal</a></li>
+                        <li><a href="{{ route('client.login') }}" target="_blank" rel="noopener" class="hover:text-white transition">Client Portal</a></li>
                     </ul>
                 </div>
                 <div>
