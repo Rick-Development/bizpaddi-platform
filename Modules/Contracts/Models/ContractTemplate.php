@@ -5,10 +5,14 @@ namespace Modules\Contracts\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
+use App\Traits\BelongsToTenant;
 
 class ContractTemplate extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'tenant_id',
         'name',
         'contract_type',
         'description',

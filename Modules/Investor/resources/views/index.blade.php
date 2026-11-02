@@ -154,7 +154,7 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl text-center">
                 <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Stock Performance</h2>
-                <p class="mt-2 text-lg leading-8 text-gray-600">Historical performance of Rick Development stock.</p>
+                <p class="mt-2 text-lg leading-8 text-gray-600">Historical performance of Bizpaddi stock.</p>
             </div>
             <div class="mt-10 bg-white p-6 rounded-2xl shadow-sm ring-1 ring-gray-900/5">
                 <!-- Simple visual representation since we don't have a JS charting library set up yet -->

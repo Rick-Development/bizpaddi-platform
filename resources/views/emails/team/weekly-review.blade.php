@@ -255,7 +255,7 @@
         <div class="container">
             <!-- Header -->
             <div class="header">
-                <div class="header-logo">Rick Development</div>
+                <div class="header-logo">Bizpaddi</div>
                 <h1 class="header-title">Weekly Performance Review</h1>
                 <div class="header-subtitle">
                     Evaluation Period: {{ $assessment['periodLabel'] ?? 'Past Week' }}
@@ -421,7 +421,7 @@
             <!-- Footer -->
             <div class="footer">
                 <p style="margin: 0 0 6px 0;">
-                    <strong>Rick Development Team Management System</strong>
+                    <strong>Bizpaddi Team Management System</strong>
                 </p>
                 <p style="margin: 0;">
                     This is an automated weekly performance report generated for your account.<br>

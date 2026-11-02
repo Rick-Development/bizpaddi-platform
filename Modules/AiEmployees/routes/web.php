@@ -7,7 +7,7 @@ use Modules\AiEmployees\Http\Controllers\AiEmployeeController;
 use Modules\AiEmployees\Http\Controllers\AiTaskController;
 use Modules\AiEmployees\Http\Controllers\AiKnowledgeController;
 
-Route::prefix('admin/aiemployees')->name('admin.aiemployees.')->middleware(['web', \Modules\Admin\Http\Middleware\AdminAuth::class])->group(function () {
+Route::prefix('dashboard/aiemployees')->name('admin.aiemployees.')->middleware(['web', \Modules\Admin\Http\Middleware\AdminAuth::class])->group(function () {
     Route::get('/dashboard', [AiDashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/task', [AiDashboardController::class, 'processTask'])->name('dashboard.task');
     Route::get('/dashboard/task/{id}/poll', [AiDashboardController::class, 'pollTask'])->name('dashboard.task.poll');
@@ -27,3 +27,8 @@ Route::prefix('admin/aiemployees')->name('admin.aiemployees.')->middleware(['web
     Route::resource('tasks', AiTaskController::class);
     Route::resource('knowledge', AiKnowledgeController::class);
 });
+
+// Backwards-compatible aliases
+Route::redirect('admin/aiemployees', '/dashboard/aiemployees');
+Route::redirect('admin/aiemployees/{path}', '/dashboard/aiemployees/{path}')->where('path', '.*');
+

@@ -933,7 +933,7 @@ class McpService
                   "- Email: NULL (or real verified email only)\n" .
                   "- Phone: NULL (or real verified phone only)\n" .
                   "- Expected Value: \$XXXXX\n" .
-                  "- Background Notes: A brief summary of their operational needs matching Rick Development services (web/mobile app development, fintech, agritech, custom software).";
+                  "- Background Notes: A brief summary of their operational needs matching Bizpaddi services (web/mobile app development, fintech, agritech, custom software).";
 
         try {
             $response = Prism::text()

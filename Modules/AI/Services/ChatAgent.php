@@ -164,7 +164,7 @@ class ChatAgent
             return $customPrompt;
         }
 
-        $companyName = config('app.name', 'Rick Development LTD');
+        $companyName = config('app.name', 'Bizpaddi');
         
         return "You are a helpful customer support assistant for {$companyName}. " .
                "You provide professional, friendly, and accurate information about our services, products, and solutions. " .

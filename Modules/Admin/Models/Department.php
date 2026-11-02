@@ -3,8 +3,11 @@
 namespace Modules\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BelongsToTenant;
 
 class Department extends Model
 {
-    protected $fillable = ['name', 'description', 'is_active'];
+    use BelongsToTenant;
+
+    protected $fillable = ['tenant_id', 'name', 'description', 'is_active'];
 }

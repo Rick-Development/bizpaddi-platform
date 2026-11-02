@@ -28,7 +28,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Select Template (Optional)</label>
-                <select id="template_selector" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent text-sm">
+                <select id="template_selector" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm">
                     <option value="">-- Choose a template --</option>
                     @foreach($templates as $template)
                         <option value="{{ $template->id }}">{{ $template->name }}</option>
@@ -39,19 +39,19 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Subject <span class="text-red-500">*</span></label>
-            <input type="text" name="subject" id="email_subject" value="{{ old('subject') }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent" placeholder="Enter email subject">
+            <input type="text" name="subject" id="email_subject" value="{{ old('subject') }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Enter email subject">
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Message <span class="text-red-500">*</span></label>
-            <textarea name="message" id="email_message" rows="15" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent" placeholder="Type your message here...">{{ old('message') }}</textarea>
+            <textarea name="message" id="email_message" rows="15" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Type your message here...">{{ old('message') }}</textarea>
         </div>
 
         <div class="flex justify-end gap-x-3 pt-4">
             <a href="{{ route('team.bdm.contacts.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Cancel
             </a>
-            <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#FB4C4B] text-white rounded-md text-sm font-medium hover:bg-[#D93837] shadow-sm transition-all">
+            <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-500 shadow-sm transition-all">
                 <i class="fa-solid fa-paper-plane mr-2"></i>
                 Send Email
             </button>

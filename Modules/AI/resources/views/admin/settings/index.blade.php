@@ -39,8 +39,8 @@
                     System Prompt / Knowledge Base
                 </label>
                 <div class="mt-1">
-                    <p class="text-xs text-gray-500 mb-2">Teach the AI about Rick Development Ltd. Include key services, tone of voice, and contact policies.</p>
-                    <textarea id="system_prompt" name="system_prompt" rows="10" class="shadow-sm focus:ring-brand-primary focus:border-brand-primary block w-full sm:text-sm border border-gray-300 rounded-md">{{ $settings['system_prompt'] ?? "You are a helpful customer support assistant for Rick Development LTD..." }}</textarea>
+                    <p class="text-xs text-gray-500 mb-2">Teach the AI about Bizpaddi. Include key services, tone of voice, and contact policies.</p>
+                    <textarea id="system_prompt" name="system_prompt" rows="10" class="shadow-sm focus:ring-brand-primary focus:border-brand-primary block w-full sm:text-sm border border-gray-300 rounded-md">{{ $settings['system_prompt'] ?? "You are a helpful customer support assistant for Bizpaddi..." }}</textarea>
                 </div>
             </div>
 

@@ -37,7 +37,7 @@
                     </button>
                 </form>
                 
-                <a href="mailto:{{ \Modules\Settings\Models\Setting::get('contact_email', 'support@rickdevelopment.com') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">
+                <a href="mailto:{{ \Modules\Settings\Models\Setting::get('contact_email', 'support@bizpaddi.com') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">
                     Need help? Contact Support
                 </a>
             </div>

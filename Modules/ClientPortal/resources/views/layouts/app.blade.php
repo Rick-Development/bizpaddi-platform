@@ -41,11 +41,9 @@
         }
     </script>
     @endif
-    @if($favicon)
-        <link rel="icon" href="{{ asset('storage/' . $favicon) }}" type="image/x-icon">
-    @else
-        <link rel="icon" href="/logo.png" type="image/png">
-    @endif
+    <link rel="icon" type="image/png" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/bizpaddi/icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')

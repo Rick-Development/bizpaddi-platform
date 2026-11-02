@@ -130,7 +130,7 @@ class BdmIntelligenceService
                       "   - If an email or phone number is missing or unverified, pass `null` (or omit) `email` and `phone` when calling `bdm_create_lead`.\n" .
                       "   - In your summary text response, report 'Email: Not publicly listed' or 'Phone: Not publicly listed'. DO NOT invent contact info under any circumstance.\n" .
                       "   - Saving a lead with null email/phone is correct and required when contact details are private or unverified.\n" .
-                      "4. 🏢 COMPANY DETAILS REQUIREMENT: When invoking `bdm_create_lead`, you MUST write a highly detailed summary of the company in the `company_details` parameter. Analyze their business model, identify their digital presence weaknesses, manual workflows, and explain exactly how Rick Development Ltd can help them upgrade or automate. Be as specific and thorough as possible.";
+                      "4. 🏢 COMPANY DETAILS REQUIREMENT: When invoking `bdm_create_lead`, you MUST write a highly detailed summary of the company in the `company_details` parameter. Analyze their business model, identify their digital presence weaknesses, manual workflows, and explain exactly how Bizpaddi Ltd can help them upgrade or automate. Be as specific and thorough as possible.";
 
             $response = $this->callModel($agent, $prompt, $tools);
             

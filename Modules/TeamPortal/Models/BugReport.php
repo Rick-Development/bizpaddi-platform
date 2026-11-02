@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Traits\BelongsToTenant;
 
 class BugReport extends Model implements HasMedia
 {
+    use BelongsToTenant;
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
+        'tenant_id',
         'project_id', 'task_id', 'reported_by', 'assigned_to',
         'title', 'description', 'severity', 'priority', 'status',
         'due_date',

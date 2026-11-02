@@ -22,7 +22,7 @@
                class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                 <i class="fa-solid fa-file-import mr-2 text-blue-600"></i> Import CSV
             </button>
-            <a href="{{ route('team.bdm.contact-lists.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.contact-lists.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <i class="fa-solid fa-plus mr-2"></i> New List
             </a>
         </div>
@@ -74,7 +74,7 @@
                            class="text-green-600 hover:text-green-800 font-medium">SMS</a>
                         <span class="text-gray-300">|</span>
                         <a href="{{ route('team.bdm.contact-lists.show', $list) }}"
-                           class="text-[#FB4C4B] hover:text-[#D93837] font-medium">View</a>
+                           class="text-emerald-400 hover:text-emerald-300 font-medium">View</a>
                         <a href="{{ route('team.bdm.contact-lists.edit', $list) }}"
                            class="text-gray-600 hover:text-gray-900 font-medium">Edit</a>
                     </div>
@@ -127,7 +127,7 @@
                 SMS List
             </a>
             <a href="{{ route('team.bdm.contact-lists.show', $list) }}"
-               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full text-[#FB4C4B] bg-red-50 hover:bg-red-100">
+               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full text-emerald-400 bg-red-50 hover:bg-red-100">
                 View
             </a>
             <a href="{{ route('team.bdm.contact-lists.edit', $list) }}"
@@ -167,7 +167,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">CSV File <span class="text-red-500">*</span></label>
                     <input type="file" name="file" accept=".csv,.txt" required
-                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#FB4C4B]/10 file:text-[#FB4C4B] hover:file:bg-[#FB4C4B]/20">
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-600/10 file:text-emerald-400 hover:file:bg-emerald-600/20">
                     <p class="mt-2 text-xs text-gray-500 bg-gray-50 rounded p-2">
                         <strong>Required header row:</strong> first_name, last_name, email, phone, company<br>
                         Duplicate emails will be skipped automatically.
@@ -175,7 +175,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Add to Contact List <span class="text-gray-400">(Optional)</span></label>
-                    <select name="list_id" class="w-full rounded-lg border-gray-300 text-sm focus:ring-[#FB4C4B] focus:border-[#FB4C4B]">
+                    <select name="list_id" class="w-full rounded-lg border-gray-300 text-sm focus:ring-emerald-500 focus:border-emerald-500">
                         <option value="">-- Don't add to any list --</option>
                         @foreach(\Modules\Communications\Models\ContactList::where('is_active', true)->get() as $list)
                             <option value="{{ $list->id }}">{{ $list->name }}</option>
@@ -186,7 +186,7 @@
                     <button type="button" onclick="document.getElementById('import-modal').classList.add('hidden')"
                             class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
                     <button type="submit"
-                            class="px-4 py-2 bg-[#FB4C4B] text-white rounded-lg text-sm font-medium hover:bg-[#D93837]">
+                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-500">
                         <i class="fa-solid fa-upload mr-1.5"></i> Import
                     </button>
                 </div>

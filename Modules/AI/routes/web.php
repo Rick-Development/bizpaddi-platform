@@ -13,8 +13,8 @@ Route::prefix('ai/chat')->name('ai.chat.')->middleware(['web'])->group(function 
     Route::post('/send', [ChatController::class, 'send'])->name('send');
 });
 
-// Admin Routes (Settings & History)
-Route::prefix('admin/ai')->name('admin.ai.')->middleware(['web', \Modules\Admin\Http\Middleware\AdminAuth::class])->group(function () {
+// Business Dashboard Routes (Settings & History)
+Route::prefix('dashboard/ai')->name('admin.ai.')->middleware(['web', \Modules\Admin\Http\Middleware\AdminAuth::class])->group(function () {
     // Settings
     Route::get('/settings', [AISettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AISettingController::class, 'update'])->name('settings.update');
@@ -26,3 +26,7 @@ Route::prefix('admin/ai')->name('admin.ai.')->middleware(['web', \Modules\Admin\
     // AI Models
     Route::resource('models', Modules\AI\Http\Controllers\Admin\AIModelController::class);
 });
+
+// Backwards-compatible aliases
+Route::redirect('admin/ai', '/dashboard/ai');
+Route::redirect('admin/ai/{path}', '/dashboard/ai/{path}')->where('path', '.*');

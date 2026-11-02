@@ -45,8 +45,17 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
+        $tenantId = auth('admin')->user()->tenant_id;
+
         $validated = $request->validate([
-            'email' => 'nullable|email|unique:contacts,email|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('contacts', 'email')->where(function ($query) use ($tenantId) {
+                    return $query->where('tenant_id', $tenantId);
+                }),
+            ],
             'first_name' => 'nullable|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'phone' => 'nullable|string|max:20',
@@ -55,11 +64,20 @@ class ContactController extends Controller
             'status' => 'required|in:active,unsubscribed,bounced',
             'list_ids' => 'nullable|array',
             'list_ids.*' => 'exists:contact_lists,id',
+        ], [
+            'email.unique' => 'A contact with this email address already exists in your contact database.',
+            'email.email'  => 'Please enter a valid email address.',
+            'status.required' => 'Please select a status for the contact.',
         ]);
+
+        if (empty($validated['first_name']) && empty($validated['last_name']) && empty($validated['email']) && empty($validated['phone'])) {
+            return back()->withInput()->withErrors(['email' => 'Please provide at least a Name, Email, or Phone number for the contact.']);
+        }
 
         $listIds = $validated['list_ids'] ?? [];
         unset($validated['list_ids']);
 
+        $validated['tenant_id'] = $tenantId;
         $validated['subscribed_at'] = $validated['status'] === 'active' ? now() : null;
 
         $contact = Contact::create($validated);
@@ -72,7 +90,7 @@ class ContactController extends Controller
         }
 
         return redirect()->route('admin.contacts.index')
-            ->with('success', 'Contact created successfully.');
+            ->with('success', "Contact '{$contact->full_name}' created successfully.");
     }
 
     public function edit(Contact $contact)
@@ -82,11 +100,21 @@ class ContactController extends Controller
         
         return view('admin::contacts.edit', compact('contact', 'lists'));
     }
-
     public function update(Request $request, Contact $contact)
     {
+        $tenantId = auth('admin')->user()->tenant_id;
+
         $validated = $request->validate([
-            'email' => 'nullable|email|max:255|unique:contacts,email,' . $contact->id,
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('contacts', 'email')
+                    ->ignore($contact->id)
+                    ->where(function ($query) use ($tenantId) {
+                        return $query->where('tenant_id', $tenantId);
+                    }),
+            ],
             'first_name' => 'nullable|string|max:100',
             'last_name' => 'nullable|string|max:100',
             'phone' => 'nullable|string|max:20',
@@ -95,6 +123,10 @@ class ContactController extends Controller
             'status' => 'required|in:active,unsubscribed,bounced',
             'list_ids' => 'nullable|array',
             'list_ids.*' => 'exists:contact_lists,id',
+        ], [
+            'email.unique' => 'A contact with this email address already exists in your contact database.',
+            'email.email'  => 'Please enter a valid email address.',
+            'status.required' => 'Please select a status for the contact.',
         ]);
 
         $listIds = $validated['list_ids'] ?? [];

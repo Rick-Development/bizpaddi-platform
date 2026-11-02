@@ -10,7 +10,7 @@
             <p class="mt-2 text-sm text-gray-600">Design and manage your email templates</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('team.bdm.email-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.email-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -33,7 +33,7 @@
         <div class="p-4">
             <div class="flex justify-between items-start">
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#FB4C4B] transition-colors line-clamp-1">{{ $template->name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-emerald-400 transition-colors line-clamp-1">{{ $template->name }}</h3>
                     <p class="text-sm text-gray-500 mt-1">{{ $template->category ?? 'Uncategorized' }}</p>
                 </div>
                 <div class="flex space-x-2">

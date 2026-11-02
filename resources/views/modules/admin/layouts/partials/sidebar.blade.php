@@ -1,8 +1,33 @@
 <div class="flex h-full grow flex-col overflow-y-auto bg-brand-secondary px-6 pb-4">
-    <div class="flex h-16 shrink-0 items-center">
-        <h1 class="text-xl font-bold text-white">Rick Development</h1>
+    <div class="flex h-16 shrink-0 items-center justify-between">
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
+            <img src="{{ asset('images/bizpaddi/logo.png') }}" alt="Bizpaddi" class="h-8 w-auto">
+        </a>
     </div>
-    <nav class="mt-5 flex flex-1 flex-col">
+
+    @if(session('impersonated_tenant_id'))
+    <div class="mb-3 p-2.5 rounded-xl bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs flex items-center justify-between">
+        <div class="truncate mr-2">
+            <span class="block text-[10px] uppercase font-bold text-amber-200">Tenant Workspace</span>
+            <span class="font-bold truncate block">{{ \App\Models\Tenant::find(session('impersonated_tenant_id'))->name ?? 'Tenant' }}</span>
+        </div>
+        <a href="{{ route('super-admin.stop-impersonating') }}" class="px-2 py-1 bg-amber-400 text-black font-extrabold text-[10px] rounded hover:bg-amber-300 transition shrink-0">
+            Exit HQ
+        </a>
+    </div>
+    @elseif(auth('admin')->check() && auth('admin')->user()->isSuperAdmin())
+    <div class="mb-3">
+        <a href="{{ route('super-admin.dashboard') }}" class="flex items-center justify-between p-2 rounded-xl bg-[#0E5E4A]/50 border border-[#0E5E4A] text-xs font-bold text-white hover:bg-[#0E5E4A] transition">
+            <span class="flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span>Super Admin HQ</span>
+            </span>
+            <span>&rarr;</span>
+        </a>
+    </div>
+    @endif
+
+    <nav class="mt-2 flex flex-1 flex-col">
         <ul role="list" class="flex flex-col gap-y-7">
             <li>
                 <ul role="list" class="-mx-2 space-y-1">
@@ -15,6 +40,53 @@
                             </svg>
                             Dashboard
                         </a>
+                    </li>
+
+                    <!-- SaaS Billing & Subscription -->
+                    <li>
+                        <a href="{{ route('admin.billing.index') }}" 
+                           class="{{ request()->routeIs('admin.billing.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                            </svg>
+                            Plan & Billing
+                        </a>
+                    </li>
+
+                    <!-- Digital Storefront -->
+                    <li x-data="{ open: {{ request()->routeIs('admin.storefront.*') ? 'true' : 'false' }} }">
+                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold {{ request()->routeIs('admin.storefront.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }}" @click="open = !open">
+                            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009 9.75c.696 0 1.341-.237 1.856-.636a3.002 3.002 0 004.288 0c.515.399 1.16.636 1.856.636.812 0 1.545-.323 2.079-.848m-16.5 0a3.001 3.001 0 013.75-.615M21 9.35a3.001 3.001 0 01-3.75-.615M3 9.35l.89-5.342A1.5 1.5 0 015.37 3h13.26a1.5 1.5 0 011.48 1.008l.89 5.342" />
+                            </svg>
+                            <span class="flex-1 text-left">Digital Storefront</span>
+                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
+                            <li>
+                                <a href="{{ route('admin.storefront.products.index') }}" class="{{ request()->routeIs('admin.storefront.products.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Products Catalog
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.storefront.settings') }}" class="{{ request()->routeIs('admin.storefront.settings') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    Storefront Settings
+                                </a>
+                            </li>
+                            @php
+                                $sidebarStoreSlug = auth('admin')->user() && auth('admin')->user()->tenant ? auth('admin')->user()->tenant->slug : null;
+                            @endphp
+                            @if($sidebarStoreSlug)
+                            <li>
+                                <a href="{{ url('/store/' . $sidebarStoreSlug) }}" target="_blank" class="text-gray-300 hover:text-white hover:bg-brand-primary/50 group flex items-center justify-between gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
+                                    <span>Live Storefront</span>
+                                    <span class="text-[10px] text-emerald-400 font-mono">&rarr;</span>
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
                     </li>
 
                     <!-- Project Management -->
@@ -148,11 +220,13 @@
                                     Transactions
                                 </a>
                             </li>
+                            @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin() && config('services.safehaven.client_id'))
                             <li>
                                 <a href="{{ route('admin.accounting.bank.transactions') }}" class="{{ request()->routeIs('admin.accounting.bank.transactions') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
                                     Bank Transactions
                                 </a>
                             </li>
+                            @endif
                             <li>
                                 <a href="{{ route('admin.accounting.payroll.index') }}" class="{{ request()->routeIs('admin.accounting.payroll.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
                                     Staff Payroll
@@ -201,7 +275,8 @@
                         </ul>
                     </li>
 
-                    <!-- Visitor Sessions -->
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Visitor Sessions (Platform Only) -->
                     <li>
                         <a href="{{ route('admin.visitors.index') }}" 
                            class="{{ request()->routeIs('admin.visitors.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
@@ -212,6 +287,7 @@
                             Visitor Sessions
                         </a>
                     </li>
+                    @endif
 
 
 
@@ -321,13 +397,14 @@
                     </li>
 
 
-                    <!-- Home Page Management -->
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Home Page Management (Super Admin Platform CMS) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.hero-sliders.*') || request()->routeIs('admin.featured-content.*') || request()->routeIs('admin.home.*') || request()->routeIs('admin.testimonials.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                             </svg>
-                            <span class="flex-1 text-left">Home Page</span>
+                            <span class="flex-1 text-left">Home Page CMS</span>
                             <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
@@ -375,6 +452,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
 
                     <!-- Social Media -->
@@ -475,7 +553,8 @@
                         </ul>
                     </li>
 
-                    <!-- Portfolio Management -->
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Portfolio Management (Platform Only) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.projects.*') || request()->routeIs('admin.industries.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -500,7 +579,10 @@
                         </ul>
                     </li>
 
-                    <!-- Content Management -->
+                    @endif
+
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Content Management (Platform Marketing Only) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.services.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.posts.*') || request()->routeIs('admin.categories.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -535,7 +617,10 @@
                         </ul>
                     </li>
 
-                    <!-- Company Info -->
+                    @endif
+
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Company Info (Super Admin Corporate Website) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.leaders.*') || request()->routeIs('admin.timeline.*') || request()->routeIs('admin.awards.*') || request()->routeIs('admin.subsidiaries.*') || request()->routeIs('admin.legal-pages.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -575,7 +660,7 @@
                         </ul>
                     </li>
 
-                    <!-- Investor Relations -->
+                    <!-- Investor Relations (Super Admin Corporate Data) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.investor.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -609,8 +694,10 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
 
-                    <!-- Recruitment -->
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- Recruitment (Platform Corporate Only) -->
                     <li x-data="{ open: {{ request()->routeIs('admin.jobs.*') || request()->routeIs('admin.applications.*') ? 'true' : 'false' }} }">
                         <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
                             <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -636,6 +723,8 @@
                     </li>
 
 
+
+                    @endif
 
                     <!-- Communications & Support -->
                     <li x-data="{ open: {{ request()->routeIs('admin.tickets.*') || request()->routeIs('admin.notifications.*') || request()->routeIs('admin.contact-submissions.*') || request()->routeIs('admin.email-templates.*') || request()->routeIs('admin.sms-templates.*') || request()->routeIs('admin.campaigns.*') || request()->routeIs('admin.contact-lists.*') || request()->routeIs('admin.contacts.*') || request()->routeIs('admin.communication-scripts.*') || request()->routeIs('admin.communication-channels.*') ? 'true' : 'false' }} }">
@@ -703,25 +792,6 @@
                     </li>
 
 
-                    <!-- Store -->
-                    <!-- <li x-data="{ open: {{ request()->routeIs('admin.store.*') ? 'true' : 'false' }} }">
-                        <button type="button" class="group w-full flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-300 hover:text-white hover:bg-brand-primary/50" @click="open = !open">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
-                            </svg>
-                            <span class="flex-1 text-left">Store</span>
-                            <svg class="h-5 w-5 shrink-0 transform transition-transform duration-200" :class="{ 'rotate-90': open }" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <ul x-show="open" class="mt-1 px-2 space-y-1" style="display: none;">
-                            <li>
-                                <a href="{{ route('admin.store.index') }}" class="{{ request()->routeIs('admin.store.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold pl-11">
-                                    Products
-                                </a>
-                            </li>
-                        </ul>
-                    </li> -->
-
                     <!-- Unified Chat & Comments -->
                     <li>
                         <a href="{{ route('admin.chat.index') }}" 
@@ -784,7 +854,8 @@
                         </ul>
                     </li>
 
-                    <!-- SEO Manager -->
+                    @if(auth('admin')->user() && auth('admin')->user()->isSuperAdmin())
+                    <!-- SEO Manager (Platform Only) -->
                     <li>
                         <a href="{{ route('admin.seo.index') }}" 
                            class="{{ request()->routeIs('admin.seo.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
@@ -795,7 +866,7 @@
                         </a>
                     </li>
 
-                    <!-- Rate Limiting -->
+                    <!-- Rate Limiting (Platform Infrastructure Only) -->
                     <li>
                         <a href="{{ route('admin.rate-limits.index') }}" 
                            class="{{ request()->routeIs('admin.rate-limits.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
@@ -806,7 +877,7 @@
                         </a>
                     </li>
 
-                    <!-- System -->
+                    <!-- System (Platform Infrastructure Only) -->
                     <li>
                         <a href="{{ route('admin.system.index') }}" 
                            class="{{ request()->routeIs('admin.system.*') ? 'bg-brand-primary text-white' : 'text-gray-300 hover:text-white hover:bg-brand-primary/50' }} group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
@@ -816,6 +887,7 @@
                             System
                         </a>
                     </li>
+                    @endif
                 </ul>
             </li>
         </ul>
@@ -840,15 +912,34 @@
                         Change Admin Password
                     </a>
                 </li>
+                @php
+                    $isPlatformSuperAdmin = auth('admin')->user() && auth('admin')->user()->isSuperAdmin();
+                    $sidebarStoreSlug = auth('admin')->user() && auth('admin')->user()->tenant ? auth('admin')->user()->tenant->slug : null;
+                @endphp
+                @if($isPlatformSuperAdmin)
                 <li>
                     <a href="{{ url('/') }}" target="_blank" 
                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-300 hover:bg-brand-primary/50 hover:text-white">
                         <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                         </svg>
-                        View Website
+                        View Platform Website
                     </a>
                 </li>
+                @else
+                <li>
+                    <a href="{{ $sidebarStoreSlug ? url('/store/' . $sidebarStoreSlug) : route('admin.storefront.settings') }}" target="_blank" 
+                       class="group flex items-center justify-between gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-300 hover:bg-brand-primary/50 hover:text-white">
+                        <span class="flex items-center gap-x-3">
+                            <svg class="h-6 w-6 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009 9.75c.696 0 1.341-.237 1.856-.636a3.002 3.002 0 004.288 0c.515.399 1.16.636 1.856.636.812 0 1.545-.323 2.079-.848m-16.5 0a3.001 3.001 0 013.75-.615M21 9.35a3.001 3.001 0 01-3.75-.615M3 9.35l.89-5.342A1.5 1.5 0 015.37 3h13.26a1.5 1.5 0 011.48 1.008l.89 5.342" />
+                            </svg>
+                            View Live Storefront
+                        </span>
+                        <span class="text-[10px] text-emerald-400 font-mono">&rarr;</span>
+                    </a>
+                </li>
+                @endif
             </ul>
         </div>
     </nav>

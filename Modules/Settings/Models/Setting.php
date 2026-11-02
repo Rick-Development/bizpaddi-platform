@@ -8,15 +8,26 @@ class Setting extends Model
 {
     protected $fillable = ['key', 'value', 'type', 'description'];
 
+    protected static ?array $runtimeCache = null;
+
     /**
-     * Get a setting value by key.
+     * Get a setting value by key (loaded once per request from a single cached map).
      */
     public static function get(string $key, $default = null)
     {
-        return Cache::rememberForever("settings.{$key}", function () use ($key, $default) {
-            $setting = self::where('key', $key)->first();
-            return $setting ? $setting->value : $default;
-        });
+        if (self::$runtimeCache === null) {
+            try {
+                self::$runtimeCache = Cache::rememberForever('settings.all_map', function () {
+                    return self::pluck('value', 'key')->toArray();
+                });
+            } catch (\Throwable $e) {
+                self::$runtimeCache = [];
+            }
+        }
+
+        return array_key_exists($key, self::$runtimeCache) && self::$runtimeCache[$key] !== null
+            ? self::$runtimeCache[$key]
+            : $default;
     }
 
     /**
@@ -33,7 +44,9 @@ class Setting extends Model
             ]
         );
 
+        self::$runtimeCache = null;
         Cache::forget("settings.{$key}");
+        Cache::forget('settings.all_map');
 
         return $setting;
     }

@@ -60,7 +60,7 @@
             @if($quote->status === 'approved')
             <form action="{{ route('team.bdm.quotes.convert', $quote) }}" method="POST" class="inline">
                 @csrf
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#FB4C4B] border border-transparent rounded-lg text-sm font-medium text-white hover:bg-[#D93837] shadow-sm">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-emerald-500 shadow-sm">
                     <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
@@ -212,7 +212,7 @@
 
                     <div class="flex justify-between text-lg font-bold text-gray-900 border-t border-gray-200 pt-3">
                         <span>Total</span>
-                        <span class="text-[#FB4C4B]">{{ $quote->currency->symbol ?? '$' }}{{ number_format($quote->total_amount, 2) }}</span>
+                        <span class="text-emerald-400">{{ $quote->currency->symbol ?? '$' }}{{ number_format($quote->total_amount, 2) }}</span>
                     </div>
                 </div>
             </div>

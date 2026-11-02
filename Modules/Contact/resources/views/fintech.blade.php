@@ -1,7 +1,7 @@
 <x-home::layouts.master>
     <style>
         :root {
-            --bg-deep: #191C47;
+            --bg-deep: #10231C;
             --bg-darker: #101232;
             --accent-red: #FC4C4B;
             --accent-red-hover: #E03B3A;
@@ -30,7 +30,7 @@
         }
 
         .fintech-grid-bg {
-            background-image: radial-gradient(circle at 50% 50%, rgba(25, 28, 71, 0) 0%, #191C47 100%),
+            background-image: radial-gradient(circle at 50% 50%, rgba(25, 28, 71, 0) 0%, #10231C 100%),
                               url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 40M40 0L40 40' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
         }
 
@@ -109,7 +109,7 @@
                         </h1>
 
                         <p class="text-sm sm:text-base lg:text-lg text-white/80 font-light leading-relaxed max-w-2xl">
-                            From domestic & cross-border payments and digital wallets to banking APIs, crypto/stablecoin rails, and high-frequency transaction engines — <strong class="text-white font-semibold">Rick Development</strong> engineers the technology powering ambitious financial businesses.
+                            From domestic & cross-border payments and digital wallets to banking APIs, crypto/stablecoin rails, and high-frequency transaction engines — <strong class="text-white font-semibold">Bizpaddi</strong> engineers the technology powering ambitious financial businesses.
                         </p>
 
                         <!-- Key Highlights (Clean list structure, no bulky border boxes) -->
@@ -712,7 +712,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16">
                     <span class="text-xs font-extrabold tracking-widest text-[#FC4C4B] uppercase">Decision Criteria</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Why Ambitious Fintechs Choose Rick Development</h2>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Why Ambitious Fintechs Choose Bizpaddi</h2>
                     <p class="text-base text-white/70 mt-3 font-light">
                         Building financial products is fundamentally different from building general websites or apps.
                     </p>
@@ -725,7 +725,7 @@
                                 <th class="py-4 px-6">Capability & Standard</th>
                                 <th class="py-4 px-6 text-white/40">Generic Web Agency</th>
                                 <th class="py-4 px-6 text-white/40">Hiring In-House From Scratch</th>
-                                <th class="py-4 px-6 text-[#FC4C4B] font-bold bg-[#FC4C4B]/10 rounded-t-xl">Rick Development</th>
+                                <th class="py-4 px-6 text-[#FC4C4B] font-bold bg-[#FC4C4B]/10 rounded-t-xl">Bizpaddi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
@@ -846,7 +846,7 @@
         </section>
 
         <!-- LEAD QUALIFICATION FORM SECTION -->
-        <section id="lead-form" class="py-24 border-t border-white/10 bg-gradient-to-b from-[#191C47] to-[#0c0e29] relative">
+        <section id="lead-form" class="py-24 border-t border-white/10 bg-gradient-to-b from-[#10231C] to-[#0c0e29] relative">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="fintech-card rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden border border-white/15">
                     
@@ -862,7 +862,7 @@
                     </div>
 
                     <!-- Loading State Overlay -->
-                    <div x-show="formLoading" class="absolute inset-0 bg-[#191C47]/95 z-20 flex flex-col items-center justify-center rounded-3xl" style="display: none;">
+                    <div x-show="formLoading" class="absolute inset-0 bg-[#10231C]/95 z-20 flex flex-col items-center justify-center rounded-3xl" style="display: none;">
                         <svg class="animate-spin h-10 w-10 text-[#FC4C4B] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -915,7 +915,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-white/80 uppercase tracking-wider mb-1.5">What are you building? <span class="text-[#FC4C4B]">*</span></label>
-                                <select x-model="formData.solution_interest" required class="w-full px-4 py-3 bg-[#191C47] border border-white/15 rounded-xl focus:border-[#FC4C4B] focus:ring-1 focus:ring-[#FC4C4B] text-white text-sm outline-none transition-all">
+                                <select x-model="formData.solution_interest" required class="w-full px-4 py-3 bg-[#10231C] border border-white/15 rounded-xl focus:border-[#FC4C4B] focus:ring-1 focus:ring-[#FC4C4B] text-white text-sm outline-none transition-all">
                                     <option value="">Select Primary Solution</option>
                                     <option value="Payment Platform">Cross-Border Payment Platform</option>
                                     <option value="Fintech Application">Consumer / Neobank Mobile App</option>
@@ -928,7 +928,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-white/80 uppercase tracking-wider mb-1.5">Project Stage <span class="text-[#FC4C4B]">*</span></label>
-                                <select x-model="formData.project_stage" required class="w-full px-4 py-3 bg-[#191C47] border border-white/15 rounded-xl focus:border-[#FC4C4B] focus:ring-1 focus:ring-[#FC4C4B] text-white text-sm outline-none transition-all">
+                                <select x-model="formData.project_stage" required class="w-full px-4 py-3 bg-[#10231C] border border-white/15 rounded-xl focus:border-[#FC4C4B] focus:ring-1 focus:ring-[#FC4C4B] text-white text-sm outline-none transition-all">
                                     <option value="">Select Project Stage</option>
                                     <option value="Idea / Concept">Idea / Concept Stage</option>
                                     <option value="MVP">Building Initial MVP</option>
@@ -977,7 +977,7 @@
                         START BUILDING TODAY
                     </a>
                     <a href="#lead-form" @click="scrollToForm('Other', 'final_talk_cta')" class="inline-flex items-center justify-center px-9 py-4 rounded-full text-base font-bold text-white/80 border border-white/20 hover:border-white/40 hover:text-white bg-white/5 hover:bg-white/10 transition-all">
-                        Talk to Rick Development
+                        Talk to Bizpaddi
                     </a>
                 </div>
             </div>

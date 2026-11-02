@@ -6,12 +6,12 @@
 <div class="mb-8">
     <div class="sm:flex sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">{{ $project->name }}</h1>
-            <div class="mt-2 flex items-center text-sm text-gray-600">
+            <h1 class="text-3xl font-bold text-white">{{ $project->name }}</h1>
+            <div class="mt-2 flex items-center text-sm text-gray-400">
                 <span class="mr-4 capitalize px-2.5 py-0.5 rounded-full text-xs font-medium 
                     @if($project->status == 'active') bg-green-100 text-green-800
                     @elseif($project->status == 'completed') bg-blue-100 text-blue-800
-                    @else bg-gray-100 text-gray-800 @endif">
+                    @else bg-white/[0.06] text-white @endif">
                     {{ ucfirst(str_replace('_', ' ', $project->status)) }}
                 </span>
                 <span>{{ $project->client ? $project->client->name : 'No Client' }}</span>
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="mt-4 sm:mt-0 flex space-x-3">
-            <a href="{{ route('admin.tasks.index', ['project_id' => $project->id]) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+            <a href="{{ route('admin.tasks.index', ['project_id' => $project->id]) }}" class="inline-flex items-center px-4 py-2 border border-white/10 rounded-lg text-sm font-medium text-gray-300 bg-[#10231C]/60 hover:bg-white/[0.03]">
                 View Kanban Board
             </a>
             <a href="{{ route('admin.pm-projects.edit', $project) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-gray-600 hover:bg-gray-700">
@@ -37,27 +37,27 @@
     <div class="lg:col-span-2 space-y-6">
         <!-- Progress / Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500">Total Tasks</p>
-                <p class="mt-2 text-3xl font-bold text-gray-900">{{ $project->tasks->count() }}</p>
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400">Total Tasks</p>
+                <p class="mt-2 text-3xl font-bold text-white">{{ $project->tasks->count() }}</p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500">Completed</p>
-                <p class="mt-2 text-3xl font-bold text-gray-900">{{ $project->tasks->where('status', 'done')->count() }}</p>
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400">Completed</p>
+                <p class="mt-2 text-3xl font-bold text-white">{{ $project->tasks->where('status', 'done')->count() }}</p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500">Pending</p>
-                <p class="mt-2 text-3xl font-bold text-gray-900">{{ $project->tasks->where('status', '!=', 'done')->count() }}</p>
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400">Pending</p>
+                <p class="mt-2 text-3xl font-bold text-white">{{ $project->tasks->where('status', '!=', 'done')->count() }}</p>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500">Overall Progress</p>
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400">Overall Progress</p>
                 @php
                     $total = $project->tasks->count();
                     $done = $project->tasks->where('status', 'done')->count();
                     $percent = $total > 0 ? round(($done / $total) * 100) : 0;
                 @endphp
-                <p class="mt-2 text-3xl font-bold text-gray-900">{{ $percent }}%</p>
-                <div class="w-full bg-gray-100 rounded-full h-1.5 mt-3">
+                <p class="mt-2 text-3xl font-bold text-white">{{ $percent }}%</p>
+                <div class="w-full bg-white/[0.06] rounded-full h-1.5 mt-3">
                     <div class="bg-blue-600 h-1.5 rounded-full" style="width: {{ $percent }}%"></div>
                 </div>
             </div>
@@ -65,9 +65,9 @@
 
         <!-- Health & Distribution -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500 mb-3">Priority Distribution</p>
-                <div class="flex h-4 rounded-full overflow-hidden bg-gray-100">
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400 mb-3">Priority Distribution</p>
+                <div class="flex h-4 rounded-full overflow-hidden bg-white/[0.06]">
                     @php
                         $counts = $project->tasks->groupBy('priority')->map->count();
                         $totalDist = $project->tasks->count() ?: 1;
@@ -83,15 +83,15 @@
                     @foreach(['urgent', 'high', 'medium', 'low'] as $prio)
                         <div class="flex items-center gap-2">
                             <div class="w-2.5 h-2.5 rounded-full {{ $colors[$prio] }}"></div>
-                            <span class="text-xs text-gray-600 font-medium">{{ ucfirst($prio) }} ({{ $counts[$prio] ?? 0 }})</span>
+                            <span class="text-xs text-gray-400 font-medium">{{ ucfirst($prio) }} ({{ $counts[$prio] ?? 0 }})</span>
                         </div>
                     @endforeach
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-sm font-medium text-gray-500 mb-3">Status Distribution</p>
-                <div class="flex h-4 rounded-full overflow-hidden bg-gray-100">
+            <div class="bg-[#10231C]/60 p-6 rounded-xl shadow-sm border border-white/10">
+                <p class="text-sm font-medium text-gray-400 mb-3">Status Distribution</p>
+                <div class="flex h-4 rounded-full overflow-hidden bg-white/[0.06]">
                     @php
                         $statusCounts = $project->tasks->groupBy('status')->map->count();
                         $totalStatus = $project->tasks->count() ?: 1;
@@ -107,7 +107,7 @@
                     @foreach(['todo', 'in_progress', 'review', 'done'] as $stat)
                         <div class="flex items-center gap-2">
                             <div class="w-2.5 h-2.5 rounded-full {{ $statusColors[$stat] }}"></div>
-                            <span class="text-xs text-gray-600 font-medium">{{ ucfirst(str_replace('_', ' ', $stat)) }} ({{ $statusCounts[$stat] ?? 0 }})</span>
+                            <span class="text-xs text-gray-400 font-medium">{{ ucfirst(str_replace('_', ' ', $stat)) }} ({{ $statusCounts[$stat] ?? 0 }})</span>
                         </div>
                     @endforeach
                 </div>
@@ -115,42 +115,42 @@
         </div>
 
         <!-- Recent Tasks -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h3 class="text-lg font-medium text-gray-900">Recent Tasks</h3>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl">
+            <div class="px-6 py-4 border-b border-white/10 bg-white/[0.03] flex justify-between items-center">
+                <h3 class="text-lg font-medium text-white">Recent Tasks</h3>
             </div>
-            <ul class="divide-y divide-gray-200">
+            <ul class="divide-y divide-white/10">
                 @forelse($project->tasks->sortByDesc('created_at')->take(5) as $task)
                 <li class="px-6 py-4 flex items-center justify-between">
                     <div>
-                        <a href="{{ route('admin.tasks.show', $task) }}" class="text-sm font-medium text-gray-900 hover:text-gray-600">
+                        <a href="{{ route('admin.tasks.show', $task) }}" class="text-sm font-medium text-white hover:text-gray-400">
                             {{ $task->title }}
                         </a>
-                        <p class="text-xs text-gray-500">Assigned to: {{ $task->assignee ? $task->assignee->name : 'Unassigned' }}</p>
+                        <p class="text-xs text-gray-400">Assigned to: {{ $task->assignee ? $task->assignee->name : 'Unassigned' }}</p>
                     </div>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/[0.06] text-white">
                         {{ ucfirst(str_replace('_', ' ', $task->status)) }}
                     </span>
                 </li>
                 @empty
-                <li class="px-6 py-4 text-center text-sm text-gray-500">No tasks created yet.</li>
+                <li class="px-6 py-4 text-center text-sm text-gray-400">No tasks created yet.</li>
                 @endforelse
             </ul>
         </div>
         <!-- Collaboration Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
-            <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden mt-6">
+            <div class="border-b border-white/10 bg-white/[0.03] px-6 py-4">
                 <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button type="button" onclick="switchCollaborationTab('milestones')" id="tab-milestones" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button type="button" onclick="switchCollaborationTab('milestones')" id="tab-milestones" class="border-transparent text-gray-400 hover:text-gray-300 hover:border-white/10 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Milestones ({{ $project->milestones->count() }})
                     </button>
-                    <button type="button" onclick="switchCollaborationTab('comments')" id="tab-comments" class="border-gray-600 text-gray-900 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button type="button" onclick="switchCollaborationTab('comments')" id="tab-comments" class="border-gray-600 text-white whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Comments ({{ $project->comments->count() }})
                     </button>
-                    <button type="button" onclick="switchCollaborationTab('files')" id="tab-files" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button type="button" onclick="switchCollaborationTab('files')" id="tab-files" class="border-transparent text-gray-400 hover:text-gray-300 hover:border-white/10 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Task Files ({{ $project->tasks->sum(fn($t) => $t->getMedia('attachments')->count()) }})
                     </button>
-                    <button type="button" onclick="switchCollaborationTab('vault')" id="tab-vault" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <button type="button" onclick="switchCollaborationTab('vault')" id="tab-vault" class="border-transparent text-gray-400 hover:text-gray-300 hover:border-white/10 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                         Project Vault ({{ $project->getMedia('vault')->count() }})
                     </button>
                 </nav>
@@ -160,27 +160,27 @@
                 <!-- Milestones Tab -->
                 <div id="content-milestones" class="hidden">
                     <div class="flex justify-between items-center mb-6">
-                        <h4 class="text-sm font-bold text-gray-900">Project Milestones</h4>
+                        <h4 class="text-sm font-bold text-white">Project Milestones</h4>
                         <button type="button" onclick="document.getElementById('new-milestone-form').classList.toggle('hidden')" class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-black transition-colors">
                             + Add Milestone
                         </button>
                     </div>
 
-                    <form id="new-milestone-form" action="{{ route('admin.pm-milestones.store') }}" method="POST" class="hidden mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <form id="new-milestone-form" action="{{ route('admin.pm-milestones.store') }}" method="POST" class="hidden mb-8 p-4 bg-white/[0.03] rounded-xl border border-white/10">
                         @csrf
                         <input type="hidden" name="project_id" value="{{ $project->id }}">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="sm:col-span-2">
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Title</label>
-                                <input type="text" name="title" required class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-500">
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Title</label>
+                                <input type="text" name="title" required class="block w-full rounded-lg border-white/10 text-sm focus:ring-gray-500 bg-[#0a1612] text-white border-white/10">
                             </div>
                             <div class="sm:col-span-2">
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Description</label>
-                                <textarea name="description" rows="2" class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-500"></textarea>
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Description</label>
+                                <textarea name="description" rows="2" class="block w-full rounded-lg border-white/10 text-sm focus:ring-gray-500 bg-[#0a1612] text-white border-white/10"></textarea>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Due Date</label>
-                                <input type="date" name="due_date" class="block w-full rounded-lg border-gray-300 text-sm focus:ring-gray-500">
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Due Date</label>
+                                <input type="date" name="due_date" class="block w-full rounded-lg border-white/10 text-sm focus:ring-gray-500 bg-[#0a1612] text-white border-white/10">
                             </div>
                             <div class="flex items-end">
                                 <button type="submit" class="w-full bg-gray-900 text-white text-sm font-bold py-2 rounded-lg hover:bg-black transition-colors">Save Milestone</button>
@@ -190,18 +190,18 @@
 
                     <div class="space-y-4">
                         @forelse($project->milestones as $milestone)
-                        <div class="group relative bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+                        <div class="group relative bg-[#10231C]/60 border border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-3 mb-2">
-                                        <h5 class="font-bold text-gray-900 truncate">{{ $milestone->title }}</h5>
+                                        <h5 class="font-bold text-white truncate">{{ $milestone->title }}</h5>
                                         <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold border 
                                             {{ $milestone->status === 'completed' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-yellow-50 text-yellow-700 border-yellow-100' }}">
                                             {{ ucfirst($milestone->status) }}
                                         </span>
                                     </div>
                                     @if($milestone->description)
-                                    <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-4">{{ strip_tags($milestone->description) }}</p>
+                                    <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-4">{{ strip_tags($milestone->description) }}</p>
                                     @endif
                                     
                                     <div>
@@ -209,7 +209,7 @@
                                             <span>Progress</span>
                                             <span>{{ $milestone->progress }}%</span>
                                         </div>
-                                        <div class="w-full bg-gray-50 rounded-full h-1.5">
+                                        <div class="w-full bg-white/[0.03] rounded-full h-1.5">
                                             <div class="bg-brand-primary h-1.5 rounded-full shadow-sm" style="width: {{ $milestone->progress }}%"></div>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@
                                         <input type="hidden" name="project_id" value="{{ $project->id }}">
                                         <input type="hidden" name="title" value="{{ $milestone->title }}">
                                         <input type="hidden" name="status" value="{{ $milestone->status === 'completed' ? 'pending' : 'completed' }}">
-                                        <button type="submit" class="text-[9px] font-bold px-2 py-1 rounded bg-gray-50 text-gray-400 hover:bg-brand-primary hover:text-white transition-all uppercase border border-gray-100">
+                                        <button type="submit" class="text-[9px] font-bold px-2 py-1 rounded bg-white/[0.03] text-gray-400 hover:bg-brand-primary hover:text-white transition-all uppercase border border-white/10">
                                             {{ $milestone->status === 'completed' ? 'Pending' : 'Done' }}
                                         </button>
                                     </form>
@@ -243,8 +243,8 @@
                             </div>
                         </div>
                         @empty
-                        <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                            <p class="text-sm text-gray-500">No milestones defined for this project.</p>
+                        <div class="text-center py-8 bg-white/[0.03] rounded-xl border border-dashed border-white/10">
+                            <p class="text-sm text-gray-400">No milestones defined for this project.</p>
                         </div>
                         @endforelse
                     </div>
@@ -258,17 +258,17 @@
                         <input type="hidden" name="commentable_type" value="project">
                         <input type="hidden" name="guard" value="admin">
                         <div>
-                            <textarea name="content" rows="3" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm" placeholder="Add a comment..."></textarea>
+                            <textarea name="content" rows="3" class="block w-full rounded-lg border-white/10 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm bg-[#0a1612] text-white border-white/10" placeholder="Add a comment..."></textarea>
                         </div>
                         <div class="mt-3 flex items-center justify-between">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="file" name="attachment" class="hidden">
-                                    <span class="text-xs text-gray-500 hover:text-gray-700">Attach file</span>
+                                    <input type="file" name="attachment" class="hidden bg-[#0a1612] text-white border-white/10">
+                                    <span class="text-xs text-gray-400 hover:text-gray-300">Attach file</span>
                                 </label>
                                 <label class="ml-4 inline-flex items-center">
-                                    <input type="checkbox" name="is_internal" value="1" class="rounded border-gray-300 text-gray-600 shadow-sm focus:ring-gray-500">
-                                    <span class="ml-2 text-xs text-gray-500">Internal only</span>
+                                    <input type="checkbox" name="is_internal" value="1" class="rounded border-white/10 text-gray-400 shadow-sm focus:ring-gray-500">
+                                    <span class="ml-2 text-xs text-gray-400">Internal only</span>
                                 </label>
                             </div>
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gray-600 hover:bg-gray-700">
@@ -281,13 +281,13 @@
                         @forelse($project->comments as $comment)
                         <div class="flex space-x-3">
                             <div class="flex-shrink-0">
-                                <div class="h-8 w-8 rounded-full {{ $comment->user_type === 'App\Models\Admin' ? 'bg-red-100 text-red-600' : 'bg-gray-200 text-gray-600' }} flex items-center justify-center text-xs font-bold">
+                                <div class="h-8 w-8 rounded-full {{ $comment->user_type === 'App\Models\Admin' ? 'bg-red-100 text-red-600' : 'bg-gray-200 text-gray-400' }} flex items-center justify-center text-xs font-bold">
                                     {{ substr($comment->user->name ?? 'U', 0, 1) }}
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <div class="text-sm">
-                                    <span class="font-medium text-gray-900">{{ $comment->user->name ?? 'User' }}</span>
+                                    <span class="font-medium text-white">{{ $comment->user->name ?? 'User' }}</span>
                                     @if($comment->user_type === 'App\Models\Admin')
                                     <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase">Admin</span>
                                     @endif
@@ -295,19 +295,19 @@
                                     <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Internal</span>
                                     @endif
                                 </div>
-                                <div class="mt-1 text-sm text-gray-700">
+                                <div class="mt-1 text-sm text-gray-300">
                                     <p>{{ $comment->content }}</p>
                                 </div>
                                 @if($comment->hasMedia('comment_attachments'))
                                 <div class="mt-2 text-xs">
                                     @foreach($comment->getMedia('comment_attachments') as $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank" class="inline-flex items-center text-gray-500 hover:text-gray-700 mr-3">
+                                    <a href="{{ $media->getUrl() }}" target="_blank" class="inline-flex items-center text-gray-400 hover:text-gray-300 mr-3">
                                         📎 {{ $media->file_name }}
                                     </a>
                                     @endforeach
                                 </div>
                                 @endif
-                                <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
+                                <div class="mt-2 flex items-center space-x-2 text-xs text-gray-400">
                                     <span>{{ $comment->created_at->diffForHumans() }}</span>
                                     <span>&middot;</span>
                                     <form action="{{ route('pm.comments.destroy', $comment) }}" method="POST" class="inline">
@@ -318,7 +318,7 @@
                             </div>
                         </div>
                         @empty
-                        <p class="text-center text-sm text-gray-500 py-4">No comments yet.</p>
+                        <p class="text-center text-sm text-gray-400 py-4">No comments yet.</p>
                         @endforelse
                     </div>
                 </div>
@@ -332,21 +332,21 @@
                                 <h4 class="text-xs font-bold text-gray-400 uppercase mb-2">{{ $task->title }}</h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     @foreach($task->getMedia('attachments') as $media)
-                                    <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg bg-gray-50 bg-white shadow-sm">
+                                    <div class="flex items-center justify-between p-3 border border-white/10 rounded-lg bg-white/[0.03] bg-[#10231C]/60 border border-white/10">
                                         <div class="flex items-center overflow-hidden">
-                                            <div class="h-8 w-8 flex-shrink-0 bg-gray-100 rounded flex items-center justify-center mr-3">
-                                                <span class="text-[10px] font-bold text-gray-500 uppercase">{{ $media->extension }}</span>
+                                            <div class="h-8 w-8 flex-shrink-0 bg-white/[0.06] rounded flex items-center justify-center mr-3">
+                                                <span class="text-[10px] font-bold text-gray-400 uppercase">{{ $media->extension }}</span>
                                             </div>
                                             <div class="truncate">
-                                                <p class="text-xs font-medium text-gray-900 truncate">{{ $media->file_name }}</p>
-                                                <p class="text-[10px] text-gray-500">{{ $media->human_readable_size }}</p>
+                                                <p class="text-xs font-medium text-white truncate">{{ $media->file_name }}</p>
+                                                <p class="text-[10px] text-gray-400">{{ $media->human_readable_size }}</p>
                                             </div>
                                         </div>
                                         <div class="flex items-center ml-2">
                                             @if($media->getCustomProperty('is_internal'))
                                             <span class="mr-2 px-1 py-0.5 rounded text-[8px] bg-yellow-100 text-yellow-800 font-bold uppercase">Internal</span>
                                             @endif
-                                            <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-600">⬇️</a>
+                                            <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-400">⬇️</a>
                                         </div>
                                     </div>
                                     @endforeach
@@ -359,15 +359,15 @@
 
                 <!-- Vault Tab -->
                 <div id="content-vault" class="hidden">
-                    <form action="{{ route('pm.attachments.store') }}" method="POST" enctype="multipart/form-data" class="mb-8 p-6 border-2 border-dashed border-gray-300 rounded-xl text-center hover:border-gray-400 transition-colors">
+                    <form action="{{ route('pm.attachments.store') }}" method="POST" enctype="multipart/form-data" class="mb-8 p-6 border-2 border-dashed border-white/10 rounded-xl text-center hover:border-gray-400 transition-colors">
                         @csrf
                         <input type="hidden" name="model_id" value="{{ $project->id }}">
                         <input type="hidden" name="model_type" value="project">
                         <input type="hidden" name="collection" value="vault">
                         <div class="space-y-2">
-                            <input type="file" name="file" id="vault-upload" class="hidden" onchange="this.form.submit()">
+                            <input type="file" name="file" id="vault-upload" class="hidden bg-[#0a1612] text-white border-white/10" onchange="this.form.submit()">
                             <label for="vault-upload" class="cursor-pointer block">
-                                <span class="text-sm font-medium text-gray-600">Add Master Document to Vault</span>
+                                <span class="text-sm font-medium text-gray-400">Add Master Document to Vault</span>
                                 <p class="text-xs text-gray-400">These files are shared with the client</p>
                             </label>
                         </div>
@@ -375,18 +375,18 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         @forelse($project->getMedia('vault') as $media)
-                        <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl bg-white shadow-sm">
+                        <div class="flex items-center justify-between p-4 border border-white/10 rounded-xl bg-[#10231C]/60 border border-white/10">
                             <div class="flex items-center overflow-hidden">
                                 <div class="h-10 w-10 flex-shrink-0 bg-brand-primary/10 rounded-lg flex items-center justify-center mr-3">
                                     <span class="text-xs font-bold text-brand-primary uppercase">{{ $media->extension }}</span>
                                 </div>
                                 <div class="overflow-hidden">
-                                    <p class="text-sm font-medium text-gray-900 truncate">{{ $media->file_name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $media->human_readable_size }} &middot; {{ $media->created_at->format('M d, Y') }}</p>
+                                    <p class="text-sm font-medium text-white truncate">{{ $media->file_name }}</p>
+                                    <p class="text-xs text-gray-400">{{ $media->human_readable_size }} &middot; {{ $media->created_at->format('M d, Y') }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center ml-4 space-x-3">
-                                <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-600 transition-colors">⬇️</a>
+                                <a href="{{ $media->getUrl() }}" download class="text-gray-400 hover:text-gray-400 transition-colors">⬇️</a>
                                 <form action="{{ route('pm.attachments.destroy', $media->id) }}" method="POST" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="text-red-400 hover:text-red-600 transition-colors" onclick="return confirm('Remove document?')">🗑️</button>
@@ -394,8 +394,8 @@
                             </div>
                         </div>
                         @empty
-                        <div class="col-span-2 text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                             <p class="text-sm text-gray-500 font-medium">The Project Vault is empty.</p>
+                        <div class="col-span-2 text-center py-12 bg-white/[0.03] rounded-xl border border-dashed border-white/10">
+                             <p class="text-sm text-gray-400 font-medium">The Project Vault is empty.</p>
                              <p class="text-xs text-gray-400 mt-1">Upload brand assets, contracts, or final deliverables here.</p>
                         </div>
                         @endforelse
@@ -407,20 +407,20 @@
 
     <!-- Sidebar -->
     <div class="space-y-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Project Details</h3>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h3 class="text-lg font-medium text-white mb-4">Project Details</h3>
             <div class="space-y-4">
                 <div>
-                    <span class="block text-sm font-medium text-gray-500">Budget</span>
-                    <span class="block text-sm text-gray-900">${{ number_format($project->budget, 2) }}</span>
+                    <span class="block text-sm font-medium text-gray-400">Budget</span>
+                    <span class="block text-sm text-white">${{ number_format($project->budget, 2) }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-medium text-gray-500">Start Date</span>
-                    <span class="block text-sm text-gray-900">{{ $project->start_date ? $project->start_date->format('M d, Y') : '-' }}</span>
+                    <span class="block text-sm font-medium text-gray-400">Start Date</span>
+                    <span class="block text-sm text-white">{{ $project->start_date ? $project->start_date->format('M d, Y') : '-' }}</span>
                 </div>
                 <div>
-                    <span class="block text-sm font-medium text-gray-500">Description</span>
-                    <div class="block text-sm text-gray-900 mt-1 prose prose-sm max-w-none">
+                    <span class="block text-sm font-medium text-gray-400">Description</span>
+                    <div class="block text-sm text-white mt-1 prose prose-sm max-w-none">
                         {!! $project->description !!}
                     </div>
                 </div>
@@ -445,8 +445,8 @@ function switchCollaborationTab(tab) {
     // Reset tabs
     [commentsTab, filesTab, vaultTab, milestonesTab].forEach(t => {
         if (t) {
-            t.classList.remove('border-gray-600', 'text-gray-900');
-            t.classList.add('border-transparent', 'text-gray-500');
+            t.classList.remove('border-gray-600', 'text-white');
+            t.classList.add('border-transparent', 'text-gray-400');
         }
     });
     [commentsContent, filesContent, vaultContent, milestonesContent].forEach(c => {
@@ -457,8 +457,8 @@ function switchCollaborationTab(tab) {
     const activeTab = document.getElementById('tab-' + tab);
     const activeContent = document.getElementById('content-' + tab);
     if (activeTab && activeContent) {
-        activeTab.classList.add('border-gray-600', 'text-gray-900');
-        activeTab.classList.remove('border-transparent', 'text-gray-500');
+        activeTab.classList.add('border-gray-600', 'text-white');
+        activeTab.classList.remove('border-transparent', 'text-gray-400');
         activeContent.classList.remove('hidden');
     }
 }

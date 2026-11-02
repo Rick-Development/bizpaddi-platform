@@ -10,7 +10,7 @@
             <p class="mt-2 text-sm text-gray-600">Manage your reusable SMS message templates</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('team.bdm.sms-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.sms-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -30,8 +30,8 @@
     @forelse($templates as $template)
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden group">
         <!-- Icon -->
-        <div class="h-24 bg-gradient-to-br from-[#FB4C4B]/5 to-[#D93837]/10 flex items-center justify-center border-b border-gray-100">
-            <svg class="h-10 w-10 text-[#FB4C4B]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="h-24 bg-gradient-to-br from-[#0E5E4A]/5 to-[#0A4335]/10 flex items-center justify-center border-b border-gray-100">
+            <svg class="h-10 w-10 text-emerald-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
             </svg>
         </div>
@@ -39,7 +39,7 @@
         <div class="p-4">
             <div class="flex justify-between items-start">
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#FB4C4B] transition-colors truncate">{{ $template->name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-emerald-400 transition-colors truncate">{{ $template->name }}</h3>
                     <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ $template->content }}</p>
                 </div>
                 <div class="flex space-x-2 ml-2 flex-shrink-0">
@@ -79,7 +79,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
         </svg>
         <p class="text-gray-500">No SMS templates yet.</p>
-        <a href="{{ route('team.bdm.sms-templates.create') }}" class="mt-3 inline-flex items-center text-sm text-[#FB4C4B] hover:underline font-medium">
+        <a href="{{ route('team.bdm.sms-templates.create') }}" class="mt-3 inline-flex items-center text-sm text-emerald-400 hover:underline font-medium">
             Create your first template &rarr;
         </a>
     </div>

@@ -6,10 +6,10 @@
 <div class="mb-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Contract Templates</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage reusable contract templates</p>
+            <h1 class="text-2xl font-bold text-white">Contract Templates</h1>
+            <p class="mt-1 text-sm text-gray-400">Manage reusable contract templates</p>
         </div>
-        <a href="{{ route('admin.contracts.templates.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#FB4C4B] hover:bg-[#D93837]">
+        <a href="{{ route('admin.contracts.templates.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-500">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -18,22 +18,22 @@
     </div>
 </div>
 
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+<div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
+    <table class="min-w-full divide-y divide-white/10">
+        <thead class="bg-[#10231C]/60/[0.04]">
             <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="divide-y divide-white/5 bg-transparent">
             @forelse($templates as $template)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-white/[0.03]">
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">{{ $template->name }}</div>
+                    <div class="text-sm font-medium text-white">{{ $template->name }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -41,7 +41,7 @@
                     </span>
                 </td>
                 <td class="px-6 py-4">
-                    <div class="text-sm text-gray-500">{{ Str::limit($template->description, 100) }}</div>
+                    <div class="text-sm text-gray-400">{{ Str::limit($template->description, 100) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     @if($template->is_active)
@@ -49,7 +49,7 @@
                             Active
                         </span>
                     @else
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-white/[0.06] text-white">
                             Inactive
                         </span>
                     @endif
@@ -65,12 +65,12 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <p class="mt-2">No templates found</p>
-                    <a href="{{ route('admin.contracts.templates.create') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#FB4C4B] hover:bg-[#D93837]">
+                    <a href="{{ route('admin.contracts.templates.create') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-500">
                         Create your first template
                     </a>
                 </td>

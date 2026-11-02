@@ -11,12 +11,14 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\BelongsToTenant;
 
 class Client extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, InteractsWithMedia, SoftDeletes, BelongsToTenant;
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'password',

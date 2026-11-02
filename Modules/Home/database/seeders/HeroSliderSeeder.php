@@ -14,7 +14,7 @@ class HeroSliderSeeder extends Seeder
         
         $sliders = [
             [
-                'title' => 'Welcome to Rick Development LTD',
+                'title' => 'Welcome to Bizpaddi LTD',
                 'subtitle' => 'Enterprise-Grade Solutions',
                 'description' => 'Building the future with cutting-edge technology and innovative solutions for global enterprises.',
                 'button_text' => 'Learn More',

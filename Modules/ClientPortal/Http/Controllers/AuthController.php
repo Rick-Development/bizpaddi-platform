@@ -35,28 +35,16 @@ class AuthController extends Controller
 
     public function showRegisterForm()
     {
-        return view('clientportal::auth.register');
+        return redirect()->route('client.login')->withErrors([
+            'email' => 'Client portal access is by invitation only. Please check the invitation email sent by your service provider or vendor.',
+        ]);
     }
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
-            'password' => 'required|string|confirmed|min:8',
+        return redirect()->route('client.login')->withErrors([
+            'email' => 'Public client registration is disabled. Client accounts are created by your business provider upon invoice, contract, or invitation.',
         ]);
-
-        $client = \Modules\Clients\Models\Client::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
-            'is_active' => true,
-        ]);
-
-        Auth::guard('client')->login($client);
-        $request->session()->regenerate();
-
-        return redirect()->route('client.dashboard')->with('registered_event', true);
     }
 
     public function showLinkRequestForm()

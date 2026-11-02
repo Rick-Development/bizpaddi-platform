@@ -12,7 +12,7 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="text-center">
                 <h1 class="text-5xl font-extrabold text-white sm:text-6xl md:text-7xl">
-                    {{ __('About Rick Development') }}
+                    {{ __('About Bizpaddi') }}
                 </h1>
                 <p class="mt-6 max-w-3xl mx-auto text-xl text-gray-100">
                     {{ __('We are innovators, creators, and problem solvers dedicated to building the future of technology.') }}

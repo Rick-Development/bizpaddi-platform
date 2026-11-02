@@ -6,8 +6,8 @@
 <div class="mb-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Feature Pricing</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage software feature prices (Auth Module, Bill Payment, VTU, etc.)</p>
+            <h1 class="text-2xl font-bold text-white">Feature Pricing</h1>
+            <p class="mt-1 text-sm text-gray-400">Manage software feature prices (Auth Module, Bill Payment, VTU, etc.)</p>
         </div>
         <a href="{{ route('admin.accounting.feature-pricing.create') }}" class="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors shadow-sm">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -19,12 +19,12 @@
 </div>
 
 @if($features->isEmpty())
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+<div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-12 text-center">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
-    <h3 class="mt-4 text-lg font-semibold text-gray-900">No features yet</h3>
-    <p class="mt-2 text-sm text-gray-600">Add your first feature pricing (e.g., Auth Module - 200k, Bill Payment - 300k)</p>
+    <h3 class="mt-4 text-lg font-semibold text-white">No features yet</h3>
+    <p class="mt-2 text-sm text-gray-400">Add your first feature pricing (e.g., Auth Module - 200k, Bill Payment - 300k)</p>
     <div class="mt-6">
         <a href="{{ route('admin.accounting.feature-pricing.create') }}" class="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -37,7 +37,7 @@
 @else
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     @foreach($features as $feature)
-    <div class="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col overflow-visible">
+    <div class="group relative bg-[#10231C]/60 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-white/10 flex flex-col overflow-visible">
         <!-- Floating Price -->
         <div class="absolute -top-3 -right-3 z-10">
             <div class="bg-indigo-600 text-white text-md font-bold px-4 py-2 rounded-2xl shadow-lg transform group-hover:scale-110 transition-transform duration-300 rotate-2 group-hover:rotate-0">
@@ -48,15 +48,15 @@
         <div class="p-6 flex flex-col flex-1">
              <!-- Header -->
             <div class="mb-4 pr-12">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono font-medium mb-3 bg-gray-100 text-gray-500">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono font-medium mb-3 bg-white/[0.06] text-gray-400">
                      {{ $feature->feature_code }}
                 </span>
-                <h3 class="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight" title="{{ $feature->feature_name }}">{{ $feature->feature_name }}</h3>
+                <h3 class="text-xl font-bold text-white group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight" title="{{ $feature->feature_name }}">{{ $feature->feature_name }}</h3>
             </div>
 
              <!-- Description -->
             <div class="flex-1 mb-6">
-                <p class="text-sm text-gray-500 line-clamp-3 leading-relaxed">
+                <p class="text-sm text-gray-400 line-clamp-3 leading-relaxed">
                     {{ $feature->description ?? 'No description provided.' }}
                 </p>
             </div>
@@ -82,9 +82,9 @@
                             <span class="text-xs font-semibold text-green-700">Active</span>
                         </div>
                     @else
-                        <div class="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="flex items-center gap-1.5 px-2 py-1 bg-white/[0.03] rounded-lg border border-white/10">
                             <div class="h-2 w-2 rounded-full bg-gray-400"></div>
-                            <span class="text-xs font-semibold text-gray-600">Inactive</span>
+                            <span class="text-xs font-semibold text-gray-400">Inactive</span>
                         </div>
                     @endif
                 </div>

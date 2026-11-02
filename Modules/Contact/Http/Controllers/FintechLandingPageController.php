@@ -112,7 +112,7 @@ class FintechLandingPageController extends Controller
             Mail::to($lead->email)->send(new \Modules\Contact\Emails\LeadConfirmationEmail($lead));
             
             // Send alert to admin
-            Mail::to(config('mail.from.address', 'admin@rickdevelopment.com'))
+            Mail::to(config('mail.from.address', 'admin@bizpaddi.com'))
                 ->send(new \Modules\Contact\Emails\NewLeadAlertNotification($lead));
         } catch (\Exception $e) {
             Log::error('Failed to send fintech lead emails: ' . $e->getMessage());

@@ -47,8 +47,11 @@ class ChatController extends Controller
                 return in_array($u->key, $existingChatKeys);
             });
 
-        $admins = Admin::where('id', '!=', $currentUser->id)
-            ->orderBy('name')
+        $adminQuery = Admin::where('id', '!=', $currentUser->id);
+        if (!$currentUser->isSuperAdmin() && !empty($currentUser->tenant_id)) {
+            $adminQuery->where('tenant_id', $currentUser->tenant_id);
+        }
+        $admins = $adminQuery->orderBy('name')
             ->get()
             ->map(function ($a) {
                 $a->type_label = 'Admin';

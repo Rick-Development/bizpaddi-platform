@@ -19,22 +19,22 @@
         .watermark img { width: 100%; }
 
         /* Header */
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 2px solid #FB4C4B; padding-bottom: 16px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 2px solid #0E5E4A; padding-bottom: 16px; }
         .company-logo img { height: 50px; max-width: 160px; }
         .company-info { text-align: right; }
         .company-name { font-size: 15px; font-weight: bold; color: #1a1a1a; }
-        .report-title { font-size: 20px; font-weight: bold; color: #FB4C4B; margin-bottom: 4px; }
+        .report-title { font-size: 20px; font-weight: bold; color: #0E5E4A; margin-bottom: 4px; }
         .report-meta { font-size: 10px; color: #666; margin-top: 4px; }
 
         /* Summary */
         .summary { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 16px; margin-bottom: 20px; display: flex; gap: 40px; }
         .summary-item { text-align: center; }
-        .summary-value { font-size: 22px; font-weight: bold; color: #FB4C4B; }
+        .summary-value { font-size: 22px; font-weight: bold; color: #0E5E4A; }
         .summary-label { font-size: 9px; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px; }
 
         /* Table */
         table { width: 100%; border-collapse: collapse; }
-        thead tr { background: #FB4C4B; color: white; }
+        thead tr { background: #0E5E4A; color: white; }
         thead th { padding: 9px 10px; text-align: left; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
         tbody tr:nth-child(even) { background: #fef2f2; }
         tbody tr:nth-child(odd) { background: #fff; }

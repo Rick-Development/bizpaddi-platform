@@ -16,14 +16,14 @@
         font-size:1.45rem; font-weight:800; color:#111;
         display:flex; align-items:center; gap:10px; margin:0 0 4px;
     }
-    .an-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#FB4C4B,#191C47); border-radius:4px; }
+    .an-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#0E5E4A,#10231C); border-radius:4px; }
     .an-topbar p { font-size:.85rem; color:#888; margin:0; }
 
     /* Buttons */
     .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border-radius:12px; font-size:.85rem; font-weight:700; cursor:pointer; border:none; transition:all .2s; }
     .btn-ghost { background:#f5f5f7; color:#444; }
     .btn-ghost:hover { background:#eee; }
-    .btn-primary { background:#FB4C4B; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
+    .btn-primary { background:#0E5E4A; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
     .btn-primary:hover { background:#e83b3a; transform:translateY(-1px); }
 
     /* Date range tabs */
@@ -91,7 +91,7 @@
     .geo-flag { font-size:1.1rem; width:28px; text-align:center; }
     .geo-name { font-size:.82rem; font-weight:700; color:#222; flex:1; }
     .geo-bar-wrap { width:100px; height:6px; background:#f3f4f6; border-radius:6px; overflow:hidden; }
-    .geo-bar { height:100%; border-radius:6px; background:#191C47; }
+    .geo-bar { height:100%; border-radius:6px; background:#10231C; }
     .geo-pct { font-size:.8rem; font-weight:800; color:#111; width:36px; text-align:right; }
 </style>
 @endpush
@@ -170,10 +170,10 @@
                 <h3>📈 Impressions & Engagement Over Time</h3>
                 <div style="display:flex; gap:14px; align-items:center;">
                     <span style="display:flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;color:#555;">
-                        <span style="width:12px;height:3px;background:#191C47;border-radius:2px;display:inline-block;"></span>Impressions
+                        <span style="width:12px;height:3px;background:#10231C;border-radius:2px;display:inline-block;"></span>Impressions
                     </span>
                     <span style="display:flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;color:#555;">
-                        <span style="width:12px;height:3px;background:#FB4C4B;border-radius:2px;display:inline-block;"></span>Engagement
+                        <span style="width:12px;height:3px;background:#0E5E4A;border-radius:2px;display:inline-block;"></span>Engagement
                     </span>
                 </div>
             </div>
@@ -294,8 +294,8 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             labels: trendLabels.length ? trendLabels : ['No data'],
             datasets: [
-                { label:'Impressions', data: trendImpressions, borderColor:'#191C47', borderWidth:3, fill:true, backgroundColor:'rgba(25,28,71,0.05)', tension:0.4, pointRadius:4, pointBackgroundColor:'#191C47', yAxisID:'y' },
-                { label:'Engagements', data: trendEngagements, borderColor:'#FB4C4B', borderWidth:2.5, fill:false, tension:0.4, pointRadius:4, pointBackgroundColor:'#FB4C4B', borderDash:[4,3], yAxisID:'y1' }
+                { label:'Impressions', data: trendImpressions, borderColor:'#10231C', borderWidth:3, fill:true, backgroundColor:'rgba(25,28,71,0.05)', tension:0.4, pointRadius:4, pointBackgroundColor:'#10231C', yAxisID:'y' },
+                { label:'Engagements', data: trendEngagements, borderColor:'#0E5E4A', borderWidth:2.5, fill:false, tension:0.4, pointRadius:4, pointBackgroundColor:'#0E5E4A', borderDash:[4,3], yAxisID:'y1' }
             ]
         },
         options: {

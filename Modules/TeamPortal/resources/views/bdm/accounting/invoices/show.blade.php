@@ -34,7 +34,7 @@
             </a>
             <form action="{{ route('team.bdm.invoices.send', $invoice) }}" method="POST" class="inline">
                 @csrf
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-[#FB4C4B] border border-transparent rounded-lg text-sm font-medium text-white hover:bg-[#D93837] shadow-sm">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-emerald-500 shadow-sm">
                     <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                     </svg>
@@ -184,7 +184,7 @@
 
                 <div class="flex justify-between text-lg font-bold text-gray-900 border-t border-gray-200 pt-3">
                     <span>Total</span>
-                    <span class="text-[#FB4C4B]">{{ $invoice->currency->symbol ?? '$' }}{{ number_format($invoice->total_amount, 2) }}</span>
+                    <span class="text-emerald-400">{{ $invoice->currency->symbol ?? '$' }}{{ number_format($invoice->total_amount, 2) }}</span>
                 </div>
             </div>
         </div>

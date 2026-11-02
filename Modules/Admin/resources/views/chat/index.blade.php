@@ -30,10 +30,10 @@
     }
     .conversation-item.active {
         background: linear-gradient(90deg, rgba(251, 76, 75, 0.08) 0%, rgba(25, 28, 71, 0.05) 100%);
-        border-left: 4px solid #FB4C4B;
+        border-left: 4px solid #0E5E4A;
     }
     .message-bubble-me {
-        background: linear-gradient(135deg, #191C47 0%, #2b3070 100%);
+        background: linear-gradient(135deg, #10231C 0%, #2b3070 100%);
         color: #FFFFFF;
         box-shadow: 0 4px 14px rgba(25, 28, 71, 0.15);
     }
@@ -60,36 +60,36 @@
     {{-- Top Header Section --}}
     <div class="mb-4 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2.5">
+            <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
                 <span>Admin Chat Workspace</span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#191C47] text-white">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#10231C] text-white">
                     Administrator
                 </span>
             </h1>
-            <p class="text-xs text-gray-500 mt-1">Real-time direct messaging with team members & project managers across all departments.</p>
+            <p class="text-xs text-gray-400 mt-1">Real-time direct messaging with team members & project managers across all departments.</p>
         </div>
     </div>
 
     {{-- Main Container Card --}}
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden chat-card-height flex flex-col md:flex-row">
+    <div class="bg-[#10231C]/60 rounded-3xl shadow-sm border border-white/10 overflow-hidden chat-card-height flex flex-col md:flex-row">
         
         {{-- ===== LEFT PANEL: CONVERSATIONS & CONTACTS ===== --}}
-        <div id="chat-sidebar" class="w-full md:w-80 lg:w-96 border-r border-gray-200 flex flex-col h-full bg-slate-50/60 flex-shrink-0">
+        <div id="chat-sidebar" class="w-full md:w-80 lg:w-96 border-r border-white/10 flex flex-col h-full bg-slate-50/60 flex-shrink-0">
             
             {{-- Panel Header & Search --}}
-            <div class="p-4 border-b border-gray-200 bg-white">
+            <div class="p-4 border-b border-white/10 bg-[#10231C]/60">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <div class="h-2.5 w-2.5 rounded-full bg-[#FB4C4B]"></div>
-                        <h2 class="text-sm font-bold text-gray-900 tracking-wide uppercase">Conversations</h2>
+                        <div class="h-2.5 w-2.5 rounded-full bg-emerald-600"></div>
+                        <h2 class="text-sm font-bold text-white tracking-wide uppercase">Conversations</h2>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
+                        <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-white/[0.06] text-gray-400 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                             </svg>
                         </button>
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-gray-100 text-gray-600">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/[0.06] text-gray-400">
                             {{ count($conversations) }} Active
                         </span>
                     </div>
@@ -98,7 +98,7 @@
                 {{-- Search Box --}}
                 <div class="relative">
                     <input type="text" id="contact-search" placeholder="Search team members..." 
-                           class="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] text-xs transition-all placeholder-gray-400"
+                           class="w-full pl-9 pr-4 py-2 bg-white/[0.06]/80 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs transition-all placeholder-gray-400 bg-[#0a1612] text-white border-white/10"
                            onkeyup="filterContacts()">
                     <svg class="h-4 w-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -112,7 +112,7 @@
                 {{-- Active Conversations Section --}}
                 <div>
                     <div class="flex items-center justify-between px-2 mb-2">
-                        <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Active Chats</span>
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Active Chats</span>
                     </div>
 
                     <div id="active-conversations-list" class="space-y-1">
@@ -124,7 +124,7 @@
                                     @if($convo['avatar'])
                                         <img src="{{ $convo['avatar'] }}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">
                                     @else
-                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-white shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-white shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($convo['name'] ?? 'U', 0, 2)) }}
                                         </div>
                                     @endif
@@ -135,7 +135,7 @@
 
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between mb-0.5">
-                                        <h3 class="text-xs font-bold text-gray-900 truncate group-hover:text-[#FB4C4B] transition-colors">
+                                        <h3 class="text-xs font-bold text-white truncate group-hover:text-emerald-400 transition-colors">
                                             {{ $convo['name'] }}
                                         </h3>
                                         <span class="text-[10px] text-gray-400 font-medium convo-last-message-time">
@@ -144,12 +144,12 @@
                                     </div>
                                     
                                     <div class="flex items-center justify-between">
-                                        <p class="text-xs text-gray-500 truncate max-w-[180px] convo-last-message-text">
+                                        <p class="text-xs text-gray-400 truncate max-w-[180px] convo-last-message-text">
                                             {{ $convo['last_message'] ?? 'No messages yet' }}
                                         </p>
                                         <div class="convo-unread-badge-container">
                                             @if(($convo['unread_count'] ?? 0) > 0)
-                                                <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">
+                                                <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">
                                                     {{ $convo['unread_count'] }}
                                                 </span>
                                             @endif
@@ -164,21 +164,21 @@
                 </div>
 
                 {{-- Start New Chat Directory Section --}}
-                <div class="pt-2 border-t border-gray-200/80">
+                <div class="pt-2 border-t border-white/10/80">
                     <div class="flex items-center justify-between px-2 mb-2">
-                        <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Start New Chat</span>
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Start New Chat</span>
                     </div>
 
                     <div id="team-contacts-list" class="space-y-1">
                         @forelse($contacts as $contact)
                             <button onclick="startDirectChat({{ $contact['id'] }}, '{{ addslashes($contact['type']) }}')"
-                                    class="w-full text-left p-2.5 rounded-2xl flex items-center gap-3 hover:bg-gray-100 transition-all contact-search-item"
+                                    class="w-full text-left p-2.5 rounded-2xl flex items-center gap-3 hover:bg-white/[0.06] transition-all contact-search-item"
                                     data-name="{{ strtolower($contact['name']) }}">
                                 <div class="relative flex-shrink-0">
                                     @if($contact['avatar'])
-                                        <img src="{{ $contact['avatar'] }}" class="h-9 w-9 rounded-full object-cover border border-gray-200" alt="">
+                                        <img src="{{ $contact['avatar'] }}" class="h-9 w-9 rounded-full object-cover border border-white/10" alt="">
                                     @else
-                                        <div class="h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($contact['name'], 0, 2)) }}
                                         </div>
                                     @endif
@@ -187,11 +187,11 @@
                                 </div>
 
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="text-xs font-semibold text-gray-800 truncate">{{ $contact['name'] }}</h4>
+                                    <h4 class="text-xs font-semibold text-white truncate">{{ $contact['name'] }}</h4>
                                     <span class="text-[10px] text-gray-400 font-medium">{{ str_contains($contact['type'], 'Admin') ? 'Admin' : 'Team Member' }}</span>
                                 </div>
 
-                                <span class="h-7 w-7 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-[#FB4C4B] hover:text-white transition-all shadow-xs">
+                                <span class="h-7 w-7 rounded-xl bg-white/[0.06] text-gray-400 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-xs">
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
@@ -207,26 +207,26 @@
         </div>
 
         {{-- ===== RIGHT PANEL: CHAT CANVAS ===== --}}
-        <div id="chat-canvas" class="hidden md:flex flex-1 flex-col h-full bg-white relative">
+        <div id="chat-canvas" class="hidden md:flex flex-1 flex-col h-full bg-[#10231C]/60 relative">
             
             {{-- Default Placeholder View --}}
             <div id="chat-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/40">
-                <div class="h-20 w-20 rounded-3xl bg-gradient-to-tr from-[#191C47] to-[#FB4C4B] text-white flex items-center justify-center shadow-lg shadow-red-500/10 mb-4 transform hover:scale-105 transition-transform">
+                <div class="h-20 w-20 rounded-3xl bg-gradient-to-tr from-[#10231C] to-emerald-600 text-white flex items-center justify-center shadow-lg shadow-red-500/10 mb-4 transform hover:scale-105 transition-transform">
                     <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.596.596 0 01-.743-.65l.398-2.617A8.995 8.995 0 013 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                     </svg>
                 </div>
-                <h3 class="text-base font-bold text-gray-900">Select a Conversation</h3>
-                <p class="text-xs text-gray-500 mt-1 max-w-sm">Choose an active conversation from the left sidebar or start a new chat with any team member.</p>
+                <h3 class="text-base font-bold text-white">Select a Conversation</h3>
+                <p class="text-xs text-gray-400 mt-1 max-w-sm">Choose an active conversation from the left sidebar or start a new chat with any team member.</p>
             </div>
 
             {{-- Active Chat View --}}
             <div id="active-chat-container" class="hidden flex-1 flex flex-col h-full">
                 
                 {{-- Active Chat Header --}}
-                <div class="px-6 py-3.5 border-b border-gray-200 bg-white/90 backdrop-blur-md flex items-center justify-between shadow-xs">
+                <div class="px-6 py-3.5 border-b border-white/10 bg-[#10231C]/60/90 backdrop-blur-md flex items-center justify-between shadow-xs">
                     <div class="flex items-center gap-3.5">
-                        <button onclick="goBackToSidebar()" class="md:hidden mr-1 p-1 text-gray-500 hover:text-gray-900 focus:outline-none" title="Back to chats">
+                        <button onclick="goBackToSidebar()" class="md:hidden mr-1 p-1 text-gray-400 hover:text-white focus:outline-none" title="Back to chats">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                             </svg>
@@ -236,17 +236,17 @@
                             <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white status-dot-offline" id="active-partner-dot"></span>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-gray-900" id="active-partner-name">...</h3>
+                            <h3 class="text-sm font-bold text-white" id="active-partner-name">...</h3>
                             <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[11px] text-gray-500 font-medium" id="active-partner-status">Offline</span>
+                                <span class="text-[11px] text-gray-400 font-medium" id="active-partner-status">Offline</span>
                                 <span class="text-gray-300">•</span>
-                                <span class="text-[11px] text-[#FB4C4B] font-semibold" id="active-partner-role">Team Member</span>
+                                <span class="text-[11px] text-emerald-400 font-semibold" id="active-partner-role">Team Member</span>
                             </div>
                         </div>
                     </div>
                     
                     <div id="group-actions-container" class="hidden">
-                        <button onclick="openManageMembersModal()" class="h-9 w-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-[#FB4C4B] hover:text-white hover:border-[#FB4C4B] transition-all flex items-center justify-center shadow-xs" title="Manage Group Members">
+                        <button onclick="openManageMembersModal()" class="h-9 w-9 rounded-xl border border-white/10 text-gray-400 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all flex items-center justify-center shadow-xs" title="Manage Group Members">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
@@ -260,28 +260,28 @@
                 </div>
 
                 {{-- Input Composer --}}
-                <div class="p-4 border-t border-gray-200 bg-white flex flex-col gap-2">
+                <div class="p-4 border-t border-white/10 bg-[#10231C]/60 flex flex-col gap-2">
                     
                     {{-- Upload Preview Tray --}}
-                    <div id="upload-preview-container" class="hidden flex flex-wrap gap-2 p-2 bg-slate-55 rounded-2xl border border-gray-100">
+                    <div id="upload-preview-container" class="hidden flex flex-wrap gap-2 p-2 bg-slate-55 rounded-2xl border border-white/10">
                     </div>
 
                     <form onsubmit="sendMessage(event)" class="flex items-center gap-3" enctype="multipart/form-data">
                         <button type="button" onclick="document.getElementById('attachment-input').click()" 
-                                class="h-11 w-11 flex items-center justify-center rounded-2xl bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all shadow-xs flex-shrink-0" 
+                                class="h-11 w-11 flex items-center justify-center rounded-2xl bg-white/[0.06] text-gray-400 hover:bg-emerald-500 hover:text-white transition-all shadow-xs flex-shrink-0" 
                                 title="Attach files/images/videos">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.75m0-12.75a6 6 0 11-8.485 8.485L5.636 10.25a3.75 3.75 0 115.303 5.304L6.182 20.3a1.5 1.5 0 11-2.122-2.12L8.82 13.4" />
                             </svg>
                         </button>
-                        <input type="file" id="attachment-input" class="hidden" multiple onchange="handleFileSelect(event)">
+                        <input type="file" id="attachment-input" class="hidden bg-[#0a1612] text-white border-white/10" multiple onchange="handleFileSelect(event)">
 
                         <textarea id="message-input" rows="1" placeholder="Type a message..." 
-                               class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] focus:bg-white transition-all placeholder-gray-400 resize-none overflow-hidden"
+                               class="flex-1 px-4 py-3 bg-white/[0.06]/90 border border-white/10 rounded-2xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-[#10231C]/60 transition-all placeholder-gray-400 resize-none overflow-hidden bg-[#0a1612] text-white border-white/10"
                                style="min-height: 44px; max-height: 120px; line-height: 1.5;"></textarea>
 
                         <button type="submit" id="send-btn" 
-                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
                             <span>Send</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -298,10 +298,10 @@
 
     <!-- Create Group Chat Modal -->
     <div id="create-group-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-        <div class="bg-white rounded-3xl shadow-xl border border-gray-100 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="text-sm font-bold text-gray-900 font-display">Create New Group Chat</h3>
-                <button onclick="closeCreateGroupModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+        <div class="bg-[#10231C]/60 rounded-3xl shadow-xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-white font-display">Create New Group Chat</h3>
+                <button onclick="closeCreateGroupModal()" class="text-gray-400 hover:text-gray-400 focus:outline-none">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -311,14 +311,14 @@
             <form onsubmit="submitCreateGroup(event)" class="flex flex-col flex-1 overflow-hidden">
                 <div class="p-6 space-y-4 flex-1 overflow-y-auto chat-scroll">
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Group Name</label>
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Group Name</label>
                         <input type="text" id="group-name" required placeholder="e.g. Design Team Sync" 
-                               class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all">
+                               class="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all bg-[#0a1612] text-white border-white/10">
                     </div>
                     
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
-                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-medium">
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
+                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium bg-[#0a1612] text-white border-white/10">
                             <option value="">-- No Project Link --</option>
                             @foreach($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -327,33 +327,33 @@
                     </div>
                     
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Select Members</label>
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Select Members</label>
                         <input type="text" placeholder="Search members..." onkeyup="filterGroupModalMembers(this.value)"
-                               class="w-full px-3.5 py-2 mb-3 bg-gray-50 border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-[#FB4C4B]">
+                               class="w-full px-3.5 py-2 mb-3 bg-white/[0.03] border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-[#0a1612] text-white border-white/10">
                         
                         <div class="space-y-2 max-h-48 overflow-y-auto chat-scroll pr-1" id="group-members-checklist">
                             @foreach($allContacts as $c)
                                 <label class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl cursor-pointer group-modal-member-item transition-all" data-name="{{ strtolower($c['name']) }}">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($c['name'], 0, 2)) }}
                                         </div>
                                         <div>
-                                            <span class="text-xs font-semibold text-gray-800 block leading-tight">{{ $c['name'] }}</span>
+                                            <span class="text-xs font-semibold text-white block leading-tight">{{ $c['name'] }}</span>
                                             <span class="text-[9px] text-gray-400 font-medium">{{ $c['type_label'] }}</span>
                                         </div>
                                     </div>
                                     <input type="checkbox" name="group_participants[]" value="{{ $c['key'] }}"
-                                           class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B] h-4 w-4">
+                                           class="rounded border-white/10 text-emerald-400 focus:ring-emerald-500 h-4 w-4">
                                 </label>
                             @endforeach
                         </div>
                     </div>
                 </div>
                 
-                <div class="px-6 py-4 border-t border-gray-100 bg-slate-50/50 flex items-center justify-end gap-3 flex-shrink-0">
-                    <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 active:scale-95 transition-all">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
+                <div class="px-6 py-4 border-t border-white/10 bg-slate-50/50 flex items-center justify-end gap-3 flex-shrink-0">
+                    <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/[0.06] active:scale-95 transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
                 </div>
             </form>
         </div>
@@ -361,13 +361,13 @@
 
     <!-- Manage Group Members Modal -->
     <div id="manage-members-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-        <div class="bg-white rounded-3xl shadow-xl border border-gray-100 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div class="bg-[#10231C]/60 rounded-3xl shadow-xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
                 <div>
-                    <h3 class="text-sm font-bold text-gray-900" id="manage-group-name">Manage Members</h3>
+                    <h3 class="text-sm font-bold text-white" id="manage-group-name">Manage Members</h3>
                     <p class="text-[10px] text-gray-400 mt-0.5" id="manage-group-project">Project Group Chat</p>
                 </div>
-                <button onclick="closeManageMembersModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <button onclick="closeManageMembersModal()" class="text-gray-400 hover:text-gray-400 focus:outline-none">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -375,28 +375,28 @@
             </div>
             
             <div class="p-6 space-y-5 flex-1 overflow-y-auto chat-scroll flex flex-col">
-                <div class="border-b border-gray-100 pb-4">
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Add New Member</label>
+                <div class="border-b border-white/10 pb-4">
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Add New Member</label>
                     <div class="flex gap-2">
-                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-semibold text-gray-800">
+                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold text-white bg-[#0a1612] text-white border-white/10">
                             <option value="">-- Choose Member to Add --</option>
                             @foreach($allContacts as $c)
                                 <option value="{{ $c['key'] }}">{{ $c['name'] }} ({{ $c['type_label'] }})</option>
                             @endforeach
                         </select>
-                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
+                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
                     </div>
                 </div>
                 
                 <div class="flex-1 flex flex-col min-h-0">
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Current Members</label>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Current Members</label>
                     <div class="space-y-2 overflow-y-auto chat-scroll flex-1 pr-1" id="current-members-list">
                     </div>
                 </div>
             </div>
             
-            <div class="px-6 py-3 border-t border-gray-100 bg-slate-50/50 flex items-center justify-end flex-shrink-0">
-                <button type="button" onclick="closeManageMembersModal()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 active:scale-95 transition-all">Close</button>
+            <div class="px-6 py-3 border-t border-white/10 bg-slate-50/50 flex items-center justify-end flex-shrink-0">
+                <button type="button" onclick="closeManageMembersModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/[0.06] active:scale-95 transition-all">Close</button>
             </div>
         </div>
     </div>
@@ -545,7 +545,7 @@
                 if (data.partner_avatar) {
                     avatarBox.innerHTML = `<img src="${data.partner_avatar}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">`;
                 } else {
-                    avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
+                    avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
                 }
 
                 if (!isGroup) {
@@ -685,7 +685,7 @@
                             let badge = badgeContainer.querySelector('.convo-unread-badge');
                             if (convo.unread_count > 0) {
                                 if (!badge) {
-                                    badgeContainer.innerHTML = `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">${convo.unread_count}</span>`;
+                                    badgeContainer.innerHTML = `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">${convo.unread_count}</span>`;
                                 } else {
                                     badge.innerText = convo.unread_count;
                                 }
@@ -742,7 +742,7 @@
     function getTickHtml(isRead) {
         // 1. Double Coral Red Ticks (Read)
         if (isRead) {
-            return `<span class="tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1" data-read="true" title="Read">
+            return `<span class="tick-status text-emerald-400 font-bold text-xs flex items-center -space-x-1" data-read="true" title="Read">
                         <span>✓</span><span>✓</span>
                     </span>`;
         }
@@ -770,14 +770,14 @@
             msg.attachments.forEach(att => {
                 if (att.is_image) {
                     attachmentsHtml += `
-                        <div class="relative rounded-2xl overflow-hidden border border-gray-100 max-w-[240px] shadow-xs hover:scale-[1.02] transition-transform">
+                        <div class="relative rounded-2xl overflow-hidden border border-white/10 max-w-[240px] shadow-xs hover:scale-[1.02] transition-transform">
                             <a href="${att.url}" target="_blank">
                                 <img src="${att.url}" class="w-full h-auto object-cover max-h-48" alt="${att.name}">
                             </a>
                         </div>`;
                 } else if (att.is_video) {
                     attachmentsHtml += `
-                        <div class="relative rounded-2xl overflow-hidden border border-gray-100 max-w-[320px] shadow-xs">
+                        <div class="relative rounded-2xl overflow-hidden border border-white/10 max-w-[320px] shadow-xs">
                             <video src="${att.url}" controls class="w-full h-auto max-h-48 bg-black"></video>
                         </div>`;
                 } else if (att.is_audio) {
@@ -788,8 +788,8 @@
                 } else {
                     attachmentsHtml += `
                         <a href="${att.url}" target="_blank" 
-                           class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-gray-200 text-slate-800 hover:bg-slate-100 transition-all max-w-[280px] shadow-xs">
-                            <div class="h-9 w-9 rounded-xl bg-gray-200 flex items-center justify-center text-gray-600 flex-shrink-0">
+                           class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-white/10 text-slate-800 hover:bg-slate-100 transition-all max-w-[280px] shadow-xs">
+                            <div class="h-9 w-9 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 flex-shrink-0">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
@@ -809,7 +809,7 @@
         if (isSystem) {
             return `
                 <div class="flex justify-center my-2.5 msg-row" id="msg-${msg.id}">
-                    <div class="px-4 py-1.5 rounded-full bg-slate-100 border border-gray-200 text-gray-500 text-[10px] font-medium shadow-xs">
+                    <div class="px-4 py-1.5 rounded-full bg-slate-100 border border-white/10 text-gray-400 text-[10px] font-medium shadow-xs">
                         <strong>${escapeHtml(msg.sender_name)}</strong> ${escapeHtml(msg.content)}
                     </div>
                 </div>
@@ -862,7 +862,7 @@
     function updateAllTicksToRead() {
         document.querySelectorAll('.tick-status').forEach(el => {
             el.setAttribute('data-read', 'true');
-            el.className = 'tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1';
+            el.className = 'tick-status text-emerald-400 font-bold text-xs flex items-center -space-x-1';
             el.innerHTML = '<span>✓</span><span>✓</span>';
             el.setAttribute('title', 'Read');
         });
@@ -908,7 +908,7 @@
             if (isImage) {
                 const url = URL.createObjectURL(file);
                 previewHtml = `
-                    <div class="relative h-14 w-14 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0 group">
+                    <div class="relative h-14 w-14 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 group">
                         <img src="${url}" class="h-full w-full object-cover" alt="preview">
                         <button type="button" onclick="removeSelectedFile(${index})" 
                                 class="absolute top-1 right-1 h-5 w-5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center focus:outline-none">
@@ -917,14 +917,14 @@
                     </div>`;
             } else {
                 previewHtml = `
-                    <div class="relative h-14 w-32 p-2 bg-white rounded-xl border border-gray-200 flex items-center gap-2 flex-shrink-0 group">
-                        <div class="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 flex-shrink-0">
+                    <div class="relative h-14 w-32 p-2 bg-[#10231C]/60 rounded-xl border border-white/10 flex items-center gap-2 flex-shrink-0 group">
+                        <div class="h-8 w-8 rounded-lg bg-white/[0.06] flex items-center justify-center text-gray-400 flex-shrink-0">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <span class="text-[10px] font-semibold truncate block text-gray-800 leading-tight">${file.name}</span>
+                            <span class="text-[10px] font-semibold truncate block text-white leading-tight">${file.name}</span>
                             <span class="text-[8px] text-gray-400 block">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
                         </div>
                         <button type="button" onclick="removeSelectedFile(${index})" 
@@ -1092,11 +1092,11 @@
             const html = `
                 <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-all">
                     <div class="flex items-center gap-3">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                             ${m.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                            <span class="text-xs font-semibold text-gray-800 block">${m.name} ${isMe ? '(You)' : ''}</span>
+                            <span class="text-xs font-semibold text-white block">${m.name} ${isMe ? '(You)' : ''}</span>
                             <span class="text-[9px] text-gray-400 font-medium">${m.type_label}</span>
                         </div>
                     </div>

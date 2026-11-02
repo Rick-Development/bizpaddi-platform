@@ -53,4 +53,12 @@ return [
         'base_url' => env('TERMII_API_URL', 'https://api.ng.termii.com/api/'),
         'channel' => env('TERMII_CHANNEL', 'generic'),
     ],
+    'billway' => [
+        'base_url' => env('BILLWAY_BASE_URL', 'https://billwayservices.com/api/v1'),
+        'api_key' => env('BILLWAY_API_KEY', env('BILLWAY_SECRET_KEY')),
+        'public_key' => env('BILLWAY_PUBLIC_KEY'),
+        'secret_key' => env('BILLWAY_SECRET_KEY'),
+        'webhook_secret' => env('BILLWAY_WEBHOOK_SECRET'),
+        'default_provider' => env('BILLWAY_DEFAULT_PROVIDER', 'p4'), // p4 (9PSB) or p1 (Safe Haven)
+    ],
 ];

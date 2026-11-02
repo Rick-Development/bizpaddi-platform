@@ -46,13 +46,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Title <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" value="{{ old('title', $contract->title) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="text" name="title" value="{{ old('title', $contract->title) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     @error('title')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Contract Type <span class="text-red-500">*</span></label>
-                    <select name="contract_type" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <select name="contract_type" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                         <option value="">Select Type</option>
                         <option value="sla" {{ old('contract_type', $contract->contract_type) == 'sla' ? 'selected' : '' }}>SLA (Service Level Agreement)</option>
                         <option value="nda" {{ old('contract_type', $contract->contract_type) == 'nda' ? 'selected' : '' }}>NDA (Non-Disclosure Agreement)</option>
@@ -77,7 +77,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Party Type</label>
-                    <select name="party_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <select name="party_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                         <option value="">Select Type</option>
                         <option value="client" {{ old('party_type', $contract->party_type) == 'client' ? 'selected' : '' }}>Client</option>
                         <option value="employee" {{ old('party_type', $contract->party_type) == 'employee' ? 'selected' : '' }}>Employee</option>
@@ -89,18 +89,18 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Party Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="party_name" value="{{ old('party_name', $contract->party_name) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="text" name="party_name" value="{{ old('party_name', $contract->party_name) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     @error('party_name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Party Email</label>
-                    <input type="email" name="party_email" value="{{ old('party_email', $contract->party_email) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="email" name="party_email" value="{{ old('party_email', $contract->party_email) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Party Address</label>
-                    <input type="text" name="party_address" value="{{ old('party_address', $contract->party_address) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="text" name="party_address" value="{{ old('party_address', $contract->party_address) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
             </div>
         </div>
@@ -115,33 +115,33 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Start Date <span class="text-red-500">*</span></label>
-                    <input type="date" name="start_date" value="{{ old('start_date', $contract->start_date?->format('Y-m-d')) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="date" name="start_date" value="{{ old('start_date', $contract->start_date?->format('Y-m-d')) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                    <input type="date" name="end_date" value="{{ old('end_date', $contract->end_date?->format('Y-m-d')) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="date" name="end_date" value="{{ old('end_date', $contract->end_date?->format('Y-m-d')) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Duration (Months)</label>
-                    <input type="number" name="duration_months" value="{{ old('duration_months', $contract->duration_months) }}" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="number" name="duration_months" value="{{ old('duration_months', $contract->duration_months) }}" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Duration (Weeks)</label>
-                    <input type="number" name="duration_weeks" value="{{ old('duration_weeks', $contract->duration_weeks) }}" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="number" name="duration_weeks" value="{{ old('duration_weeks', $contract->duration_weeks) }}" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     <p class="mt-1 text-xs text-gray-500">For contracts shorter than a month or to add weeks to months</p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Contract Value</label>
-                    <input type="number" name="value" value="{{ old('value', $contract->value) }}" step="0.01" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <input type="number" name="value" value="{{ old('value', $contract->value) }}" step="0.01" min="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
-                    <select name="currency_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                    <select name="currency_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                         <option value="">Select Currency</option>
                         @foreach($currencies as $currency)
                             <option value="{{ $currency->id }}" {{ old('currency_id', $contract->currency_id) == $currency->id ? 'selected' : '' }}>
@@ -153,12 +153,12 @@
 
                 <div class="flex items-center space-x-6 md:col-span-2 lg:col-span-3">
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" name="auto_renew" value="1" {{ old('auto_renew', $contract->auto_renew) ? 'checked' : '' }} class="h-4 w-4 text-[#FB4C4B] focus:ring-[#FB4C4B] border-gray-300 rounded">
+                        <input type="checkbox" name="auto_renew" value="1" {{ old('auto_renew', $contract->auto_renew) ? 'checked' : '' }} class="h-4 w-4 text-emerald-400 focus:ring-emerald-500 border-gray-300 rounded">
                         <span class="ml-2 text-sm text-gray-700">Auto-renew contract</span>
                     </label>
                     
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $contract->is_active) ? 'checked' : '' }} class="h-4 w-4 text-[#FB4C4B] focus:ring-[#FB4C4B] border-gray-300 rounded">
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $contract->is_active) ? 'checked' : '' }} class="h-4 w-4 text-emerald-400 focus:ring-emerald-500 border-gray-300 rounded">
                         <span class="ml-2 text-sm text-gray-700">Contract is Active</span>
                     </label>
                 </div>
@@ -193,7 +193,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
-                <textarea name="notes" rows="3" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all" placeholder="Add any internal notes or comments...">{{ old('notes', $contract->notes) }}</textarea>
+                <textarea name="notes" rows="3" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" placeholder="Add any internal notes or comments...">{{ old('notes', $contract->notes) }}</textarea>
             </div>
         </div>
     </div>
@@ -222,7 +222,7 @@
             </svg>
             Cancel
         </a>
-        <button type="submit" class="inline-flex items-center px-8 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+        <button type="submit" class="inline-flex items-center px-8 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
             <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>

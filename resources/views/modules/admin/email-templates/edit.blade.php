@@ -20,54 +20,54 @@
 
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Email Template</h1>
-        <p class="mt-1 text-sm text-gray-600">Update template content and details</p>
+        <h1 class="text-2xl font-bold text-white">Edit Email Template</h1>
+        <p class="mt-1 text-sm text-gray-400">Update template content and details</p>
     </div>
 
     <form action="{{ route('admin.email-templates.update', $emailTemplate) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
             <div class="grid grid-cols-1 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Template Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name', $emailTemplate->name) }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Template Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" value="{{ old('name', $emailTemplate->name) }}" required class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject Line (Default)</label>
-                    <input type="text" name="subject" value="{{ old('subject', $emailTemplate->subject) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Subject Line (Default)</label>
+                    <input type="text" name="subject" value="{{ old('subject', $emailTemplate->subject) }}" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <input type="text" name="category" value="{{ old('category', $emailTemplate->category) }}" placeholder="e.g. Newsletter, Transactional" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Category</label>
+                    <input type="text" name="category" value="{{ old('category', $emailTemplate->category) }}" placeholder="e.g. Newsletter, Transactional" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Feature Graphic (Thumbnail)</label>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Feature Graphic (Thumbnail)</label>
                     @if($emailTemplate->thumbnail)
                         <div class="mb-3">
-                            <img src="{{ $emailTemplate->thumbnail }}" alt="Feature Graphic Preview" class="h-32 w-auto object-cover rounded-lg border border-gray-200">
+                            <img src="{{ $emailTemplate->thumbnail }}" alt="Feature Graphic Preview" class="h-32 w-auto object-cover rounded-lg border border-white/10">
                         </div>
                     @endif
-                    <input type="file" name="thumbnail" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
-                    <p class="mt-1 text-xs text-gray-500">Supported formats: JPEG, PNG, JPG, GIF, SVG. Max size: 2MB.</p>
+                    <input type="file" name="thumbnail" accept="image/*" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
+                    <p class="mt-1 text-xs text-gray-400">Supported formats: JPEG, PNG, JPG, GIF, SVG. Max size: 2MB.</p>
                 </div>
                 
                 <div>
                     <label class="flex items-center space-x-2">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $emailTemplate->is_active) ? 'checked' : '' }} class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
-                        <span class="text-sm font-medium text-gray-700">Active</span>
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $emailTemplate->is_active) ? 'checked' : '' }} class="rounded border-white/10 text-emerald-400 focus:ring-emerald-500">
+                        <span class="text-sm font-medium text-gray-300">Active</span>
                     </label>
                 </div>
             </div>
         </div>
 
         <!-- Content -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Template Content <span class="text-red-500">*</span></h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Template Content <span class="text-red-500">*</span></h2>
             
             <textarea name="content" id="template-content" required>{{ old('content', $emailTemplate->content) }}</textarea>
             
@@ -100,22 +100,22 @@
                 $vars = array_unique($vars);
             @endphp
 
-            <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Available Variables (Click to select & copy):</span>
+            <div class="mt-4 p-4 bg-white/[0.03] rounded-xl border border-white/10">
+                <span class="text-xs font-semibold text-gray-300 uppercase tracking-wide">Available Variables (Click to select & copy):</span>
                 <div class="mt-2 flex flex-wrap gap-2">
                     @foreach($vars as $var)
                         @php $varTag = '{{' . $var . '}}'; @endphp
-                        <code onclick="insertVariable('{{ $varTag }}');" class="px-2.5 py-1 text-xs bg-white text-[#FB4C4B] border border-gray-200 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to insert">{{ $varTag }}</code>
+                        <code onclick="insertVariable('{{ $varTag }}');" class="px-2.5 py-1 text-xs bg-[#10231C]/60 text-emerald-400 border border-white/10 rounded-lg font-mono cursor-pointer hover:bg-red-50 hover:border-red-200 transition-all select-all font-semibold" title="Click to insert">{{ $varTag }}</code>
                     @endforeach
                 </div>
             </div>
         </div>
 
         <div class="flex justify-end gap-x-3">
-            <a href="{{ route('admin.email-templates.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <a href="{{ route('admin.email-templates.index') }}" class="px-4 py-2 border border-white/10 rounded-md text-sm font-medium text-gray-300 hover:bg-white/[0.03]">
                 Cancel
             </a>
-            <button type="submit" class="px-4 py-2 bg-[#FB4C4B] text-white rounded-md text-sm font-medium hover:bg-[#D93837]">
+            <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-500">
                 Update Template
             </button>
         </div>

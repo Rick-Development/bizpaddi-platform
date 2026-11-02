@@ -69,7 +69,7 @@
                 <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-2xl"></div>
                 <h3 class="text-3xl font-extrabold mb-4 relative z-10">Ready to transform your ideas into reality?</h3>
                 <p class="text-lg text-gray-200 mb-8 max-w-2xl mx-auto relative z-10">
-                    Join the innovative companies that trust Rick Development to build their future. Let's discuss your next project.
+                    Join the innovative companies that trust Bizpaddi to build their future. Let's discuss your next project.
                 </p>
                 <a href="/start-project" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-brand-primary bg-white rounded-full hover:bg-gray-50 transform hover:-translate-y-1 transition-all duration-300 shadow-xl relative z-10">
                     Start Your Project

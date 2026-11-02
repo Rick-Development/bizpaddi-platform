@@ -5,7 +5,7 @@
 @push('styles')
 <style>
     .profile-hero {
-        background: linear-gradient(135deg, #191C47 0%, #2d3180 60%, #FB4C4B 100%);
+        background: linear-gradient(135deg, #10231C 0%, #2d3180 60%, #0E5E4A 100%);
         position: relative;
         overflow: hidden;
     }
@@ -16,7 +16,7 @@
         background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
     .profile-avatar-ring {
-        background: conic-gradient(from 180deg at 50% 50%, #FB4C4B 0deg, #ff9a4b 120deg, #191C47 240deg, #FB4C4B 360deg);
+        background: conic-gradient(from 180deg at 50% 50%, #0E5E4A 0deg, #ff9a4b 120deg, #10231C 240deg, #0E5E4A 360deg);
         padding: 3px;
         border-radius: 9999px;
         animation: spin-ring 8s linear infinite;
@@ -54,7 +54,7 @@
     .progress-fill {
         height: 100%;
         border-radius: 9999px;
-        background: linear-gradient(90deg, #191C47, #FB4C4B);
+        background: linear-gradient(90deg, #10231C, #0E5E4A);
         transition: width 1s ease-out;
     }
 </style>
@@ -90,7 +90,7 @@
                             @if($user->getFirstMediaUrl('avatar'))
                                 <img src="{{ $user->getFirstMediaUrl('avatar') }}" class="h-full w-full object-cover" alt="{{ $user->name }}">
                             @else
-                                <div class="h-full w-full flex items-center justify-center text-white text-3xl font-bold select-none" style="background: linear-gradient(135deg, #FB4C4B, #191C47);">
+                                <div class="h-full w-full flex items-center justify-center text-white text-3xl font-bold select-none" style="background: linear-gradient(135deg, #0E5E4A, #10231C);">
                                     {{ strtoupper(substr($user->name, 0, 2)) }}
                                 </div>
                             @endif

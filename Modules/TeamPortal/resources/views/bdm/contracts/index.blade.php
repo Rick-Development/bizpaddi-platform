@@ -11,7 +11,7 @@
             <p class="mt-2 text-sm text-gray-600">Manage all your contracts and agreements</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('team.bdm.contracts.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.contracts.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -65,12 +65,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search contracts..." class="pl-10 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search contracts..." class="pl-10 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
             </div>
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-            <select name="type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+            <select name="type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 <option value="">All Types</option>
                 <option value="sla" {{ request('type') == 'sla' ? 'selected' : '' }}>SLA</option>
                 <option value="nda" {{ request('type') == 'nda' ? 'selected' : '' }}>NDA</option>
@@ -83,7 +83,7 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select name="status" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+            <select name="status" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 <option value="">All Statuses</option>
                 <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                 <option value="pending_signature" {{ request('status') == 'pending_signature' ? 'selected' : '' }}>Pending Signature</option>
@@ -109,7 +109,7 @@
         <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#FB4C4B] transition-colors">
+                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-emerald-400 transition-colors">
                         {{ $contract->contract_number }}
                     </h3>
                     <p class="text-sm text-gray-600 mt-1 line-clamp-1">{{ $contract->title }}</p>
@@ -179,7 +179,7 @@
 
         <!-- Card Footer -->
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-            <a href="{{ route('team.bdm.contracts.show', $contract) }}" class="inline-flex items-center text-sm font-medium text-[#FB4C4B] hover:text-[#D93837] transition-colors">
+            <a href="{{ route('team.bdm.contracts.show', $contract) }}" class="inline-flex items-center text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
                 View Details
                 <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -208,7 +208,7 @@
             </svg>
             <h3 class="mt-4 text-lg font-medium text-gray-900">No contracts found</h3>
             <p class="mt-2 text-sm text-gray-500">Get started by creating your first contract.</p>
-            <a href="{{ route('team.bdm.contracts.create') }}" class="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.contracts.create') }}" class="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>

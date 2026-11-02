@@ -2,11 +2,15 @@
 
 namespace Modules\Accounting\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 
 class FeaturePrice extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'tenant_id',
         'feature_name',
         'feature_code',
         'description',

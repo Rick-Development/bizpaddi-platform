@@ -11,14 +11,17 @@ use App\Models\Admin;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Traits\BelongsToTenant;
 
 class Task extends Model implements HasMedia
 {
+    use BelongsToTenant;
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'pm_tasks';
 
     protected $fillable = [
+        'tenant_id',
         'project_id',
         'title',
         'description',

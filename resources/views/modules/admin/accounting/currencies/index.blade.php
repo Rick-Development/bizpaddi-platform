@@ -6,8 +6,8 @@
 <div class="mb-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Currencies</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage available currencies for invoices and quotes</p>
+            <h1 class="text-2xl font-bold text-white">Currencies</h1>
+            <p class="mt-1 text-sm text-gray-400">Manage available currencies for invoices and quotes</p>
         </div>
         <a href="{{ route('admin.accounting.currencies.create') }}" class="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors shadow-sm">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -20,7 +20,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     @foreach($currencies as $currency)
-    <div class="group relative bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden">
+    <div class="group relative bg-[#10231C]/60 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-white/10 flex flex-col overflow-hidden">
         <!-- Background Decoration -->
         <!-- <div class="absolute -right-8 -top-8 h-12 w-12 rounded-full opacity-5 transition-transform group-hover:scale-150 duration-500 bg-brand-primary"></div> -->
         
@@ -28,20 +28,20 @@
             <!-- Header -->
             <div class="flex items-start justify-between mb-4">
                 <div class="flex justify-center items-center rounded-full h-12 w-12 bg-brand-primary">
-                     <!-- <span class="text-xs font-mono font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-md self-start mb-2">{{ $currency->code }}</span> -->
+                     <!-- <span class="text-xs font-mono font-medium text-gray-400 bg-white/[0.06] px-2 py-1 rounded-md self-start mb-2">{{ $currency->code }}</span> -->
                      <h3 class="text-xl font-bold text-white line-clamp-1" title="{{ $currency->name }}"> {{ $currency->symbol }}</h3>
                 </div>
                 <!-- Large Symbol -->
-                <div class="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl font-bold text-gray-900 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
+                <div class="h-12 w-12 rounded-2xl bg-white/[0.03] flex items-center justify-center text-2xl font-bold text-white group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-colors">
                    {{ $currency->name }}
                 </div>
             </div>
 
             <!-- Exchange Rate -->
             <div class="mb-6 mt-4">
-                <p class="text-sm text-gray-500 mb-1">Exchange Rate</p>
+                <p class="text-sm text-gray-400 mb-1">Exchange Rate</p>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-2xl font-bold text-gray-900">{{ number_format($currency->exchange_rate, 4) }}</span>
+                    <span class="text-2xl font-bold text-white">{{ number_format($currency->exchange_rate, 4) }}</span>
                     @if($currency->is_default)
                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-primary/10 text-brand-primary">Default</span>
                     @endif
@@ -57,9 +57,9 @@
                             <span class="text-xs font-semibold text-green-700">Active</span>
                         </div>
                     @else
-                        <div class="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="flex items-center gap-1.5 px-2 py-1 bg-white/[0.03] rounded-lg border border-white/10">
                             <div class="h-2 w-2 rounded-full bg-gray-400"></div>
-                            <span class="text-xs font-semibold text-gray-600">Inactive</span>
+                            <span class="text-xs font-semibold text-gray-400">Inactive</span>
                         </div>
                     @endif
                 </div>

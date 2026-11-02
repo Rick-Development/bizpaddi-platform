@@ -6,11 +6,11 @@
 <div class="mb-8">
     <div class="sm:flex sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Email Templates</h1>
-            <p class="mt-2 text-sm text-gray-600">Design and manage your email templates</p>
+            <h1 class="text-3xl font-bold text-white">Email Templates</h1>
+            <p class="mt-2 text-sm text-gray-400">Design and manage your email templates</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('admin.email-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('admin.email-templates.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -22,7 +22,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @forelse($templates as $template)
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 overflow-hidden group">
+    <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl hover:shadow-md transition-all duration-200 overflow-hidden group">
         <!-- Preview Banner / Category Graphic -->
         @php
             $category = strtolower($template->category ?? 'system');
@@ -53,9 +53,9 @@
                 </svg>';
             }
         @endphp
-        <div class="h-48 bg-gradient-to-br {{ $gradient }} flex flex-col items-center justify-center p-6 text-center border-b border-gray-100 relative group-hover:scale-105 transition-transform duration-300">
+        <div class="h-48 bg-gradient-to-br {{ $gradient }} flex flex-col items-center justify-center p-6 text-center border-b border-white/10 relative group-hover:scale-105 transition-transform duration-300">
             {!! $icon !!}
-            <span class="absolute bottom-3 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-white/20 text-white backdrop-blur-sm">
+            <span class="absolute bottom-3 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-[#10231C]/60/20 text-white backdrop-blur-sm">
                 {{ $template->category ?? 'System' }}
             </span>
         </div>
@@ -63,11 +63,11 @@
         <div class="p-4">
             <div class="flex justify-between items-start">
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#FB4C4B] transition-colors line-clamp-1">{{ $template->name }}</h3>
-                    <p class="text-sm text-gray-500 mt-1">{{ $template->category ?? 'Uncategorized' }}</p>
+                    <h3 class="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors line-clamp-1">{{ $template->name }}</h3>
+                    <p class="text-sm text-gray-400 mt-1">{{ $template->category ?? 'Uncategorized' }}</p>
                 </div>
                 <div class="flex space-x-2">
-                    <a href="{{ route('admin.email-templates.edit', $template) }}" class="text-gray-400 hover:text-gray-600">
+                    <a href="{{ route('admin.email-templates.edit', $template) }}" class="text-gray-400 hover:text-gray-400">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             
-            <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+            <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center text-xs text-gray-400">
                 <span>Updated {{ $template->updated_at->diffForHumans() }}</span>
                 @if($template->is_active)
                     <span class="text-green-600 font-medium">Active</span>
@@ -86,7 +86,7 @@
         </div>
     </div>
     @empty
-    <div class="col-span-full py-12 text-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-300">
+    <div class="col-span-full py-12 text-center text-gray-400 bg-[#10231C]/60 rounded-xl border border-dashed border-white/10">
         No templates found. Create your first email template.
     </div>
     @endforelse

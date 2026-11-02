@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Admin\Models\Department;
 
+use Illuminate\Validation\Rule;
+use App\Scopes\TenantScope;
+
 class DepartmentController extends Controller
 {
     public function index()
@@ -21,12 +24,22 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
+        $tenantId = TenantScope::getActiveTenantId();
+
         $request->validate([
-            'name' => 'required|string|unique:departments,name|max:255',
+            'name' => [
+                'required', 
+                'string', 
+                'max:255',
+                Rule::unique('departments', 'name')->where('tenant_id', $tenantId),
+            ],
             'description' => 'nullable|string',
         ]);
 
-        Department::create($request->all());
+        $data = $request->only(['name', 'description', 'is_active']);
+        $data['tenant_id'] = $tenantId;
+
+        Department::create($data);
 
         return redirect()->route('admin.departments.index')
             ->with('success', 'Department created successfully.');
@@ -39,12 +52,19 @@ class DepartmentController extends Controller
 
     public function update(Request $request, Department $department)
     {
+        $tenantId = TenantScope::getActiveTenantId();
+
         $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+            'name' => [
+                'required', 
+                'string', 
+                'max:255',
+                Rule::unique('departments', 'name')->where('tenant_id', $tenantId)->ignore($department->id),
+            ],
             'description' => 'nullable|string',
         ]);
 
-        $department->update($request->all());
+        $department->update($request->only(['name', 'description', 'is_active']));
 
         return redirect()->route('admin.departments.index')
             ->with('success', 'Department updated successfully.');

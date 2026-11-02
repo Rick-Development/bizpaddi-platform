@@ -63,7 +63,7 @@
                     @endif
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="{{ route('team.bdm.contracts.show', $contract) }}" class="text-[#FB4C4B] hover:text-[#D93837] mr-3">View</a>
+                    <a href="{{ route('team.bdm.contracts.show', $contract) }}" class="text-emerald-400 hover:text-emerald-300 mr-3">View</a>
                     <a href="{{ route('team.bdm.contracts.edit', $contract) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
                 </td>
             </tr>

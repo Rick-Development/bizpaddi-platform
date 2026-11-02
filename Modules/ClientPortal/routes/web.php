@@ -10,7 +10,7 @@ use Modules\ClientPortal\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('client')->name('client.')->group(function () {
+Route::prefix('dashboard/client')->name('client.')->group(function () {
     
     // Guest Routes (Login & Register)
     Route::middleware('guest:client')->group(function () {
@@ -83,3 +83,7 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::resource('orders', Modules\ClientPortal\Http\Controllers\ServiceOrderController::class)->only(['index', 'store', 'show']);
     });
 });
+
+// Backwards-compatible aliases & redirects for legacy /client URLs
+Route::redirect('client', '/dashboard/client');
+Route::redirect('client/{path}', '/dashboard/client/{path}')->where('path', '.*');

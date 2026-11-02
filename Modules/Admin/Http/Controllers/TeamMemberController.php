@@ -16,7 +16,14 @@ class TeamMemberController extends Controller
 {
     public function index(Request $request)
     {
+        $tenantId = session('impersonated_tenant_id') 
+            ?? (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin() ? auth('admin')->user()->tenant_id : null);
+
         $query = User::query();
+
+        if ($tenantId) {
+            $query->where('tenant_id', $tenantId);
+        }
 
         // Filter by role (Spatie)
         if ($request->filled('role')) {
@@ -46,13 +53,21 @@ class TeamMemberController extends Controller
 
     public function create()
     {
+        $tenantId = session('impersonated_tenant_id') 
+            ?? (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin() ? auth('admin')->user()->tenant_id : null);
+
         $roles = \Spatie\Permission\Models\Role::all();
-        $departments = \Modules\Admin\Models\Department::where('is_active', true)->get();
+        $departments = \Modules\Admin\Models\Department::where('is_active', true)
+            ->when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
+            ->get();
         return view('admin::team-members.create', compact('roles', 'departments'));
     }
 
     public function store(Request $request)
     {
+        $tenantId = session('impersonated_tenant_id') 
+            ?? (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin() ? auth('admin')->user()->tenant_id : null);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -68,6 +83,7 @@ class TeamMemberController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['tenant_id'] = $tenantId ?? (auth('admin')->check() ? auth('admin')->user()->tenant_id : null);
 
         if ($request->hasFile('avatar')) {
             $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');

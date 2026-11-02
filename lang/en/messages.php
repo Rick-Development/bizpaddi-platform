@@ -41,7 +41,7 @@ return [
     'Let\'s work together to bring your vision to life with cutting-edge technology and expert craftsmanship.' => 'Let\'s work together to bring your vision to life with cutting-edge technology and expert craftsmanship.',
     
     // About Page
-    'About Rick Development' => 'About Rick Development',
+    'About Bizpaddi' => 'About Bizpaddi',
     'We are innovators, creators, and problem solvers dedicated to building the future of technology.' => 'We are innovators, creators, and problem solvers dedicated to building the future of technology.',
     'Our Vision' => 'Our Vision',
     'To be the leading technology partner that empowers businesses worldwide through innovative digital solutions.' => 'To be the leading technology partner that empowers businesses worldwide through innovative digital solutions.',
@@ -64,7 +64,7 @@ return [
     'Impact' => 'Impact',
     
     // Blog Page
-    'Insights, updates, and stories from the Rick Development team.' => 'Insights, updates, and stories from the Rick Development team.',
+    'Insights, updates, and stories from the Bizpaddi team.' => 'Insights, updates, and stories from the Bizpaddi team.',
     
     // Contact Page
     'Have a project in mind? Let\'s talk about how we can help you achieve your goals.' => 'Have a project in mind? Let\'s talk about how we can help you achieve your goals.',

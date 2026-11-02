@@ -230,7 +230,7 @@
 }
 
 .back-link:hover {
-    color: #191C47;
+    color: #10231C;
 }
 
 .back-link svg {
@@ -241,7 +241,7 @@
 .page-title {
     font-size: 1.875rem;
     font-weight: 800;
-    color: #191C47;
+    color: #10231C;
     margin: 0;
 }
 
@@ -288,7 +288,7 @@
 .card-title {
     font-size: 1.125rem;
     font-weight: 700;
-    color: #191C47;
+    color: #10231C;
     margin: 0 0 1.5rem 0;
     display: flex;
     align-items: center;
@@ -298,7 +298,7 @@
 .title-icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: #FB4C4B;
+    color: #0E5E4A;
 }
 
 .info-grid {
@@ -323,7 +323,7 @@
 
 .info-item span {
     font-size: 0.9375rem;
-    color: #191C47;
+    color: #10231C;
     font-weight: 600;
 }
 
@@ -415,7 +415,7 @@
 
 .session-url {
     font-size: 0.9375rem;
-    color: #191C47;
+    color: #10231C;
     font-weight: 600;
 }
 

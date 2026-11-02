@@ -31,7 +31,7 @@
         display: inline-block;
         width: 5px;
         height: 24px;
-        background: linear-gradient(180deg, #FB4C4B, #191C47);
+        background: linear-gradient(180deg, #0E5E4A, #10231C);
         border-radius: 4px;
     }
     .cal-topbar-left p { font-size: .85rem; color: #888; margin: 0; }
@@ -48,7 +48,7 @@
     }
     .btn-ghost:hover { background: #eee; }
     .btn-primary {
-        background: #FB4C4B; color: #fff;
+        background: #0E5E4A; color: #fff;
         box-shadow: 0 4px 14px rgba(251,76,75,.25);
     }
     .btn-primary:hover { background: #e83b3a; transform: translateY(-1px); }
@@ -68,7 +68,7 @@
         font-weight: 700; cursor: pointer; border: 2px solid transparent;
         transition: all .2s;
     }
-    .pill.all    { background: #191C47; color: #fff; }
+    .pill.all    { background: #10231C; color: #fff; }
     .pill.li     { background: #e8f0fe; color: #1a73e8; border-color: #c5d8fb; }
     .pill.li:hover { background: #1a73e8; color:#fff; }
     .pill.x      { background: #f0f0f0; color: #111; border-color: #ddd; }
@@ -110,7 +110,7 @@
         align-items: center; justify-content: center;
         color: #444; transition: all .2s;
     }
-    .cal-nav-btns button:hover { background: #FB4C4B; color: #fff; border-color: #FB4C4B; }
+    .cal-nav-btns button:hover { background: #0E5E4A; color: #fff; border-color: #0E5E4A; }
     .today-btn {
         padding: 6px 14px; border-radius: 10px;
         border: 1px solid #e8e8e8; background: #fff;
@@ -136,7 +136,7 @@
         letter-spacing: .08em;
         text-transform: uppercase;
     }
-    .cal-day-headers div.weekend { color: #FB4C4B; }
+    .cal-day-headers div.weekend { color: #0E5E4A; }
 
     /* ─── Calendar grid ──────────────────────────────────── */
     .cal-grid {
@@ -159,9 +159,9 @@
         gap: 4px;
     }
     .cal-day:hover { background: #f9f9fb; border-color: #eee; }
-    .cal-day.today { background: #fff8f8; border-color: #FB4C4B; }
+    .cal-day.today { background: #fff8f8; border-color: #0E5E4A; }
     .cal-day.empty { opacity: .3; pointer-events: none; }
-    .cal-day.weekend .day-num { color: #FB4C4B; }
+    .cal-day.weekend .day-num { color: #0E5E4A; }
 
     .day-num {
         font-size: .85rem;
@@ -175,7 +175,7 @@
         border-radius: 8px;
     }
     .cal-day.today .day-num {
-        background: #FB4C4B;
+        background: #0E5E4A;
         color: #fff;
     }
 
@@ -274,7 +274,7 @@
 
     /* ─── AI assistant card ───────────────────────────────── */
     .ai-assist-card {
-        background: linear-gradient(135deg, #191C47 0%, #2d3185 100%);
+        background: linear-gradient(135deg, #10231C 0%, #2d3185 100%);
         border-radius: 16px;
         padding: 20px;
         color: #fff;
@@ -300,7 +300,7 @@
     .ai-assist-card h3 { font-size: .9rem; font-weight: 800; margin: 0 0 4px; }
     .ai-assist-card p  { font-size: .78rem; color: rgba(255,255,255,.65); margin: 0 0 14px; line-height: 1.5; }
     .ai-assist-card button {
-        background: #FB4C4B;
+        background: #0E5E4A;
         color: #fff;
         border: none;
         padding: 9px 18px;
@@ -526,8 +526,8 @@
                     @forelse($upcomingPosts as $post)
                         @php $d = \Carbon\Carbon::parse($post->scheduled_for)->day; @endphp
                         <div class="upcoming-post">
-                            <div class="upcoming-date" style="{{ $d === $today ? 'background:#fff8f8; border:1px solid #FB4C4B;' : '' }}">
-                                <span class="ud-day" style="{{ $d === $today ? 'color:#FB4C4B;' : '' }}">{{ $d }}</span>
+                            <div class="upcoming-date" style="{{ $d === $today ? 'background:#fff8f8; border:1px solid #0E5E4A;' : '' }}">
+                                <span class="ud-day" style="{{ $d === $today ? 'color:#0E5E4A;' : '' }}">{{ $d }}</span>
                                 <span class="ud-mon">{{ strtoupper(\Carbon\Carbon::parse($post->scheduled_for)->format('M')) }}</span>
                             </div>
                             <div class="upcoming-post-info">

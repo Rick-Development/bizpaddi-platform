@@ -106,7 +106,7 @@ class LeadController extends Controller
             \Illuminate\Support\Facades\Mail::to($lead->email)->send(new \Modules\Contact\Emails\LeadConfirmationEmail($lead));
             
             // Send alert to admin
-            \Illuminate\Support\Facades\Mail::to(config('mail.from.address', 'admin@rickdevelopment.com'))
+            \Illuminate\Support\Facades\Mail::to(config('mail.from.address', 'admin@bizpaddi.com'))
                 ->send(new \Modules\Contact\Emails\NewLeadAlertNotification($lead));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send lead emails: ' . $e->getMessage());

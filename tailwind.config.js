@@ -23,8 +23,15 @@ export default {
             },
             colors: {
                 brand: {
-                    primary: '#FB4C4B',
-                    secondary: '#191C47',
+                    dark: '#08110e',
+                    navbar: '#0b1512',
+                    card: '#0f1f1a',
+                    primary: '#0E5E4A',
+                    secondary: '#10231C',
+                    amber: '#F2A900',
+                    highlight: '#F2A900',
+                    surface: '#08110e',
+                    light: '#08110e',
                 },
             },
         },

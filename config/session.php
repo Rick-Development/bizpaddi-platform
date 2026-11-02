@@ -156,7 +156,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('SESSION_DOMAIN', (isset($_SERVER['HTTP_HOST']) && str_ends_with(strtolower( explode(':', $_SERVER['HTTP_HOST'])[0] ), 'bizpaddi.com')) ? '.bizpaddi.com' : null),
 
     /*
     |--------------------------------------------------------------------------

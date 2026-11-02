@@ -16,7 +16,14 @@ class AdminManagementController extends Controller
      */
     public function index(Request $request)
     {
+        $tenantId = session('impersonated_tenant_id') 
+            ?? (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin() ? auth('admin')->user()->tenant_id : null);
+
         $query = Admin::query();
+
+        if ($tenantId) {
+            $query->where('tenant_id', $tenantId);
+        }
 
         // Search
         if ($request->filled('search')) {
@@ -44,11 +51,13 @@ class AdminManagementController extends Controller
 
         $admins = $query->latest()->paginate(15)->withQueryString();
 
+        $statsQuery = Admin::query()->when($tenantId, fn($q) => $q->where('tenant_id', $tenantId));
+
         $stats = [
-            'total'       => Admin::count(),
-            'super_admin' => Admin::where('role', 'super_admin')->count(),
-            'active'      => Admin::where('is_active', true)->count(),
-            'inactive'    => Admin::where('is_active', false)->count(),
+            'total'       => (clone $statsQuery)->count(),
+            'super_admin' => (clone $statsQuery)->where('role', 'super_admin')->count(),
+            'active'      => (clone $statsQuery)->where('is_active', true)->count(),
+            'inactive'    => (clone $statsQuery)->where('is_active', false)->count(),
         ];
 
         return view('admin::administrators.index', compact('admins', 'stats'));
@@ -67,15 +76,23 @@ class AdminManagementController extends Controller
      */
     public function store(Request $request)
     {
+        $tenantId = session('impersonated_tenant_id') 
+            ?? (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin() ? auth('admin')->user()->tenant_id : null);
+
+        $allowedRoles = (auth('admin')->check() && auth('admin')->user()->isSuperAdmin()) 
+            ? 'in:admin,super_admin' 
+            : 'in:admin';
+
         $validated = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:admins,email'],
             'password'  => ['required', Password::defaults(), 'confirmed'],
-            'role'      => ['required', 'in:admin,super_admin'],
+            'role'      => ['required', $allowedRoles],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
         $admin = Admin::create([
+            'tenant_id' => $tenantId,
             'name'      => $validated['name'],
             'email'     => $validated['email'],
             'password'  => Hash::make($validated['password']),

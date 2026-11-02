@@ -378,7 +378,7 @@ class AiOrchestratorService
             \Illuminate\Support\Facades\Mail::raw(
                 "AI Employee '{$employee->name}' wants to execute '{$toolName}'. Please approve this in the Command Center.", 
                 function ($message) {
-                    $message->to('info@rickdevelopment.com')
+                    $message->to(config('mail.from.address', 'info@bizpaddi.com'))
                             ->subject('Action Required: AI Action Pending Approval');
                 }
             );

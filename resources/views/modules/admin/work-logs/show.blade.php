@@ -5,14 +5,14 @@
 @section('content')
 <div class="mb-6">
     <div class="flex items-center gap-4">
-        <a href="{{ route('admin.work-logs.index') }}" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+        <a href="{{ route('admin.work-logs.index') }}" class="p-2 rounded-lg text-gray-400 hover:text-gray-400 hover:bg-white/[0.06] transition-colors">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Work Log Details</h1>
-            <p class="mt-1 text-sm text-gray-600">ID: #{{ $workLog->id }} • {{ $workLog->start_time ? $workLog->start_time->format('M d, Y') : 'N/A' }}</p>
+            <h1 class="text-2xl font-bold text-white">Work Log Details</h1>
+            <p class="mt-1 text-sm text-gray-400">ID: #{{ $workLog->id }} • {{ $workLog->start_time ? $workLog->start_time->format('M d, Y') : 'N/A' }}</p>
         </div>
     </div>
 </div>
@@ -22,9 +22,9 @@
     <div class="lg:col-span-2 space-y-6">
         
         <!-- Check-in Target Setup -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-150 p-6 space-y-6">
-            <h2 class="text-lg font-bold text-gray-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <svg class="h-5 w-5 text-[#FB4C4B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="bg-[#10231C]/60 rounded-2xl shadow-sm border border-gray-150 p-6 space-y-6">
+            <h2 class="text-lg font-bold text-white border-b border-slate-100 pb-3 flex items-center gap-2">
+                <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                 </svg>
                 Check-in Target Setup
@@ -46,7 +46,7 @@
                     @if($projects->isNotEmpty())
                         <div class="flex flex-wrap gap-1.5">
                             @foreach($projects as $project)
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-semibold bg-red-50 text-[#FB4C4B] border border-red-100/60 shadow-sm">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-semibold bg-red-50 text-emerald-400 border border-red-100/60 shadow-sm">
                                     {{ $project->name }}
                                 </span>
                             @endforeach
@@ -60,7 +60,7 @@
                 @if(!$isPM && $workLog->resources_needed)
                     <div class="space-y-2">
                         <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Resources Requested:</span>
-                        <div class="text-xs text-gray-600 bg-yellow-50/50 p-3 rounded-xl border border-yellow-100 leading-relaxed">
+                        <div class="text-xs text-gray-400 bg-yellow-50/50 p-3 rounded-xl border border-yellow-100 leading-relaxed">
                             {!! $workLog->resources_needed !!}
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                                         $isAssigned = $task->assigned_to && ($task->updated_at >= $workLog->start_time);
                                         $assignee = $isAssigned ? \App\Models\User::find($task->assigned_to) : null;
                                     @endphp
-                                    <div class="flex items-center justify-between text-xs p-2 bg-white rounded-lg border border-slate-100">
+                                    <div class="flex items-center justify-between text-xs p-2 bg-[#10231C]/60 rounded-lg border border-slate-100">
                                         <span class="font-semibold text-slate-700">#{{ $task->id }} - {{ $task->title }}</span>
                                         @if($isAssigned)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold">
@@ -123,7 +123,7 @@
                             @foreach(explode(', ', $workLog->planned_tasks) as $t)
                                 @if(trim($t))
                                     <div class="flex items-start gap-2 p-2.5 bg-slate-50/50 rounded-xl border border-slate-100 text-xs text-slate-700 font-medium">
-                                        <svg class="h-4 w-4 text-[#FB4C4B] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <svg class="h-4 w-4 text-emerald-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <span>{{ $t }}</span>
@@ -143,8 +143,8 @@
             
             {{-- PM Metrics & Management Escalations --}}
             @if($isPM)
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-150 p-6 space-y-6">
-                    <h2 class="text-lg font-bold text-gray-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <div class="bg-[#10231C]/60 rounded-2xl shadow-sm border border-gray-150 p-6 space-y-6">
+                    <h2 class="text-lg font-bold text-white border-b border-slate-100 pb-3 flex items-center gap-2">
                         <svg class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -182,8 +182,8 @@
 
             {{-- Tasks outcomes & evidence (Developer) --}}
             @if(is_array($workLog->tasks_data) && count($workLog->tasks_data) > 0)
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                         </svg>
@@ -274,7 +274,7 @@
                                                         $url = 'http://' . $url;
                                                     }
                                                 @endphp
-                                                <a href="{{ $url }}" target="_blank" class="inline-flex items-center gap-1 text-[#FB4C4B] hover:underline mt-0.5 font-medium">
+                                                <a href="{{ $url }}" target="_blank" class="inline-flex items-center gap-1 text-emerald-400 hover:underline mt-0.5 font-medium">
                                                     <span>View Reference Proof ({{ $cleanEvidence }})</span>
                                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                                 </a>
@@ -343,8 +343,8 @@
             @endif
 
             <!-- General Accomplishments (Check-out) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6 space-y-4">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-100 pb-3">
                     <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.25v1.5c0 .668.275 1.39.8 1.907.24.24.521.434.82.576.4.19.855.286 1.33.286h4.5" />
                     </svg>
@@ -352,7 +352,7 @@
                 </h2>
                 
                 @if($workLog->actual_tasks)
-                    <div class="bg-slate-50/50 rounded-xl p-4 text-gray-700 leading-relaxed border border-slate-200">{!! $workLog->actual_tasks !!}</div>
+                    <div class="bg-slate-50/50 rounded-xl p-4 text-gray-300 leading-relaxed border border-slate-200">{!! $workLog->actual_tasks !!}</div>
                 @else
                     <p class="text-gray-450 italic">No summary details submitted.</p>
                 @endif
@@ -367,7 +367,7 @@
 
         @else
             <!-- Active Session Check-out Placeholder -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-150 p-6 relative overflow-hidden text-center py-10">
+            <div class="bg-[#10231C]/60 rounded-2xl shadow-sm border border-gray-150 p-6 relative overflow-hidden text-center py-10">
                 <div class="flex flex-col items-center justify-center space-y-3">
                     <span class="w-12 h-12 rounded-full bg-amber-50 text-amber-500 border border-amber-100 flex items-center justify-center animate-pulse">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -383,25 +383,25 @@
 
     <!-- Sidebar Stats -->
     <div class="space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-bold text-gray-900 mb-4">Session Info</h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-bold text-white mb-4">Session Info</h2>
             
             <div class="space-y-4">
                 <div>
-                    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Team Member</p>
+                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Team Member</p>
                     <div class="flex items-center gap-3 mt-1">
-                        <div class="h-8 w-8 rounded-full bg-[#FB4C4B]/10 flex items-center justify-center text-[#FB4C4B] font-bold text-xs">
+                        <div class="h-8 w-8 rounded-full bg-emerald-600/10 flex items-center justify-center text-emerald-400 font-bold text-xs">
                             {{ substr($workLog->user->name ?? 'U', 0, 1) }}
                         </div>
-                        <span class="text-sm font-semibold text-gray-900">{{ $workLog->user->name ?? 'Unknown' }}</span>
+                        <span class="text-sm font-semibold text-white">{{ $workLog->user->name ?? 'Unknown' }}</span>
                     </div>
                 </div>
 
-                <div class="pt-4 border-t border-gray-100">
-                     <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Duration</p>
+                <div class="pt-4 border-t border-white/10">
+                     <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Duration</p>
                      @if($workLog->duration_minutes)
-                        <p class="text-3xl font-bold text-[#FB4C4B]">{{ floor($workLog->duration_minutes / 60) }}h {{ $workLog->duration_minutes % 60 }}m</p>
-                        <p class="text-xs text-gray-500 mt-1">Total worked time</p>
+                        <p class="text-3xl font-bold text-emerald-400">{{ floor($workLog->duration_minutes / 60) }}h {{ $workLog->duration_minutes % 60 }}m</p>
+                        <p class="text-xs text-gray-400 mt-1">Total worked time</p>
                      @else
                         @php
                             $liveMins = $workLog->start_time ? $workLog->start_time->diffInMinutes(now()) : 0;
@@ -413,16 +413,16 @@
                      @endif
                 </div>
 
-                <div class="pt-4 border-t border-gray-100 grid grid-cols-2 gap-4">
+                <div class="pt-4 border-t border-white/10 grid grid-cols-2 gap-4">
                     <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-in</p>
-                        <p class="text-sm font-semibold text-gray-900 mt-1">{{ $workLog->start_time ? $workLog->start_time->format('H:i') : 'N/A' }}</p>
+                        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Check-in</p>
+                        <p class="text-sm font-semibold text-white mt-1">{{ $workLog->start_time ? $workLog->start_time->format('H:i') : 'N/A' }}</p>
                         <p class="text-xs text-gray-400">{{ $workLog->start_time ? $workLog->start_time->format('M d') : '' }}</p>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-out</p>
+                        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">Check-out</p>
                         @if($workLog->end_time)
-                            <p class="text-sm font-semibold text-gray-900 mt-1">{{ $workLog->end_time->format('H:i') }}</p>
+                            <p class="text-sm font-semibold text-white mt-1">{{ $workLog->end_time->format('H:i') }}</p>
                             <p class="text-xs text-gray-400">{{ $workLog->end_time->format('M d') }}</p>
                         @else
                             <p class="text-sm font-medium text-gray-400 italic mt-1">Pending...</p>
@@ -431,7 +431,7 @@
                 </div>
                 
                 @if($workLog->status === 'completed')
-                <div class="pt-4 border-t border-gray-100">
+                <div class="pt-4 border-t border-white/10">
                     <span class="block text-center w-full px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium border border-emerald-100 font-bold">
                         Session Completed
                     </span>

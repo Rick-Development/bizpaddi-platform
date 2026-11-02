@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="mt-4 sm:mt-0 flex space-x-3">
-            <a href="{{ route('team.bdm.campaigns.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FB4C4B]">
+            <a href="{{ route('team.bdm.campaigns.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                 Back to List
             </a>
             
@@ -33,7 +33,7 @@
             @if($campaign->status == 'draft')
             <form action="{{ route('team.bdm.campaigns.send', $campaign) }}" method="POST" onsubmit="return confirm('Are you sure you want to send this campaign now? This action cannot be undone.');">
                 @csrf
-                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FB4C4B]">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
@@ -103,7 +103,7 @@
             <div class="p-6 space-y-4">
                 <div>
                     <span class="block text-sm font-medium text-gray-500">Contact List</span>
-                    <a href="{{ route('team.bdm.contact-lists.show', $campaign->contact_list_id) }}" class="text-sm font-medium text-[#FB4C4B] hover:text-[#D93837]">
+                    <a href="{{ route('team.bdm.contact-lists.show', $campaign->contact_list_id) }}" class="text-sm font-medium text-emerald-400 hover:text-emerald-300">
                         {{ $campaign->contactList ? $campaign->contactList->name : 'No List Selected' }}
                     </a>
                 </div>

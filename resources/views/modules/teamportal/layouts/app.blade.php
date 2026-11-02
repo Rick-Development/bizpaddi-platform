@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }} - @yield('title')</title>
-    @php
-        $favicon = \Modules\Settings\Models\Setting::get('favicon');
-    @endphp
-    @if($favicon)
-        <link rel="icon" href="{{ asset('storage/' . $favicon) }}" type="image/x-icon">
-    @else
-        <link rel="icon" href="/logo.png" type="image/png">
-    @endif
+    <link rel="icon" type="image/png" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/bizpaddi/icon.png') }}">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,8 +23,10 @@
                 extend: {
                     colors: {
                         brand: {
-                            primary: '#FB4C4B',
-                            secondary: '#191C47',
+                            primary: '#0E5E4A',
+                            secondary: '#10231C',
+                            amber: '#F2A900',
+                            dark: '#08110e',
                         }
                     },
                     fontFamily: {

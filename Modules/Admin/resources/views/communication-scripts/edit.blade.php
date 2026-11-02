@@ -9,16 +9,16 @@
         <div>
             <nav class="flex mb-1" aria-label="Breadcrumb">
                 <ol role="list" class="flex items-center space-x-2">
-                    <li><a href="{{ route('admin.communication-scripts.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">Scripts</a></li>
+                    <li><a href="{{ route('admin.communication-scripts.index') }}" class="text-sm font-medium text-gray-400 hover:text-gray-300">Scripts</a></li>
                     <li>
                         <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                         </svg>
                     </li>
-                    <li><span class="text-sm font-medium text-gray-900" aria-current="page">Edit Script</span></li>
+                    <li><span class="text-sm font-medium text-white" aria-current="page">Edit Script</span></li>
                 </ol>
             </nav>
-            <h1 class="text-2xl font-bold text-gray-900">Manage Script Steps</h1>
+            <h1 class="text-2xl font-bold text-white">Manage Script Steps</h1>
         </div>
         <div class="flex items-center gap-2">
             @php
@@ -29,25 +29,25 @@
                     \Illuminate\Support\Facades\Log::error('Route error: ' . $e->getMessage(), ['script' => $script]);
                 }
             @endphp
-            <a href="{{ $showUrl }}" target="_blank" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
-                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="{{ $showUrl }}" target="_blank" class="inline-flex items-center rounded-md border border-white/10 bg-[#10231C]/60 px-4 py-2 text-sm font-medium text-gray-300 shadow-sm hover:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
                 View Playbook
             </a>
-            <button @click="isEditingScript = true" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
+            <button @click="isEditingScript = true" class="inline-flex items-center rounded-md border border-white/10 bg-[#10231C]/60 px-4 py-2 text-sm font-medium text-gray-300 shadow-sm hover:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
                 Settings
             </button>
         </div>
     </div>
 
     <!-- Steps List -->
-    <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+    <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-white/10 flex justify-between items-center bg-white/[0.03]">
             <div>
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Script Steps</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">Define the flow of conversation.</p>
+                <h3 class="text-lg leading-6 font-medium text-white">Script Steps</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-400">Define the flow of conversation.</p>
             </div>
             <button @click="openStepModal()" class="inline-flex items-center rounded-md border border-transparent bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -57,21 +57,21 @@
             </button>
         </div>
         
-        <ul role="list" class="divide-y divide-gray-200">
+        <ul role="list" class="divide-y divide-white/10">
             <template x-for="(step, index) in steps" :key="step.id">
-                <li class="relative hover:bg-gray-50 transition-colors">
+                <li class="relative hover:bg-white/[0.03] transition-colors">
                     <div class="px-4 py-4 sm:px-6 flex items-start justify-between">
                         <div class="flex items-start gap-4 flex-1">
                             <!-- Drag Handle / Order -->
                             <div class="flex flex-col items-center gap-1 pt-1">
-                                <span class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-100 text-xs font-bold text-gray-600 flex items-center justify-center border border-gray-300" x-text="index + 1"></span>
+                                <span class="flex-shrink-0 h-6 w-6 rounded-full bg-white/[0.06] text-xs font-bold text-gray-400 flex items-center justify-center border border-white/10" x-text="index + 1"></span>
                                 <div class="flex flex-col gap-0.5">
-                                    <button @click="moveStep(index, -1)" class="text-gray-400 hover:text-gray-600 disabled:opacity-30" :disabled="index === 0">
+                                    <button @click="moveStep(index, -1)" class="text-gray-400 hover:text-gray-400 disabled:opacity-30" :disabled="index === 0">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                         </svg>
                                     </button>
-                                    <button @click="moveStep(index, 1)" class="text-gray-400 hover:text-gray-600 disabled:opacity-30" :disabled="index === steps.length - 1">
+                                    <button @click="moveStep(index, 1)" class="text-gray-400 hover:text-gray-400 disabled:opacity-30" :disabled="index === steps.length - 1">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                         </svg>
@@ -82,7 +82,7 @@
                             <!-- Content -->
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-bold text-brand-primary truncate" x-text="step.name"></h4>
-                                <p class="mt-1 text-sm text-gray-600 line-clamp-2" x-text="step.content"></p>
+                                <p class="mt-1 text-sm text-gray-400 line-clamp-2" x-text="step.content"></p>
                                 
                                 <!-- Meta/Exceptions Badge -->
                                 <div class="mt-2 flex items-center gap-2">
@@ -109,7 +109,7 @@
             </template>
             
             <template x-if="steps.length === 0">
-                 <li class="px-4 py-8 text-center text-gray-500 italic">
+                 <li class="px-4 py-8 text-center text-gray-400 italic">
                     No steps added yet. Click "Add Step" to begin.
                 </li>
             </template>
@@ -141,12 +141,12 @@
                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                 
-                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div class="bg-[#10231C]/60 rounded-2xl shadow-2xl overflow-hidden">
                     <!-- Header -->
                     <div class="relative px-6 py-5 bg-gradient-to-r from-brand-primary to-brand-primary/80">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                <div class="w-10 h-10 rounded-lg bg-[#10231C]/60/20 backdrop-blur-sm flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
@@ -157,7 +157,7 @@
                                 </div>
                             </div>
                             <button @click="isStepModalOpen = false" 
-                                    class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center group">
+                                    class="w-8 h-8 rounded-lg bg-[#10231C]/60/10 hover:bg-[#10231C]/60/20 transition-colors flex items-center justify-center group">
                                 <svg class="w-5 h-5 text-white/80 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -169,25 +169,25 @@
                     <div class="px-6 py-6 space-y-6 max-h-[calc(100vh-16rem)] overflow-y-auto">
                         <!-- Step Name -->
                         <div class="group">
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">
+                            <label class="block text-sm font-semibold text-white mb-2">
                                 Step Name <span class="text-red-500">*</span>
                             </label>
                             <input type="text" 
                                    x-model="stepForm.name" 
-                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 text-gray-900 placeholder-gray-400" 
+                                   class="w-full px-4 py-3 border-2 border-white/10 rounded-xl focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 text-white placeholder-gray-400 bg-[#0a1612] text-white border-white/10" 
                                    placeholder="e.g. Introduction, Discovery Questions, Closing">
                         </div>
                         
                         <!-- Script Content -->
                         <div class="group">
-                            <label class="block text-sm font-semibold text-gray-900 mb-2">
+                            <label class="block text-sm font-semibold text-white mb-2">
                                 Script Content <span class="text-red-500">*</span>
                             </label>
                             <textarea x-model="stepForm.content" 
                                       rows="6" 
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 text-gray-900 placeholder-gray-400 resize-none" 
+                                      class="w-full px-4 py-3 border-2 border-white/10 rounded-xl focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all duration-200 text-white placeholder-gray-400 resize-none bg-[#0a1612] text-white border-white/10" 
                                       placeholder="Enter the script content that the agent should follow..."></textarea>
-                            <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                            <p class="mt-2 text-xs text-gray-400 flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -196,37 +196,37 @@
                         </div>
 
                         <!-- Objection Handling Section -->
-                        <div class="border-t-2 border-gray-100 pt-6">
+                        <div class="border-t-2 border-white/10 pt-6">
                             <div class="flex items-center justify-between mb-4">
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-900">
+                                    <label class="block text-sm font-semibold text-white">
                                         Objection Handling
                                     </label>
-                                    <p class="text-xs text-gray-500 mt-1">Define responses to common objections</p>
+                                    <p class="text-xs text-gray-400 mt-1">Define responses to common objections</p>
                                 </div>
-                                <span class="px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600" x-text="stepForm.exceptions.length + ' rules'"></span>
+                                <span class="px-2.5 py-1 rounded-full bg-white/[0.06] text-xs font-medium text-gray-400" x-text="stepForm.exceptions.length + ' rules'"></span>
                             </div>
                             
                             <!-- Exception List -->
                             <div class="space-y-3 mb-4">
                                 <template x-for="(exception, idx) in stepForm.exceptions" :key="idx">
                                     <div class="relative group/exception">
-                                        <div class="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border-2 border-gray-200 hover:border-brand-primary/30 transition-all duration-200">
+                                        <div class="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border-2 border-white/10 hover:border-brand-primary/30 transition-all duration-200">
                                             <div class="flex items-start gap-3">
                                                 <div class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center text-xs font-bold mt-1" x-text="idx + 1"></div>
                                                 <div class="flex-1 space-y-3">
                                                     <div>
-                                                        <label class="block text-xs font-medium text-gray-600 mb-1.5">Trigger Phrase</label>
+                                                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Trigger Phrase</label>
                                                         <input type="text" 
                                                                x-model="exception.trigger_text" 
-                                                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all" 
+                                                               class="w-full px-3 py-2 text-sm border border-white/10 rounded-lg focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all bg-[#0a1612] text-white border-white/10" 
                                                                placeholder='e.g. "I\'m not interested" or "It\'s too expensive"'>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-xs font-medium text-gray-600 mb-1.5">Response</label>
+                                                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Response</label>
                                                         <textarea x-model="exception.response_content" 
                                                                   rows="3" 
-                                                                  class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all resize-none" 
+                                                                  class="w-full px-3 py-2 text-sm border border-white/10 rounded-lg focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10 transition-all resize-none bg-[#0a1612] text-white border-white/10" 
                                                                   placeholder="How should the agent respond to this objection?"></textarea>
                                                     </div>
                                                 </div>
@@ -244,7 +244,7 @@
                             
                             <!-- Add Exception Button -->
                             <button @click="addExceptionToForm()" 
-                                    class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-brand-primary hover:bg-brand-primary/5 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium text-gray-600 hover:text-brand-primary group">
+                                    class="w-full px-4 py-3 border-2 border-dashed border-white/10 rounded-xl hover:border-brand-primary hover:bg-brand-primary/5 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium text-gray-400 hover:text-brand-primary group">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
@@ -254,10 +254,10 @@
                     </div>
 
                     <!-- Footer Actions -->
-                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
+                    <div class="px-6 py-4 bg-white/[0.03] border-t border-white/10 flex items-center justify-end gap-3">
                         <button type="button" 
                                 @click="isStepModalOpen = false" 
-                                class="px-5 py-2.5 rounded-xl border-2 border-gray-300 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-200">
+                                class="px-5 py-2.5 rounded-xl border-2 border-white/10 bg-[#10231C]/60 text-sm font-semibold text-gray-300 hover:bg-white/[0.03] hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-200">
                             Cancel
                         </button>
                         <button type="button" 
@@ -303,12 +303,12 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="bg-[#10231C]/60 rounded-2xl shadow-2xl overflow-hidden">
                         <!-- Header -->
                         <div class="relative px-6 py-5 bg-gradient-to-r from-indigo-600 to-indigo-500">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                    <div class="w-10 h-10 rounded-lg bg-[#10231C]/60/20 backdrop-blur-sm flex items-center justify-center">
                                         <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -321,7 +321,7 @@
                                 </div>
                                 <button type="button"
                                         @click="isEditingScript = false" 
-                                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center group">
+                                        class="w-8 h-8 rounded-lg bg-[#10231C]/60/10 hover:bg-[#10231C]/60/20 transition-colors flex items-center justify-center group">
                                     <svg class="w-5 h-5 text-white/80 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -333,29 +333,29 @@
                         <div class="px-6 py-6 space-y-5">
                             <!-- Title Field -->
                             <div class="group">
-                                <label for="title" class="block text-sm font-semibold text-gray-900 mb-2">
+                                <label for="title" class="block text-sm font-semibold text-white mb-2">
                                     Title <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" 
                                        name="title" 
                                        id="title" 
                                        value="{{ $script->title }}" 
-                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 text-gray-900 placeholder-gray-400" 
+                                       class="w-full px-4 py-3 border-2 border-white/10 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 text-white placeholder-gray-400" 
                                        placeholder="e.g. Sales Discovery Call"
                                        required>
                             </div>
                             
                             <!-- Description Field -->
                             <div class="group">
-                                <label for="description" class="block text-sm font-semibold text-gray-900 mb-2">
+                                <label for="description" class="block text-sm font-semibold text-white mb-2">
                                     Description
                                 </label>
                                 <textarea name="description" 
                                           id="description" 
                                           rows="4" 
-                                          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 text-gray-900 placeholder-gray-400 resize-none" 
+                                          class="w-full px-4 py-3 border-2 border-white/10 rounded-xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-200 text-white placeholder-gray-400 resize-none bg-[#0a1612] text-white border-white/10" 
                                           placeholder="Brief description of when and how to use this script...">{{ $script->description }}</textarea>
-                                <p class="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                                <p class="mt-2 text-xs text-gray-400 flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -364,19 +364,19 @@
                             </div>
                             
                             <!-- Active Toggle -->
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border-2 border-gray-200">
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border-2 border-white/10">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-start gap-3">
-                                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-white border border-gray-300 flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#10231C]/60 border border-white/10 flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <label for="is_active" class="block text-sm font-semibold text-gray-900">
+                                            <label for="is_active" class="block text-sm font-semibold text-white">
                                                 Active Status
                                             </label>
-                                            <p class="text-xs text-gray-500 mt-0.5">
+                                            <p class="text-xs text-gray-400 mt-0.5">
                                                 Enable this script for use in conversations
                                             </p>
                                         </div>
@@ -389,17 +389,17 @@
                                                {{ $script->is_active ? 'checked' : '' }} 
                                                class="sr-only peer">
                                         <label for="is_active" 
-                                               class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 cursor-pointer"></label>
+                                               class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#10231C]/60 after:border-white/10 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 cursor-pointer"></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
+                        <div class="px-6 py-4 bg-white/[0.03] border-t border-white/10 flex items-center justify-end gap-3">
                             <button type="button" 
                                     @click="isEditingScript = false" 
-                                    class="px-5 py-2.5 rounded-xl border-2 border-gray-300 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-200">
+                                    class="px-5 py-2.5 rounded-xl border-2 border-white/10 bg-[#10231C]/60 text-sm font-semibold text-gray-300 hover:bg-white/[0.03] hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-200">
                                 Cancel
                             </button>
                             <button type="submit" 

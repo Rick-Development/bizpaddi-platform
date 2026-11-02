@@ -13,10 +13,10 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Admin::where('email', 'admin@rickdevelopment.com')->exists()) {
+        if (!Admin::where('email', 'admin@bizpaddi.com')->exists()) {
             Admin::create([
                 'name' => 'Super Admin',
-                'email' => 'admin@rickdevelopment.com',
+                'email' => 'admin@bizpaddi.com',
                 'password' => Hash::make('password'),
                 'role' => 'super_admin',
                 'is_active' => true,

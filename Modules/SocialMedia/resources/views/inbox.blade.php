@@ -13,14 +13,14 @@
         padding:20px 28px; box-shadow:0 1px 6px rgba(0,0,0,.04);
     }
     .in-topbar h1 { font-size:1.45rem; font-weight:800; color:#111; display:flex; align-items:center; gap:10px; margin:0 0 4px; }
-    .in-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#FB4C4B,#191C47); border-radius:4px; }
+    .in-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#0E5E4A,#10231C); border-radius:4px; }
     .in-topbar p { font-size:.85rem; color:#888; margin:0; }
 
     /* Buttons */
     .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border-radius:12px; font-size:.85rem; font-weight:700; cursor:pointer; border:none; transition:all .2s; }
     .btn-ghost { background:#f5f5f7; color:#444; }
     .btn-ghost:hover { background:#eee; }
-    .btn-primary { background:#FB4C4B; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
+    .btn-primary { background:#0E5E4A; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
     .btn-primary:hover { background:#e83b3a; transform:translateY(-1px); }
     .btn-sm { padding:7px 14px; font-size:.78rem; }
 
@@ -47,7 +47,7 @@
     }
     .tl-header { padding:14px 16px; border-bottom:1px solid #f5f5f5; }
     .tl-search { width:100%; padding:8px 12px; border:1px solid #eee; border-radius:10px; font-size:.82rem; outline:none; transition:all .2s; }
-    .tl-search:focus { border-color:#FB4C4B; box-shadow:0 0 0 3px rgba(251,76,75,.08); }
+    .tl-search:focus { border-color:#0E5E4A; box-shadow:0 0 0 3px rgba(251,76,75,.08); }
     .tl-tabs { display:flex; gap:2px; margin-top:10px; background:#f5f5f7; border-radius:9px; padding:3px; }
     .tl-tab { flex:1; text-align:center; padding:5px 8px; font-size:.75rem; font-weight:700; border-radius:7px; cursor:pointer; color:#888; border:none; background:transparent; transition:all .2s; }
     .tl-tab.active { background:#fff; color:#111; box-shadow:0 1px 3px rgba(0,0,0,.1); }
@@ -59,7 +59,7 @@
         transition:all .15s; border:1px solid transparent; margin-bottom:4px;
     }
     .thread-item:hover { background:#f9f9fb; }
-    .thread-item.active { background:#fff8f8; border-color:#FB4C4B; }
+    .thread-item.active { background:#fff8f8; border-color:#0E5E4A; }
     .thread-item.unread .ti-name { font-weight:800; }
     .ti-row1 { display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
     .ti-badge { font-size:.65rem; font-weight:800; padding:2px 7px; border-radius:6px; }
@@ -93,7 +93,7 @@
     .msg-bubble { max-width:75%; }
     .msg-bubble .mb-text { padding:10px 14px; border-radius:14px; font-size:.83rem; line-height:1.5; }
     .msg-incoming .mb-text { background:#fff; border:1px solid #eee; color:#222; border-bottom-left-radius:4px; }
-    .msg-outgoing .mb-text { background:#191C47; color:#fff; border-bottom-right-radius:4px; }
+    .msg-outgoing .mb-text { background:#10231C; color:#fff; border-bottom-right-radius:4px; }
     .msg-bubble .mb-time { font-size:.65rem; color:#bbb; margin-top:4px; font-weight:600; }
     .msg-outgoing .mb-time { text-align:right; }
 
@@ -115,7 +115,7 @@
     /* Reply area */
     .chat-footer { padding:14px 16px; border-top:1px solid #f0f0f0; background:#fff; }
     .reply-box { width:100%; border:1px solid #e5e7eb; border-radius:12px; padding:10px 14px; font-size:.83rem; resize:none; outline:none; transition:all .2s; font-family:inherit; }
-    .reply-box:focus { border-color:#191C47; box-shadow:0 0 0 3px rgba(25,28,71,.08); }
+    .reply-box:focus { border-color:#10231C; box-shadow:0 0 0 3px rgba(25,28,71,.08); }
     .chat-footer-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
 
     /* Right sidebar */
@@ -257,7 +257,7 @@
 
                 {{-- Outgoing draft --}}
                 <div class="msg-row msg-outgoing">
-                    <div class="msg-avatar" style="background:#191C47; color:#fff;">RD</div>
+                    <div class="msg-avatar" style="background:#10231C; color:#fff;">RD</div>
                     <div class="msg-bubble">
                         <div class="mb-text">Hi! Thanks for reaching out. We'd love to help — iOS crash issues are something our team handles regularly. I'll have one of our senior devs reach out to you today. Can you DM us your contact details?</div>
                         <div class="mb-time">AI Draft · Not sent</div>
@@ -315,11 +315,11 @@
             </div>
 
             {{-- AI suggestion --}}
-            <div style="background:linear-gradient(135deg,#191C47,#2d3185); border-radius:14px; padding:18px; color:#fff;">
+            <div style="background:linear-gradient(135deg,#10231C,#2d3185); border-radius:14px; padding:18px; color:#fff;">
                 <div style="font-size:1.2rem; margin-bottom:8px;">🤖</div>
                 <div style="font-size:.85rem; font-weight:800; margin-bottom:6px;">AI Recommendation</div>
                 <p style="font-size:.78rem; color:rgba(255,255,255,.65); line-height:1.5; margin:0 0 12px;">Based on @tech_investor's profile, this is a high-value lead. Recommend BDM AI contact within the next 30 minutes.</p>
-                <button style="width:100%; background:#FB4C4B; color:#fff; border:none; padding:9px; border-radius:9px; font-size:.8rem; font-weight:700; cursor:pointer;">Accept & Route to BDM</button>
+                <button style="width:100%; background:#0E5E4A; color:#fff; border:none; padding:9px; border-radius:9px; font-size:.8rem; font-weight:700; cursor:pointer;">Accept & Route to BDM</button>
             </div>
         </div>
     </div>

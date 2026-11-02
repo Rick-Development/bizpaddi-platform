@@ -104,7 +104,7 @@
             font-weight: bold;
             border-top: 2px solid #ddd;
             padding-top: 15px;
-            color: #FB4C4B;
+            color: #0E5E4A;
         }
         .footer {
             margin-top: 50px;

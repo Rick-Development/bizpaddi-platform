@@ -5,12 +5,15 @@ namespace Modules\AiEmployees\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\AiEmployees\Database\Factories\AiKnowledgeDocumentFactory;
+use App\Traits\BelongsToTenant;
 
 class AiKnowledgeDocument extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     protected $fillable = [
+        'tenant_id',
         'title',
         'category',
         'content',

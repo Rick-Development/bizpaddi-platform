@@ -13,11 +13,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\BelongsToTenant;
 
 class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, HasApiTokens, SoftDeletes;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia, HasApiTokens, SoftDeletes, BelongsToTenant;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +26,7 @@ class User extends Authenticatable implements HasMedia
      * @var list<string>
      */
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'password',
@@ -121,6 +123,19 @@ class User extends Authenticatable implements HasMedia
     public function managedProjects()
     {
         return $this->hasMany(\Modules\ProjectManagement\Models\Project::class, 'manager_id');
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+
+    public function isSuperAdmin()
+    {
+        $role = strtolower($this->role ?? '');
+        return $role === 'super_admin' || 
+               $this->hasRole('super_admin') || 
+               ($this->isAdmin() && empty($this->tenant_id));
     }
 
     public function isAdmin()

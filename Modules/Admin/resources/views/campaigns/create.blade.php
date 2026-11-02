@@ -5,32 +5,32 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Create New Campaign</h1>
-        <p class="mt-1 text-sm text-gray-600">Design and schedule your email marketing campaign</p>
+        <h1 class="text-2xl font-bold text-white">Create New Campaign</h1>
+        <p class="mt-1 text-sm text-gray-400">Design and schedule your email marketing campaign</p>
     </div>
 
     <form action="{{ route('admin.campaigns.store') }}" method="POST" class="space-y-6">
         @csrf
 
         <!-- Campaign Details -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Campaign Details</h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Campaign Details</h2>
             
             <div class="grid grid-cols-1 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent" placeholder="e.g., Monthly Newsletter - Dec 2025">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Campaign Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10" placeholder="e.g., Monthly Newsletter - Dec 2025">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Subject <span class="text-red-500">*</span></label>
-                    <input type="text" name="subject" value="{{ old('subject') }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent" placeholder="Subject line for your email">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Email Subject <span class="text-red-500">*</span></label>
+                    <input type="text" name="subject" value="{{ old('subject') }}" required class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10" placeholder="Subject line for your email">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Contact List <span class="text-red-500">*</span></label>
-                        <select name="contact_list_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Contact List <span class="text-red-500">*</span></label>
+                        <select name="contact_list_id" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
                             <option value="">Select a list</option>
                             @foreach($contactLists as $list)
                                 <option value="{{ $list->id }}" {{ old('contact_list_id') == $list->id ? 'selected' : '' }}>
@@ -41,8 +41,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Template (Optional)</label>
-                        <select name="template_id" id="template-selector" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Template (Optional)</label>
+                        <select name="template_id" id="template-selector" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
                             <option value="">Start from scratch</option>
                             @foreach($templates as $template)
                                 <option value="{{ $template->id }}" data-content="{{ json_encode($template->content) }}" {{ old('template_id') == $template->id ? 'selected' : '' }}>
@@ -56,52 +56,52 @@
         </div>
 
         <!-- Sender Info -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Sender Information</h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Sender Information</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">From Name <span class="text-red-500">*</span></label>
-                    <input type="text" name="from_name" value="{{ old('from_name', config('mail.from.name', 'Rick Development')) }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">From Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="from_name" value="{{ old('from_name', config('mail.from.name', 'Bizpaddi')) }}" required class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">From Email <span class="text-red-500">*</span></label>
-                    <input type="email" name="from_email" value="{{ old('from_email', config('mail.from.address')) }}" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">From Email <span class="text-red-500">*</span></label>
+                    <input type="email" name="from_email" value="{{ old('from_email', config('mail.from.address')) }}" required class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
                 </div>
                 
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Reply-To Email</label>
-                    <input type="email" name="reply_to" value="{{ old('reply_to') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent" placeholder="Leave blank to use From Email">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Reply-To Email</label>
+                    <input type="email" name="reply_to" value="{{ old('reply_to') }}" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10" placeholder="Leave blank to use From Email">
                 </div>
             </div>
         </div>
 
         <!-- Content -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Email Content <span class="text-red-500">*</span></h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Email Content <span class="text-red-500">*</span></h2>
             
             <textarea name="content" id="campaign-content" required>{{ old('content') }}</textarea>
             
-            <div class="mt-2 text-sm text-gray-500">
+            <div class="mt-2 text-sm text-gray-400">
                 Available variables: @{{ first_name }}, @{{ last_name }}, @{{ email }}, @{{ company }}
             </div>
         </div>
 
         <!-- Scheduling -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Scheduling</h2>
+        <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6">
+            <h2 class="text-lg font-semibold text-white mb-4">Scheduling</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Scheduled for (Optional)</label>
-                    <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at') }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
-                    <p class="mt-1 text-xs text-gray-500">Leave blank to save as draft and send manually later.</p>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Scheduled for (Optional)</label>
+                    <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at') }}" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
+                    <p class="mt-1 text-xs text-gray-400">Leave blank to save as draft and send manually later.</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Status</label>
+                    <select name="status" class="w-full px-3 py-2 border border-white/10 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white border-white/10">
                         <option value="draft" selected>Save as Draft</option>
                         <option value="scheduled">Schedule for Later</option>
                     </select>
@@ -110,10 +110,10 @@
         </div>
 
         <div class="flex justify-end gap-x-3">
-            <a href="{{ route('admin.campaigns.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <a href="{{ route('admin.campaigns.index') }}" class="px-4 py-2 border border-white/10 rounded-md text-sm font-medium text-gray-300 hover:bg-white/[0.03]">
                 Cancel
             </a>
-            <button type="submit" class="px-4 py-2 bg-[#FB4C4B] text-white rounded-md text-sm font-medium hover:bg-[#D93837]">
+            <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-500">
                 Create Campaign
             </button>
         </div>

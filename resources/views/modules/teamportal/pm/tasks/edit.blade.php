@@ -74,7 +74,7 @@
 
         <div>
             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Attachments (Images, Videos, Files)</label>
-            <input type="file" name="attachments[]" id="file_upload" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent bg-gray-50">
+            <input type="file" name="attachments[]" id="file_upload" multiple class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50">
             <p class="mt-1 text-xs text-gray-500">You can select multiple files to add. Max size per file: 20MB.</p>
             <ul id="file_list" class="mt-2 text-sm text-gray-700 space-y-1"></ul>
             

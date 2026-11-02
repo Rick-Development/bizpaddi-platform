@@ -11,7 +11,7 @@
             <p class="mt-2 text-sm text-gray-600">Create and manage your email marketing campaigns</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="{{ route('team.bdm.campaigns.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#FB4C4B] to-[#D93837] hover:from-[#D93837] hover:to-[#FB4C4B] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+            <a href="{{ route('team.bdm.campaigns.create') }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-[#0A4335] hover:to-[#0E5E4A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
@@ -77,12 +77,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search campaigns..." class="pl-10 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search campaigns..." class="pl-10 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
             </div>
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select name="status" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent transition-all">
+            <select name="status" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 <option value="">All Statuses</option>
                 <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                 <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
@@ -120,7 +120,7 @@
             </div>
 
             <a href="{{ route('team.bdm.campaigns.show', $campaign) }}" class="block group">
-                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-[#FB4C4B] transition-colors mb-2 line-clamp-1">{{ $campaign->name }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-emerald-400 transition-colors mb-2 line-clamp-1">{{ $campaign->name }}</h3>
                 <p class="text-sm text-gray-500 mb-4 line-clamp-1">{{ $campaign->subject }}</p>
                 
                 <div class="space-y-3">
@@ -165,7 +165,7 @@
             @if($campaign->status == 'draft')
             <form action="{{ route('team.bdm.campaigns.send', $campaign) }}" method="POST" onsubmit="return confirm('Are you sure you want to send this campaign now?');">
                 @csrf
-                <button type="submit" class="text-xs font-semibold text-[#FB4C4B] hover:text-[#D93837] uppercase tracking-wide">
+                <button type="submit" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 uppercase tracking-wide">
                     Send Now
                 </button>
             </form>
@@ -182,7 +182,7 @@
             <h3 class="mt-2 text-sm font-medium text-gray-900">No campaigns found</h3>
             <p class="mt-1 text-sm text-gray-500">Get started by creating a new email campaign.</p>
             <div class="mt-6">
-                <a href="{{ route('team.bdm.campaigns.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#FB4C4B] hover:bg-[#D93837] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FB4C4B]">
+                <a href="{{ route('team.bdm.campaigns.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>

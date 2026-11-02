@@ -19,7 +19,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .header {
-            background: linear-gradient(135deg, #FB4C4B 0%, #191C47 100%);
+            background: linear-gradient(135deg, #0E5E4A 0%, #10231C 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -54,10 +54,10 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #FB4C4B;
+            border-left: 4px solid #0E5E4A;
         }
         .section h2 {
-            color: #191C47;
+            color: #10231C;
             font-size: 18px;
             margin-top: 0;
             margin-bottom: 15px;
@@ -69,7 +69,7 @@
             display: inline-block;
             width: 4px;
             height: 20px;
-            background: #FB4C4B;
+            background: #0E5E4A;
             margin-right: 10px;
         }
         .progress-bar {
@@ -80,7 +80,7 @@
             margin: 10px 0;
         }
         .progress-fill {
-            background: linear-gradient(90deg, #FB4C4B 0%, #191C47 100%);
+            background: linear-gradient(90deg, #0E5E4A 0%, #10231C 100%);
             height: 100%;
             display: flex;
             align-items: center;
@@ -97,7 +97,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .task-item {
-            border-left: 4px solid #FB4C4B;
+            border-left: 4px solid #0E5E4A;
         }
         .milestone-item {
             border-left: 4px solid #28a745;
@@ -107,7 +107,7 @@
         }
         .task-item strong, .milestone-item strong, .approval-item strong {
             display: block;
-            color: #191C47;
+            color: #10231C;
             font-size: 15px;
             margin-bottom: 5px;
         }
@@ -133,7 +133,7 @@
         }
         .cta-button {
             display: inline-block;
-            background: #FB4C4B;
+            background: #0E5E4A;
             color: white;
             padding: 14px 28px;
             text-decoration: none;
@@ -160,7 +160,7 @@
         .stat-value {
             font-size: 28px;
             font-weight: bold;
-            color: #FB4C4B;
+            color: #0E5E4A;
         }
         .stat-label {
             font-size: 12px;
@@ -173,10 +173,10 @@
             background: #f8f9fa;
             color: #6c757d;
             font-size: 13px;
-            border-top: 3px solid #FB4C4B;
+            border-top: 3px solid #0E5E4A;
         }
         .footer a {
-            color: #FB4C4B;
+            color: #0E5E4A;
             text-decoration: none;
         }
         .empty-state {
@@ -210,8 +210,8 @@
                         {{ $reportData['overallProgress'] }}% Complete
                     </div>
                 </div>
-                <p style="text-align: center; margin-top: 15px; color: #191C47;">
-                    <strong>Status:</strong> <span style="color: #FB4C4B;">{{ ucfirst($project->status) }}</span>
+                <p style="text-align: center; margin-top: 15px; color: #10231C;">
+                    <strong>Status:</strong> <span style="color: #0E5E4A;">{{ ucfirst($project->status) }}</span>
                 </p>
             </div>
 

@@ -7,12 +7,12 @@
     .smm-page { display: flex; flex-direction: column; gap: 24px; }
     .smm-topbar { display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid #f0f0f0; border-radius:18px; padding:20px 28px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
     .smm-topbar h1 { font-size:1.45rem; font-weight:800; color:#111; display:flex; align-items:center; gap:10px; margin:0 0 4px; }
-    .smm-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#FB4C4B,#191C47); border-radius:4px; }
+    .smm-topbar h1 .accent { display:inline-block; width:5px; height:24px; background:linear-gradient(180deg,#0E5E4A,#10231C); border-radius:4px; }
     .smm-topbar p { font-size:.85rem; color:#888; margin:0; }
     .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border-radius:12px; font-size:.85rem; font-weight:700; cursor:pointer; border:none; transition:all .2s; text-decoration:none; }
     .btn-ghost { background:#f5f5f7; color:#444; }
     .btn-ghost:hover { background:#eee; }
-    .btn-primary { background:#FB4C4B; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
+    .btn-primary { background:#0E5E4A; color:#fff; box-shadow:0 4px 14px rgba(251,76,75,.25); }
     .btn-primary:hover { background:#e83b3a; transform:translateY(-1px); }
     .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
     .stat-card { background:#fff; border:1px solid #f0f0f0; border-radius:16px; padding:22px 20px; box-shadow:0 1px 6px rgba(0,0,0,.04); position:relative; overflow:hidden; transition:all .25s; }
@@ -52,7 +52,7 @@
     .pr-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:800; flex-shrink:0; }
     .pr-name { font-size:.83rem; font-weight:700; color:#222; flex:1; }
     .pr-val { font-size:.85rem; font-weight:800; color:#111; }
-    .hero-strip { background:linear-gradient(135deg,#191C47 0%,#2d3185 60%,#3a1c47 100%); border-radius:18px; padding:28px 30px; color:#fff; position:relative; overflow:hidden; display:flex; justify-content:space-between; align-items:center; }
+    .hero-strip { background:linear-gradient(135deg,#10231C 0%,#2d3185 60%,#3a1c47 100%); border-radius:18px; padding:28px 30px; color:#fff; position:relative; overflow:hidden; display:flex; justify-content:space-between; align-items:center; }
     .hero-strip::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; background:rgba(251,76,75,.12); border-radius:50%; }
     .hero-strip::after  { content:''; position:absolute; bottom:-60px; right:80px; width:150px; height:150px; background:rgba(255,255,255,.05); border-radius:50%; }
     .hero-strip h2 { font-size:1.1rem; font-weight:800; margin:0 0 6px; }
@@ -65,7 +65,7 @@
     .hero-left { position:relative; z-index:1; }
     .btn-light { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.2); font-size:.8rem; padding:8px 16px; }
     .btn-light:hover { background:rgba(255,255,255,.25); }
-    .btn-red { background:#FB4C4B; color:#fff; font-size:.8rem; padding:8px 16px; }
+    .btn-red { background:#0E5E4A; color:#fff; font-size:.8rem; padding:8px 16px; }
     .btn-red:hover { background:#e83b3a; }
     .empty-state { text-align:center; padding:30px 20px; color:#bbb; }
     .empty-state .es-icon { font-size:2rem; margin-bottom:8px; }
@@ -221,7 +221,7 @@
                         <span class="ci-pct">{{ $campaign->progress }}%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width:{{ $campaign->progress }}%; background:#FB4C4B;"></div>
+                        <div class="progress-fill" style="width:{{ $campaign->progress }}%; background:#0E5E4A;"></div>
                     </div>
                     @if($campaign->platforms)
                     <div style="font-size:.72rem; color:#aaa; margin-top:4px;">{{ implode(' · ', array_map('ucfirst', $campaign->platforms)) }}</div>
@@ -273,7 +273,7 @@
             <div class="card-body" style="padding:10px 20px;">
                 @forelse($agentLogs as $log)
                 @php
-                    $sentimentColor = match($log->sentiment) { 'positive'=>'#22c55e', 'negative'=>'#FB4C4B', default=>'#3b82f6' };
+                    $sentimentColor = match($log->sentiment) { 'positive'=>'#22c55e', 'negative'=>'#0E5E4A', default=>'#3b82f6' };
                 @endphp
                 <div class="log-item">
                     <span>
@@ -307,9 +307,9 @@ document.addEventListener('DOMContentLoaded', function () {
             datasets: [{
                 label: 'Impressions',
                 data: trendData,
-                borderColor: '#191C47', borderWidth: 3,
+                borderColor: '#10231C', borderWidth: 3,
                 fill: true, backgroundColor: 'rgba(25,28,71,0.06)',
-                tension: 0.4, pointRadius: 4, pointBackgroundColor: '#191C47',
+                tension: 0.4, pointRadius: 4, pointBackgroundColor: '#10231C',
             }]
         },
         options: {

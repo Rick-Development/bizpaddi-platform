@@ -5,12 +5,15 @@ namespace Modules\TeamPortal\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Traits\BelongsToTenant;
 
 class WorkLog extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     protected $fillable = [
+        'tenant_id',
         'user_id',
         'start_time',
         'end_time',

@@ -5,11 +5,11 @@
 @section('content')
 <div class="mb-6 flex items-center justify-between">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Payment Details</h1>
-        <p class="mt-1 text-sm text-gray-600">Reference: {{ $payment->reference }}</p>
+        <h1 class="text-2xl font-bold text-white">Payment Details</h1>
+        <p class="mt-1 text-sm text-gray-200">Reference: {{ $payment->reference }}</p>
     </div>
     <div class="flex gap-3">
-        <a href="{{ route('admin.accounting.salaries.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+        <a href="{{ route('admin.accounting.salaries.index') }}" class="inline-flex items-center px-4 py-2 bg-[#10231C]/60 backdrop-blur-xl border border-white/10 rounded-lg text-sm font-medium text-gray-200 hover:bg-white/5 transition-colors shadow-sm">
             <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -21,33 +21,33 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Details -->
     <div class="lg:col-span-2 space-y-6">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h3 class="font-semibold text-gray-900">Transaction Information</h3>
+        <div class="bg-[#10231C]/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 bg-white/5">
+                <h3 class="font-semibold text-white">Transaction Information</h3>
             </div>
             <div class="p-6">
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Beneficiary Name</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ $payment->account_name }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Beneficiary Name</dt>
+                        <dd class="mt-1 text-sm text-white font-semibold">{{ $payment->account_name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Team Member</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $payment->user->name }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Team Member</dt>
+                        <dd class="mt-1 text-sm text-white">{{ $payment->user->name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Amount</dt>
+                        <dt class="text-sm font-medium text-gray-400">Amount</dt>
                         <dd class="mt-1 text-lg text-brand-primary font-black">{{ $payment->currency }} {{ number_format($payment->amount, 2) }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Status</dt>
+                        <dt class="text-sm font-medium text-gray-400">Status</dt>
                         <dd class="mt-1">
                             @if($payment->status === 'completed' || $payment->status === 'Successful' || $payment->status === 'processing')
                                 <span class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700 ring-1 ring-inset ring-green-600/20 uppercase">
                                     {{ $payment->status }}
                                 </span>
                             @elseif($payment->status === 'failed')
-                                <span class="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700 ring-1 ring-inset ring-red-600/20 uppercase">
+                                <span class="inline-flex items-center rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold text-rose-400 ring-1 ring-inset ring-red-600/20 uppercase">
                                     Failed
                                 </span>
                             @else
@@ -58,42 +58,42 @@
                         </dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Payment Date</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $payment->payment_date->format('M d, Y') }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Payment Date</dt>
+                        <dd class="mt-1 text-sm text-white">{{ $payment->payment_date->format('M d, Y') }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Initiated At</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $payment->created_at->format('M d, Y H:i') }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Initiated At</dt>
+                        <dd class="mt-1 text-sm text-white">{{ $payment->created_at->format('M d, Y H:i') }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-sm font-medium text-gray-500">Description</dt>
-                        <dd class="mt-1 text-sm text-gray-900">{{ $payment->description ?: 'No description provided.' }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Description</dt>
+                        <dd class="mt-1 text-sm text-white">{{ $payment->description ?: 'No description provided.' }}</dd>
                     </div>
                 </dl>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h3 class="font-semibold text-gray-900">Bank Details</h3>
+        <div class="bg-[#10231C]/60 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 bg-white/5">
+                <h3 class="font-semibold text-white">Bank Details</h3>
             </div>
             <div class="p-6">
                 <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Bank Name</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $payment->bank_name ?? 'N/A' }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Bank Name</dt>
+                        <dd class="mt-1 text-sm text-white font-mono">{{ $payment->bank_name ?? 'N/A' }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Bank Code</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $payment->bank_code }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Bank Code</dt>
+                        <dd class="mt-1 text-sm text-white font-mono">{{ $payment->bank_code }}</dd>
                     </div>
                     <div>
-                        <dt class="text-sm font-medium text-gray-500">Account Number</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $payment->account_number }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Account Number</dt>
+                        <dd class="mt-1 text-sm text-white font-mono">{{ $payment->account_number }}</dd>
                     </div>
                     <div class="sm:col-span-2">
-                        <dt class="text-sm font-medium text-gray-500">Session ID (SafeHaven)</dt>
-                        <dd class="mt-1 text-sm text-gray-900 font-mono">{{ $payment->session_id }}</dd>
+                        <dt class="text-sm font-medium text-gray-400">Session ID (Direct Transfer)</dt>
+                        <dd class="mt-1 text-sm text-white font-mono">{{ $payment->session_id }}</dd>
                     </div>
                 </dl>
             </div>

@@ -1,5 +1,5 @@
 <x-home::layouts.master>
-    @section('title', strip_tags(html_entity_decode($job->title)) . ' - Careers at Rick Development')
+    @section('title', strip_tags(html_entity_decode($job->title)) . ' - Careers at Bizpaddi')
     @section('description', Str::limit(strip_tags(html_entity_decode($job->description)), 160))
 
     @php
@@ -42,7 +42,7 @@
     @endphp
 
     <!-- Hero Header -->
-    <div class="relative py-16 sm:py-24 overflow-hidden border-b" style="background: linear-gradient(135deg, #191C47 0%, #0d102b 50%, #070919 100%) !important; color: #ffffff !important; border-color: rgba(255, 255, 255, 0.1) !important;">
+    <div class="relative py-16 sm:py-24 overflow-hidden border-b" style="background: linear-gradient(135deg, #10231C 0%, #0d102b 50%, #070919 100%) !important; color: #ffffff !important; border-color: rgba(255, 255, 255, 0.1) !important;">
         <!-- Ambient Decorative Glows -->
         <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background: rgba(251, 76, 75, 0.18);"></div>
         <div class="absolute top-1/2 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none" style="background: rgba(147, 51, 234, 0.18);"></div>
@@ -132,7 +132,7 @@
 
             <!-- Hero Action Buttons -->
             <div class="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <a href="#apply" class="inline-flex items-center justify-center px-8 py-3.5 rounded-full text-base font-bold shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" style="background: linear-gradient(135deg, #FB4C4B 0%, #a855f7 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px -5px rgba(251, 76, 75, 0.4) !important;">
+                <a href="#apply" class="inline-flex items-center justify-center px-8 py-3.5 rounded-full text-base font-bold shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" style="background: linear-gradient(135deg, #0E5E4A 0%, #a855f7 100%) !important; color: #ffffff !important; box-shadow: 0 10px 25px -5px rgba(251, 76, 75, 0.4) !important;">
                     Apply for this Role
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
@@ -227,7 +227,7 @@
                             </div>
                             <div>
                                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">What We Offer</h2>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Perks, growth, and team culture at Rick Development</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Perks, growth, and team culture at Bizpaddi</p>
                             </div>
                         </div>
 
@@ -536,7 +536,7 @@
                                 <span class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-xs flex-shrink-0">4</span>
                                 <div>
                                     <h4 class="text-sm font-bold text-gray-900 dark:text-white">Offer & Onboarding</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Welcome to the Rick Development team!</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Welcome to the Bizpaddi team!</p>
                                 </div>
                             </div>
                         </div>
@@ -553,12 +553,12 @@
                                 LinkedIn
                             </a>
 
-                            <a href="https://twitter.com/intent/tweet?text={{ urlencode('Check out this career opportunity at Rick Development: ' . $job->title) }}&url={{ urlencode(request()->fullUrl()) }}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 hover:bg-sky-50 hover:text-sky-500 transition-colors border border-gray-100 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                            <a href="https://twitter.com/intent/tweet?text={{ urlencode('Check out this career opportunity at Bizpaddi: ' . $job->title) }}&url={{ urlencode(request()->fullUrl()) }}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 hover:bg-sky-50 hover:text-sky-500 transition-colors border border-gray-100 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300">
                                 <svg class="w-5 h-5 mb-1.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 X / Twitter
                             </a>
 
-                            <a href="https://api.whatsapp.com/send?text={{ urlencode('Job opening at Rick Development: ' . $job->title . ' - ' . request()->fullUrl()) }}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 hover:bg-emerald-50 hover:text-emerald-600 transition-colors border border-gray-100 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                            <a href="https://api.whatsapp.com/send?text={{ urlencode('Job opening at Bizpaddi: ' . $job->title . ' - ' . request()->fullUrl()) }}" target="_blank" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 hover:bg-emerald-50 hover:text-emerald-600 transition-colors border border-gray-100 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300">
                                 <svg class="w-5 h-5 mb-1.5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
                                 WhatsApp
                             </a>

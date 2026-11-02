@@ -8,16 +8,16 @@ use Illuminate\Support\Str;
 
 class SafeHavenService
 {
-    protected string $clientId;
-    protected string $clientAssertion;
-    protected string $apiUrl;
+    protected ?string $clientId = null;
+    protected ?string $clientAssertion = null;
+    protected ?string $apiUrl = null;
     protected string $cacheKey = 'safehaven_auth_token';
 
     public function __construct()
     {
         $this->clientId        = config('services.safehaven.client_id');
         $this->clientAssertion = config('services.safehaven.client_assertion');
-        $this->apiUrl          = rtrim(config('services.safehaven.url'), '/');
+        $this->apiUrl          = rtrim(config('services.safehaven.url') ?? '', '/');
     }
 
 
@@ -26,6 +26,11 @@ class SafeHavenService
      */
     protected function authenticate(): array
     {
+        if (empty($this->clientId) || empty($this->clientAssertion) || empty($this->apiUrl)) {
+            Log::warning('SafeHaven credentials are not configured in environment.');
+            throw new \Exception('SafeHaven credentials are not configured.');
+        }
+
         $tokenData = Cache::get($this->cacheKey);
 
         if ($tokenData) {

@@ -19,7 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
 
-// require __DIR__.'/auth.php';
+// Self-service SaaS onboarding
+Route::get('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register']);
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
 
 Route::get('/test-500', function () {
     abort(500);
@@ -77,7 +83,8 @@ Route::get('/storage/{path}', function ($path) {
     }
 
     try {
-        $liveUrl = 'https://rickdevelopment.com/storage/' . $path;
+        $remoteStorageBase = config('app.remote_storage_url', 'https://bizpaddi.com/storage');
+        $liveUrl = rtrim($remoteStorageBase, '/') . '/' . $path;
         $remoteResponse = \Illuminate\Support\Facades\Http::timeout(5)->get($liveUrl);
         if ($remoteResponse->successful()) {
             $localSavePath = storage_path('app/public/' . $path);

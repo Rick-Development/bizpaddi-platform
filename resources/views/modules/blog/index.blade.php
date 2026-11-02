@@ -8,7 +8,7 @@
                     {{ __('Our Blog') }}
                 </h1>
                 <p class="mt-6 max-w-3xl mx-auto text-xl text-gray-100">
-                    {{ __('Insights, updates, and stories from the Rick Development team.') }}
+                    {{ __('Insights, updates, and stories from the Bizpaddi team.') }}
                 </p>
             </div>
         </div>

@@ -18,12 +18,21 @@ class Admin extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'password',
         'role',
         'is_active',
     ];
+
+    /**
+     * Get the tenant business this admin belongs to.
+     */
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

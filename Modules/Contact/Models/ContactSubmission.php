@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\Contact\Database\Factories\ContactSubmissionFactory;
 
+use App\Traits\BelongsToTenant;
+
 class ContactSubmission extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToTenant;
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'phone',

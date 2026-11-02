@@ -93,7 +93,7 @@ class AiEmployeeController extends Controller
                 [
                     'name' => 'Opportunity Intelligence',
                     'role' => 'opportunity_intelligence',
-                    'prompt' => 'You are the Opportunity Intelligence AI. Your task is to identify what Rick Development can potentially sell to a prospect.'
+                    'prompt' => 'You are the Opportunity Intelligence AI. Your task is to identify what Bizpaddi can potentially sell to a prospect.'
                 ],
                 [
                     'name' => 'Outreach Intelligence',

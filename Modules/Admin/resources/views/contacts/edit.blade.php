@@ -3,89 +3,110 @@
 @section('title', 'Edit Contact')
 
 @section('content')
-<div class="max-w-2xl mx-auto">
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Contact</h1>
-        <p class="mt-1 text-sm text-gray-600">Update contact details</p>
+<div class="max-w-3xl mx-auto pb-12">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('admin.contacts.index') }}" class="text-xs text-gray-400 hover:text-white transition">&larr; Back to Contacts</a>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Edit Contact</h1>
+            <p class="text-xs sm:text-sm text-gray-400">Update contact specifications, status, and list subscriptions.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.contacts.index') }}" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition">
+                Cancel
+            </a>
+            <button type="submit" form="edit-contact-form" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-900/30 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                <i class="fa-solid fa-check"></i>
+                Update Contact
+            </button>
+        </div>
     </div>
 
-    <form action="{{ route('admin.contacts.update', $contact) }}" method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+    <form id="edit-contact-form" action="{{ route('admin.contacts.update', $contact) }}" method="POST" class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-6 sm:p-8 space-y-6">
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                <input type="text" name="first_name" value="{{ old('first_name', $contact->first_name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">First Name</label>
+                <input type="text" name="first_name" value="{{ old('first_name', $contact->first_name) }}"
+                       class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                @error('first_name')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                <input type="text" name="last_name" value="{{ old('last_name', $contact->last_name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Last Name</label>
+                <input type="text" name="last_name" value="{{ old('last_name', $contact->last_name) }}"
+                       class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                @error('last_name')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
             </div>
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-            <input type="email" name="email" value="{{ old('email', $contact->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Email Address</label>
+            <input type="email" name="email" value="{{ old('email', $contact->email) }}"
+                   class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+            @error('email')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input type="text" name="phone" value="{{ old('phone', $contact->phone) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Phone Number</label>
+                <input type="text" name="phone" value="{{ old('phone', $contact->phone) }}"
+                       class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                @error('phone')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Company</label>
                 <input type="text" name="company" id="company" value="{{ old('company', $contact->company) }}"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
-                @error('company')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
+                       class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                @error('company')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
             </div>
+        </div>
 
-            <div class="md:col-span-2">
-                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role / Designation</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Role / Designation</label>
                 <input type="text" name="role" id="role" value="{{ old('role', $contact->role) }}" placeholder="e.g., CEO, Manager, Developer"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
-                @error('role')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
+                       class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                @error('role')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Status</label>
+                <select name="status" class="w-full px-4 py-2.5 border border-white/10 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-[#0a1612] text-white text-sm">
+                    <option value="active" {{ old('status', $contact->status) == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="unsubscribed" {{ old('status', $contact->status) == 'unsubscribed' ? 'selected' : '' }}>Unsubscribed</option>
+                    <option value="bounced" {{ old('status', $contact->status) == 'bounced' ? 'selected' : '' }}>Bounced</option>
+                </select>
+                @error('status')<p class="text-[11px] text-red-400 mt-1">{{ $message }}</p>@enderror
             </div>
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
-                <option value="active" {{ old('status', $contact->status) == 'active' ? 'selected' : '' }}>Active</option>
-                <option value="unsubscribed" {{ old('status', $contact->status) == 'unsubscribed' ? 'selected' : '' }}>Unsubscribed</option>
-                <option value="bounced" {{ old('status', $contact->status) == 'bounced' ? 'selected' : '' }}>Bounced</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Subscribe to Lists</label>
-            <div class="space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-3">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-2">Subscribe to Lists</label>
+            <div class="space-y-2 max-h-48 overflow-y-auto border border-white/10 rounded-xl p-3 bg-[#0a1612]">
                 @foreach($lists as $list)
-                <label class="flex items-center space-x-2">
+                <label class="flex items-center space-x-2.5 p-1 rounded-lg hover:bg-white/5 cursor-pointer">
                     <input type="checkbox" name="list_ids[]" value="{{ $list->id }}" 
                         {{ $contact->lists->contains($list->id) ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
-                    <span class="text-sm text-gray-700">{{ $list->name }}</span>
+                        class="rounded border-white/10 text-emerald-500 focus:ring-emerald-500">
+                    <span class="text-xs font-medium text-gray-200">{{ $list->name }}</span>
                 </label>
                 @endforeach
                 @if($lists->isEmpty())
-                    <p class="text-sm text-gray-500 text-center py-2">No active contact lists found.</p>
+                    <p class="text-xs text-gray-400 text-center py-3">No active contact lists found.</p>
                 @endif
             </div>
         </div>
 
-        <div class="flex justify-end gap-x-3 pt-4">
-            <a href="{{ route('admin.contacts.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+        <div class="flex items-center justify-end gap-x-3 pt-4 border-t border-white/10">
+            <a href="{{ route('admin.contacts.index') }}" class="px-5 py-2.5 border border-white/10 rounded-xl text-xs font-semibold text-gray-300 hover:bg-white/5 transition">
                 Cancel
             </a>
-            <button type="submit" class="px-4 py-2 bg-[#FB4C4B] text-white rounded-md text-sm font-medium hover:bg-[#D93837]">
+            <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-900/30 transition-all hover:-translate-y-0.5">
                 Update Contact
             </button>
         </div>

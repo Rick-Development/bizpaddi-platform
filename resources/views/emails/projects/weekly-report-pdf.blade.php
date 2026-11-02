@@ -12,7 +12,7 @@
             padding: 20px;
         }
         .header {
-            background-color: #191C47; /* Secondary Brand Color */
+            background-color: #10231C; /* Secondary Brand Color */
             color: white;
             padding: 20px;
             margin-bottom: 30px;
@@ -39,7 +39,7 @@
         .header h1 {
             margin: 0;
             font-size: 20px;
-            color: #FB4C4B; /* Primary Brand Color */
+            color: #0E5E4A; /* Primary Brand Color */
             text-transform: uppercase;
         }
         .header p {
@@ -53,9 +53,9 @@
             clear: both;
         }
         .section h2 {
-            color: #191C47;
+            color: #10231C;
             font-size: 16px;
-            border-bottom: 2px solid #FB4C4B;
+            border-bottom: 2px solid #0E5E4A;
             padding-bottom: 5px;
             margin-bottom: 15px;
             text-transform: uppercase;
@@ -72,12 +72,12 @@
             text-align: center;
             padding: 15px;
             border: 1px solid #eee;
-            border-bottom: 3px solid #FB4C4B;
+            border-bottom: 3px solid #0E5E4A;
         }
         .stat-value {
             font-size: 24px;
             font-weight: bold;
-            color: #191C47;
+            color: #10231C;
         }
         .stat-label {
             font-size: 10px;
@@ -94,7 +94,7 @@
             margin-top: 10px;
         }
         .progress-bar {
-            background: #FB4C4B;
+            background: #0E5E4A;
             height: 100%;
             text-align: center;
             line-height: 20px;
@@ -111,7 +111,7 @@
             text-align: left;
             padding: 8px;
             background-color: #f1f1f1;
-            color: #191C47;
+            color: #10231C;
             font-size: 11px;
             text-transform: uppercase;
             border-bottom: 2px solid #ddd;

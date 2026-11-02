@@ -96,7 +96,7 @@
                     <div>
                         <label for="client_name" class="block text-sm font-medium text-gray-700 mb-1">Client Name *</label>
                         <input type="text" name="client_name" id="client_name" x-model="clientName" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                         @error('client_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -112,7 +112,7 @@
                     <div>
                         <label for="client_phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input type="text" name="client_phone" id="client_phone" x-model="clientPhone"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                         @error('client_phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -120,7 +120,7 @@
                     <div>
                         <label for="issue_date" class="block text-sm font-medium text-gray-700 mb-1">Issue Date *</label>
                         <input type="date" name="issue_date" id="issue_date" value="{{ old('issue_date', $invoice->issue_date->format('Y-m-d')) }}" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                         @error('issue_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     

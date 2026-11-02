@@ -5,15 +5,18 @@ namespace Modules\SocialMedia\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\SocialMedia\Database\Factories\SmmSocialAccountFactory;
+use App\Traits\BelongsToTenant;
 
 class SmmSocialAccount extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'tenant_id',];
 
     // protected static function newFactory(): SmmSocialAccountFactory
     // {

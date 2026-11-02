@@ -245,13 +245,13 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Investment (₦)',
                 data: @json($paymentHistory['data']),
-                borderColor: '#191C47',
+                borderColor: '#10231C',
                 backgroundColor: gradient,
                 borderWidth: 4,
                 fill: true,
                 tension: 0.4,
                 pointBackgroundColor: '#fff',
-                pointBorderColor: '#191C47',
+                pointBorderColor: '#10231C',
                 pointBorderWidth: 3,
                 pointRadius: 6,
                 pointHoverRadius: 8
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#191C47',
+                    backgroundColor: '#10231C',
                     padding: 12,
                     titleFont: { weight: 'bold' }
                 }

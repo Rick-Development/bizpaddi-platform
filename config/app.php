@@ -56,6 +56,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Multi-Domain / Subdomain Architecture
+    |--------------------------------------------------------------------------
+    |
+    | Base domain and dedicated subdomains for separating the public marketing
+    | site (bizpaddi.com), customer workspaces (app.bizpaddi.com), and platform
+    | administration (admin.bizpaddi.com).
+    |
+    */
+
+    'domain' => env('APP_DOMAIN', 'bizpaddi.com'),
+    'app_domain' => env('APP_PORTAL_DOMAIN', 'app.' . env('APP_DOMAIN', 'bizpaddi.com')),
+    'admin_domain' => env('APP_ADMIN_DOMAIN', 'admin.' . env('APP_DOMAIN', 'bizpaddi.com')),
+    'enforce_subdomains' => (bool) env('ENFORCE_SUBDOMAINS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

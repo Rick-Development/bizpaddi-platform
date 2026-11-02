@@ -6,8 +6,8 @@
 <div class="communication-channels-page">
     <div class="sm:flex sm:items-center sm:justify-between mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Communication Channels</h1>
-            <p class="mt-2 text-sm text-gray-700">Manage the channels used for your communication scripts.</p>
+            <h1 class="text-2xl font-bold text-white">Communication Channels</h1>
+            <p class="mt-2 text-sm text-gray-300">Manage the channels used for your communication scripts.</p>
         </div>
         <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <button @click="$dispatch('open-modal', 'create-channel-modal')" class="inline-flex items-center justify-center rounded-md border border-transparent bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 sm:w-auto">
@@ -17,13 +17,13 @@
     </div>
 
     <!-- Channels List -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul role="list" class="divide-y divide-gray-200">
+    <div class="bg-[#10231C]/60 border border-white/10 overflow-hidden sm:rounded-md">
+        <ul role="list" class="divide-y divide-white/10">
             @forelse($channels as $channel)
             <li>
                 <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+                        <div class="flex-shrink-0 h-10 w-10 bg-white/[0.06] rounded-full flex items-center justify-center text-gray-400">
                             @if($channel->icon)
                                 <i class="{{ $channel->icon }}"></i>
                             @else
@@ -33,7 +33,7 @@
                             @endif
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-lg font-medium text-gray-900">{{ $channel->name }}</h3>
+                            <h3 class="text-lg font-medium text-white">{{ $channel->name }}</h3>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $channel->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                 {{ $channel->is_active ? 'Active' : 'Inactive' }}
                             </span>
@@ -56,22 +56,22 @@
                         @method('PUT')
                         <div class="space-y-4">
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                                <input type="text" name="name" id="name" value="{{ $channel->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required>
+                                <label for="name" class="block text-sm font-medium text-gray-300">Name</label>
+                                <input type="text" name="name" id="name" value="{{ $channel->name }}" class="mt-1 block w-full rounded-md border-white/10 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required>
                             </div>
                             <div>
-                                <label for="icon" class="block text-sm font-medium text-gray-700">Icon Class (optional)</label>
-                                <input type="text" name="icon" id="icon" value="{{ $channel->icon }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm">
+                                <label for="icon" class="block text-sm font-medium text-gray-300">Icon Class (optional)</label>
+                                <input type="text" name="icon" id="icon" value="{{ $channel->icon }}" class="mt-1 block w-full rounded-md border-white/10 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm">
                             </div>
                             <div class="flex items-center">
-                                <input type="checkbox" name="is_active" id="is_active_{{ $channel->id }}" value="1" {{ $channel->is_active ? 'checked' : '' }} class="h-4 w-4 text-brand-primary focus:ring-brand-primary border-gray-300 rounded">
-                                <label for="is_active_{{ $channel->id }}" class="ml-2 block text-sm text-gray-900">Active</label>
+                                <input type="checkbox" name="is_active" id="is_active_{{ $channel->id }}" value="1" {{ $channel->is_active ? 'checked' : '' }} class="h-4 w-4 text-brand-primary focus:ring-brand-primary border-white/10 rounded">
+                                <label for="is_active_{{ $channel->id }}" class="ml-2 block text-sm text-white">Active</label>
                             </div>
                             <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                                 <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-primary text-base font-medium text-white hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:col-start-2 sm:text-sm">
                                     Update
                                 </button>
-                                <button type="button" @click="$dispatch('close-modal', 'edit-channel-modal-{{ $channel->id }}')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:mt-0 sm:col-start-1 sm:text-sm">
+                                <button type="button" @click="$dispatch('close-modal', 'edit-channel-modal-{{ $channel->id }}')" class="mt-3 w-full inline-flex justify-center rounded-md border border-white/10 shadow-sm px-4 py-2 bg-[#10231C]/60 text-base font-medium text-gray-300 hover:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:mt-0 sm:col-start-1 sm:text-sm">
                                     Cancel
                                 </button>
                             </div>
@@ -80,7 +80,7 @@
                 </x-modal>
             </li>
             @empty
-            <li class="px-4 py-8 text-center text-gray-500">
+            <li class="px-4 py-8 text-center text-gray-400">
                 No channels found. create one to get started.
             </li>
             @endforelse
@@ -93,22 +93,22 @@
             @csrf
             <div class="space-y-4">
                 <div>
-                    <label for="new_name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" name="name" id="new_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" required placeholder="e.g. Cold Call, WhatsApp">
+                    <label for="new_name" class="block text-sm font-medium text-gray-300">Name</label>
+                    <input type="text" name="name" id="new_name" class="mt-1 block w-full rounded-md border-white/10 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-[#0a1612] text-white border-white/10" required placeholder="e.g. Cold Call, WhatsApp">
                 </div>
                 <div>
-                    <label for="new_icon" class="block text-sm font-medium text-gray-700">Icon Class (optional)</label>
-                    <input type="text" name="icon" id="new_icon" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm" placeholder="e.g. fas fa-phone">
+                    <label for="new_icon" class="block text-sm font-medium text-gray-300">Icon Class (optional)</label>
+                    <input type="text" name="icon" id="new_icon" class="mt-1 block w-full rounded-md border-white/10 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm bg-[#0a1612] text-white border-white/10" placeholder="e.g. fas fa-phone">
                 </div>
                 <div class="flex items-center">
-                    <input type="checkbox" name="is_active" id="new_is_active" value="1" checked class="h-4 w-4 text-brand-primary focus:ring-brand-primary border-gray-300 rounded">
-                    <label for="new_is_active" class="ml-2 block text-sm text-gray-900">Active</label>
+                    <input type="checkbox" name="is_active" id="new_is_active" value="1" checked class="h-4 w-4 text-brand-primary focus:ring-brand-primary border-white/10 rounded">
+                    <label for="new_is_active" class="ml-2 block text-sm text-white">Active</label>
                 </div>
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                     <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-primary text-base font-medium text-white hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:col-start-2 sm:text-sm">
                         Create
                     </button>
-                    <button type="button" @click="$dispatch('close-modal', 'create-channel-modal')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:mt-0 sm:col-start-1 sm:text-sm">
+                    <button type="button" @click="$dispatch('close-modal', 'create-channel-modal')" class="mt-3 w-full inline-flex justify-center rounded-md border border-white/10 shadow-sm px-4 py-2 bg-[#10231C]/60 text-base font-medium text-gray-300 hover:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary sm:mt-0 sm:col-start-1 sm:text-sm">
                         Cancel
                     </button>
                 </div>

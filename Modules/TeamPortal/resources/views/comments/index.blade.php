@@ -73,7 +73,7 @@
                     @if($comment->user && method_exists($comment->user, 'getFirstMediaUrl') && $comment->user->getFirstMediaUrl('avatar'))
                         <img src="{{ $comment->user->getFirstMediaUrl('avatar') }}" class="h-10 w-10 rounded-full object-cover border-4 border-white shadow-sm" alt="">
                     @else
-                        <div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs border-4 border-white shadow-sm" style="background: linear-gradient(135deg, #191C47, #FB4C4B);">
+                        <div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs border-4 border-white shadow-sm" style="background: linear-gradient(135deg, #10231C, #0E5E4A);">
                             {{ strtoupper(substr($comment->user->name ?? 'U', 0, 2)) }}
                         </div>
                     @endif
@@ -82,7 +82,7 @@
 
                 {{-- Comment Content Card (Clickable) --}}
                 <a href="{{ $targetUrl }}" 
-                   class="flex-1 bg-white rounded-2xl border border-gray-200/80 p-5 comment-card shadow-xs block no-underline group-hover:border-[#FB4C4B]/40 transition-all">
+                   class="flex-1 bg-white rounded-2xl border border-gray-200/80 p-5 comment-card shadow-xs block no-underline group-hover:border-emerald-500/40 transition-all">
                     
                     <div class="flex items-center justify-between gap-4 mb-2">
                         <div class="flex items-center gap-2">
@@ -97,7 +97,7 @@
                     {{-- Target Reference Badge --}}
                     <div class="mb-3 flex items-center flex-wrap gap-1.5">
                         <span class="text-xs text-gray-500">commented on</span>
-                        <span class="text-xs font-bold text-[#FB4C4B] group-hover:underline">
+                        <span class="text-xs font-bold text-emerald-400 group-hover:underline">
                             {{ $title }}
                         </span>
                         @if($isTask)
@@ -120,9 +120,9 @@
                     <p class="text-xs md:text-sm text-gray-700 leading-relaxed font-normal mb-3">{{ $comment->content }}</p>
 
                     {{-- Footer Action Link --}}
-                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium group-hover:text-[#FB4C4B] transition-colors">
+                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium group-hover:text-emerald-400 transition-colors">
                         <span>{{ $isTask ? 'Click to open task details & reply' : 'Click to open project room & reply' }}</span>
-                        <span class="flex items-center gap-1 text-[#FB4C4B] font-semibold text-xs">
+                        <span class="flex items-center gap-1 text-emerald-400 font-semibold text-xs">
                             {{ $isTask ? 'Open Task →' : 'Open Project →' }}
                         </span>
                     </div>
@@ -193,7 +193,7 @@
         if (e.user_avatar) {
             avatarHtml = `<img src="${e.user_avatar}" class="h-10 w-10 rounded-full object-cover border-4 border-white shadow-sm" alt="">`;
         } else {
-            avatarHtml = `<div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs border-4 border-white shadow-sm" style="background: linear-gradient(135deg, #191C47, #FB4C4B);">${e.user_name.substring(0, 2).toUpperCase()}</div>`;
+            avatarHtml = `<div class="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs border-4 border-white shadow-sm" style="background: linear-gradient(135deg, #10231C, #0E5E4A);">${e.user_name.substring(0, 2).toUpperCase()}</div>`;
         }
 
         const roleLabel = e.user_type.includes('Admin') ? 'Admin' : 'Team Member';
@@ -204,7 +204,7 @@
         const html = `
             <div class="relative flex gap-6 comment-row opacity-0 transform -translate-y-2 transition-all duration-500 group" id="comment-row-${e.id}">
                 <div class="relative z-10 flex-shrink-0">${avatarHtml}</div>
-                <a href="${targetUrl}" class="flex-1 bg-white rounded-2xl border border-gray-200/80 p-5 comment-card shadow-xs block no-underline group-hover:border-[#FB4C4B]/40 transition-all">
+                <a href="${targetUrl}" class="flex-1 bg-white rounded-2xl border border-gray-200/80 p-5 comment-card shadow-xs block no-underline group-hover:border-emerald-500/40 transition-all">
                     <div class="flex items-center justify-between gap-4 mb-2">
                         <div class="flex items-center gap-2">
                             <span class="text-sm font-bold text-gray-900">${e.user_name}</span>
@@ -214,13 +214,13 @@
                     </div>
                     <div class="mb-3 flex items-center flex-wrap gap-1.5">
                         <span class="text-xs text-gray-500">commented on</span>
-                        <span class="text-xs font-bold text-[#FB4C4B] group-hover:underline">${e.task_title}</span>
+                        <span class="text-xs font-bold text-emerald-400 group-hover:underline">${e.task_title}</span>
                         ${typeBadge}
                     </div>
                     <p class="text-xs md:text-sm text-gray-700 leading-relaxed font-normal mb-3">${e.content}</p>
-                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium group-hover:text-[#FB4C4B] transition-colors">
+                    <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-medium group-hover:text-emerald-400 transition-colors">
                         <span>${isTask ? 'Click to open task details & reply' : 'Click to open project room & reply'}</span>
-                        <span class="flex items-center gap-1 text-[#FB4C4B] font-semibold text-xs">
+                        <span class="flex items-center gap-1 text-emerald-400 font-semibold text-xs">
                             ${isTask ? 'Open Task →' : 'Open Project →'}
                         </span>
                     </div>

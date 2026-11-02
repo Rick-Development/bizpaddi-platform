@@ -5,9 +5,9 @@
 @push('styles')
 <style>
     :root {
-        --brand: #FB4C4B;
-        --brand-dark: #D93837;
-        --navy: #191C47;
+        --brand: #0E5E4A;
+        --brand-dark: #0A4335;
+        --navy: #10231C;
     }
 
     .detail-hero {

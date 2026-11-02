@@ -4,12 +4,15 @@ namespace Modules\SocialMedia\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\BelongsToTenant;
 
 class SmmPost extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     protected $fillable = [
+        'tenant_id',
         'campaign_id', 'calendar_id', 'platform', 'content',
         'media_urls', 'hashtags', 'status', 'scheduled_for',
     ];

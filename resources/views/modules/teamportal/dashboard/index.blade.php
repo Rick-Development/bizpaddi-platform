@@ -293,13 +293,13 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Tasks Completed',
                 data: @json($completionTrend['data']),
-                borderColor: '#FB4C4B',
+                borderColor: '#0E5E4A',
                 backgroundColor: gradient,
                 borderWidth: 4,
                 fill: true,
                 tension: 0.4,
                 pointBackgroundColor: '#fff',
-                pointBorderColor: '#FB4C4B',
+                pointBorderColor: '#0E5E4A',
                 pointBorderWidth: 3,
                 pointRadius: 6,
                 pointHoverRadius: 8

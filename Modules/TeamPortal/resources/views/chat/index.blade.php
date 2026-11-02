@@ -30,10 +30,10 @@
     }
     .conversation-item.active {
         background: linear-gradient(90deg, rgba(251, 76, 75, 0.08) 0%, rgba(25, 28, 71, 0.05) 100%);
-        border-left: 4px solid #FB4C4B;
+        border-left: 4px solid #0E5E4A;
     }
     .message-bubble-me {
-        background: linear-gradient(135deg, #191C47 0%, #2b3070 100%);
+        background: linear-gradient(135deg, #10231C 0%, #2b3070 100%);
         color: #FFFFFF;
         box-shadow: 0 4px 14px rgba(25, 28, 71, 0.15);
     }
@@ -62,7 +62,7 @@
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2.5">
                 <span>Team Chat Workspace</span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FB4C4B] text-white">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-600 text-white">
                     Team Member
                 </span>
             </h1>
@@ -80,11 +80,11 @@
             <div class="p-4 border-b border-gray-200 bg-white">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <div class="h-2.5 w-2.5 rounded-full bg-[#FB4C4B]"></div>
+                        <div class="h-2.5 w-2.5 rounded-full bg-emerald-600"></div>
                         <h2 class="text-sm font-bold text-gray-900 tracking-wide uppercase">Conversations</h2>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
+                        <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-gray-100 text-gray-500 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                             </svg>
@@ -98,7 +98,7 @@
                 {{-- Search Box --}}
                 <div class="relative">
                     <input type="text" id="contact-search" placeholder="Search team members..." 
-                           class="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] text-xs transition-all placeholder-gray-400"
+                           class="w-full pl-9 pr-4 py-2 bg-gray-100/80 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs transition-all placeholder-gray-400"
                            onkeyup="filterContacts()">
                     <svg class="h-4 w-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -124,7 +124,7 @@
                                     @if($convo['avatar'])
                                         <img src="{{ $convo['avatar'] }}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">
                                     @else
-                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-white shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-white shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($convo['name'] ?? 'U', 0, 2)) }}
                                         </div>
                                     @endif
@@ -135,7 +135,7 @@
 
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between mb-0.5">
-                                        <h3 class="text-xs font-bold text-gray-900 truncate group-hover:text-[#FB4C4B] transition-colors">
+                                        <h3 class="text-xs font-bold text-gray-900 truncate group-hover:text-emerald-400 transition-colors">
                                             {{ $convo['name'] }}
                                         </h3>
                                         <span class="text-[10px] text-gray-400 font-medium convo-last-message-time">
@@ -149,7 +149,7 @@
                                         </p>
                                         <div class="convo-unread-badge-container">
                                             @if(($convo['unread_count'] ?? 0) > 0)
-                                                <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">
+                                                <span class="h-5 min-w-[20px] px-1.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">
                                                     {{ $convo['unread_count'] }}
                                                 </span>
                                             @endif
@@ -178,7 +178,7 @@
                                     @if($contact['avatar'])
                                         <img src="{{ $contact['avatar'] }}" class="h-9 w-9 rounded-full object-cover border border-gray-200" alt="">
                                     @else
-                                        <div class="h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-9 w-9 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($contact['name'], 0, 2)) }}
                                         </div>
                                     @endif
@@ -191,7 +191,7 @@
                                     <span class="text-[10px] text-gray-400 font-medium">{{ str_contains($contact['type'], 'Admin') ? 'Admin' : 'Team Member' }}</span>
                                 </div>
 
-                                <span class="h-7 w-7 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-[#FB4C4B] hover:text-white transition-all shadow-xs">
+                                <span class="h-7 w-7 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all shadow-xs">
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
@@ -211,7 +211,7 @@
             
             {{-- Default Placeholder View --}}
             <div id="chat-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/40">
-                <div class="h-20 w-20 rounded-3xl bg-gradient-to-tr from-[#191C47] to-[#FB4C4B] text-white flex items-center justify-center shadow-lg shadow-red-500/10 mb-4 transform hover:scale-105 transition-transform">
+                <div class="h-20 w-20 rounded-3xl bg-gradient-to-tr from-[#10231C] to-emerald-600 text-white flex items-center justify-center shadow-lg shadow-red-500/10 mb-4 transform hover:scale-105 transition-transform">
                     <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.596.596 0 01-.743-.65l.398-2.617A8.995 8.995 0 013 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                     </svg>
@@ -240,13 +240,13 @@
                             <div class="flex items-center gap-2 mt-0.5">
                                 <span class="text-[11px] text-gray-500 font-medium" id="active-partner-status">Offline</span>
                                 <span class="text-gray-300">•</span>
-                                <span class="text-[11px] text-[#FB4C4B] font-semibold" id="active-partner-role">Team Member</span>
+                                <span class="text-[11px] text-emerald-400 font-semibold" id="active-partner-role">Team Member</span>
                             </div>
                         </div>
                     </div>
                     
                     <div id="group-actions-container" class="hidden">
-                        <button onclick="openManageMembersModal()" class="h-9 w-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-[#FB4C4B] hover:text-white hover:border-[#FB4C4B] transition-all flex items-center justify-center shadow-xs" title="Manage Group Members">
+                        <button onclick="openManageMembersModal()" class="h-9 w-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all flex items-center justify-center shadow-xs" title="Manage Group Members">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
@@ -268,7 +268,7 @@
 
                     <form onsubmit="sendMessage(event)" class="flex items-center gap-3" enctype="multipart/form-data">
                         <button type="button" onclick="document.getElementById('attachment-input').click()" 
-                                class="h-11 w-11 flex items-center justify-center rounded-2xl bg-gray-100 text-gray-500 hover:bg-[#FB4C4B] hover:text-white transition-all shadow-xs flex-shrink-0" 
+                                class="h-11 w-11 flex items-center justify-center rounded-2xl bg-gray-100 text-gray-500 hover:bg-emerald-500 hover:text-white transition-all shadow-xs flex-shrink-0" 
                                 title="Attach files/images/videos">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.75m0-12.75a6 6 0 11-8.485 8.485L5.636 10.25a3.75 3.75 0 115.303 5.304L6.182 20.3a1.5 1.5 0 11-2.122-2.12L8.82 13.4" />
@@ -277,12 +277,12 @@
                         <input type="file" id="attachment-input" class="hidden" multiple onchange="handleFileSelect(event)">
                         
                         <textarea id="message-input" rows="1" placeholder="Type a message..." 
-                               class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] focus:bg-white transition-all placeholder-gray-400 resize-none overflow-hidden"
+                               class="flex-1 px-4 py-3 bg-gray-100/90 border border-gray-200 rounded-2xl text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all placeholder-gray-400 resize-none overflow-hidden"
                                style="min-height: 44px; max-height: 120px; line-height: 1.5;"
                                onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); document.getElementById('send-btn').click(); }"></textarea>
 
                         <button type="submit" id="send-btn" 
-                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
                             <span>Send</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -314,12 +314,12 @@
                     <div>
                         <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Group Name</label>
                         <input type="text" id="group-name" required placeholder="e.g. Design Team Sync" 
-                               class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all">
+                               class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
                     </div>
                     
                     <div>
                         <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
-                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-medium">
+                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium">
                             <option value="">-- No Project Link --</option>
                             @foreach($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -330,13 +330,13 @@
                     <div>
                         <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Select Members</label>
                         <input type="text" placeholder="Search members..." onkeyup="filterGroupModalMembers(this.value)"
-                               class="w-full px-3.5 py-2 mb-3 bg-gray-50 border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-[#FB4C4B]">
+                               class="w-full px-3.5 py-2 mb-3 bg-gray-50 border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-500">
                         
                         <div class="space-y-2 max-h-48 overflow-y-auto chat-scroll pr-1" id="group-members-checklist">
                             @foreach($allContacts as $c)
                                 <label class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl cursor-pointer group-modal-member-item transition-all" data-name="{{ strtolower($c['name']) }}">
                                     <div class="flex items-center gap-3">
-                                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($c['name'], 0, 2)) }}
                                         </div>
                                         <div>
@@ -345,7 +345,7 @@
                                         </div>
                                     </div>
                                     <input type="checkbox" name="group_participants[]" value="{{ $c['key'] }}"
-                                           class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B] h-4 w-4">
+                                           class="rounded border-gray-300 text-emerald-400 focus:ring-emerald-500 h-4 w-4">
                                 </label>
                             @endforeach
                         </div>
@@ -354,7 +354,7 @@
                 
                 <div class="px-6 py-4 border-t border-gray-100 bg-slate-50/50 flex items-center justify-end gap-3 flex-shrink-0">
                     <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 active:scale-95 transition-all">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
                 </div>
             </form>
         </div>
@@ -379,13 +379,13 @@
                 <div class="border-b border-gray-100 pb-4">
                     <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Add New Member</label>
                     <div class="flex gap-2">
-                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#FB4C4B] transition-all font-semibold text-gray-800 font-medium">
+                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold text-gray-800 font-medium">
                             <option value="">-- Choose Member to Add --</option>
                             @foreach($allContacts as $c)
                                 <option value="{{ $c['key'] }}">{{ $c['name'] }} ({{ $c['type_label'] }})</option>
                             @endforeach
                         </select>
-                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#191C47] to-[#FB4C4B] text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
+                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
                     </div>
                 </div>
                 
@@ -546,7 +546,7 @@
                 if (data.partner_avatar) {
                     avatarBox.innerHTML = `<img src="${data.partner_avatar}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">`;
                 } else {
-                    avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
+                    avatarBox.innerHTML = `<div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">${data.partner_name.substring(0, 2).toUpperCase()}</div>`;
                 }
 
                 if (!isGroup) {
@@ -686,7 +686,7 @@
                             let badge = badgeContainer.querySelector('.convo-unread-badge');
                             if (convo.unread_count > 0) {
                                 if (!badge) {
-                                    badgeContainer.innerHTML = `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-[#FB4C4B] text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">${convo.unread_count}</span>`;
+                                    badgeContainer.innerHTML = `<span class="h-5 min-w-[20px] px-1.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs convo-unread-badge">${convo.unread_count}</span>`;
                                 } else {
                                     badge.innerText = convo.unread_count;
                                 }
@@ -743,7 +743,7 @@
     function getTickHtml(isRead) {
         // 1. Double Coral Red Ticks (Read)
         if (isRead) {
-            return `<span class="tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1" data-read="true" title="Read">
+            return `<span class="tick-status text-emerald-400 font-bold text-xs flex items-center -space-x-1" data-read="true" title="Read">
                         <span>✓</span><span>✓</span>
                     </span>`;
         }
@@ -863,7 +863,7 @@
     function updateAllTicksToRead() {
         document.querySelectorAll('.tick-status').forEach(el => {
             el.setAttribute('data-read', 'true');
-            el.className = 'tick-status text-[#FB4C4B] font-bold text-xs flex items-center -space-x-1';
+            el.className = 'tick-status text-emerald-400 font-bold text-xs flex items-center -space-x-1';
             el.innerHTML = '<span>✓</span><span>✓</span>';
             el.setAttribute('title', 'Read');
         });
@@ -1093,7 +1093,7 @@
             const html = `
                 <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-all">
                     <div class="flex items-center gap-3">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #191C47 0%, #FB4C4B 100%);">
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                             ${m.name.substring(0, 2).toUpperCase()}
                         </div>
                         <div>

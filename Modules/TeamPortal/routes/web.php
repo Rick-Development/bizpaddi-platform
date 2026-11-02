@@ -11,7 +11,7 @@ use Modules\TeamPortal\Http\Controllers\TaskController;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('team')->name('team.')->group(function () {
+Route::prefix('dashboard/team')->name('team.')->group(function () {
     
     // Guest Routes
     Route::middleware('guest:web')->group(function () {
@@ -106,7 +106,7 @@ Route::prefix('team')->name('team.')->group(function () {
 });
 
 // BDM Routes
-Route::prefix('team/bdm')->name('team.bdm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])->group(function () {
+Route::prefix('dashboard/team/bdm')->name('team.bdm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])->group(function () {
     // We can add a middleware to ensure they are actually a BDM if we want:
     // Route::middleware([\Modules\TeamPortal\Http\Middleware\CheckBdm::class])
     
@@ -180,7 +180,7 @@ Route::prefix('team/bdm')->name('team.bdm.')->middleware(['auth:web', \Modules\T
 });
 
 // Project Manager Routes
-Route::prefix('team/pm')->name('team.pm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class, \Modules\TeamPortal\Http\Middleware\CheckProjectManager::class])->group(function () {
+Route::prefix('dashboard/team/pm')->name('team.pm.')->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class, \Modules\TeamPortal\Http\Middleware\CheckProjectManager::class])->group(function () {
     // PM Dashboard
     Route::get('dashboard', [\Modules\TeamPortal\Http\Controllers\PM\DashboardController::class, 'index'])->name('dashboard');
     
@@ -204,7 +204,7 @@ Route::prefix('team/pm')->name('team.pm.')->middleware(['auth:web', \Modules\Tea
 });
 
 // ─── QA Tester Portal ──────────────────────────────────────────────────────
-Route::prefix('team/qa')
+Route::prefix('dashboard/team/qa')
     ->name('team.qa.')
     ->middleware(['auth:web', \Modules\TeamPortal\Http\Middleware\CheckUserStatus::class])
     ->group(function () {
@@ -229,3 +229,6 @@ Route::prefix('team/qa')
         Route::patch('test-cases/{task}/status', [\Modules\TeamPortal\Http\Controllers\QA\QaTestCaseController::class, 'updateStatus'])->name('test-cases.update-status');
     });
 
+// Backwards-compatible aliases & redirects for legacy /team URLs
+Route::redirect('team', '/dashboard/team');
+Route::redirect('team/{path}', '/dashboard/team/{path}')->where('path', '.*');

@@ -196,14 +196,14 @@
     gap: 0.75rem;
     font-size: 1.75rem;
     font-weight: 800;
-    color: #191C47;
+    color: #10231C;
     margin: 0;
 }
 
 .title-accent {
     width: 4px;
     height: 2rem;
-    background: linear-gradient(180deg, #FB4C4B 0%, #191C47 100%);
+    background: linear-gradient(180deg, #0E5E4A 0%, #10231C 100%);
     border-radius: 2px;
 }
 
@@ -226,7 +226,7 @@
 .card-title {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #191C47;
+    color: #10231C;
     margin: 0;
 }
 
@@ -245,7 +245,7 @@
 }
 
 .btn-refresh:hover {
-    background: #FB4C4B;
+    background: #0E5E4A;
     color: white;
 }
 
@@ -294,13 +294,13 @@
 
 .filter-input:focus {
     outline: none;
-    border-color: #191C47;
+    border-color: #10231C;
     box-shadow: 0 0 0 3px rgba(25, 28, 71, 0.1);
 }
 
 .btn-filter {
     padding: 0.625rem 1.5rem;
-    background: #191C47;
+    background: #10231C;
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -311,7 +311,7 @@
 }
 
 .btn-filter:hover {
-    background: #FB4C4B;
+    background: #0E5E4A;
     transform: translateY(-1px);
 }
 
@@ -405,7 +405,7 @@
 
 .btn-view {
     padding: 0.5rem 1rem;
-    background: #191C47;
+    background: #10231C;
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -416,7 +416,7 @@
 }
 
 .btn-view:hover {
-    background: #FB4C4B;
+    background: #0E5E4A;
     transform: translateY(-1px);
 }
 
@@ -473,8 +473,8 @@
 
 .pagination-btn:hover {
     background: #f9fafb;
-    border-color: #191C47;
-    color: #191C47;
+    border-color: #10231C;
+    color: #10231C;
 }
 
 .pagination-current {
@@ -520,7 +520,7 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #191C47;
+    color: #10231C;
 }
 
 .modal-close {

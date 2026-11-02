@@ -5,14 +5,14 @@
 @section('content')
 <div class="mb-6">
     <div class="flex items-center gap-4">
-        <a href="{{ route('admin.work-logs.index') }}" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+        <a href="{{ route('admin.work-logs.index') }}" class="p-2 rounded-lg text-gray-400 hover:text-gray-400 hover:bg-white/[0.06] transition-colors">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Custom Work Session & Task Performance Report Generator</h1>
-            <p class="mt-1 text-sm text-gray-600">Configure parameters, scope, assigned projects, task metrics, and sections before exporting.</p>
+            <h1 class="text-2xl font-bold text-white">Custom Work Session & Task Performance Report Generator</h1>
+            <p class="mt-1 text-sm text-gray-400">Configure parameters, scope, assigned projects, task metrics, and sections before exporting.</p>
         </div>
     </div>
 </div>
@@ -87,25 +87,25 @@
 
     <!-- Generator Options Card -->
     <div class="lg:col-span-8 space-y-6">
-        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-6">
+        <div class="bg-[#10231C]/60 rounded-2xl p-6 border border-white/10 shadow-sm space-y-6">
             
             <!-- 1. Period Selector -->
             <div>
-                <label class="block text-sm font-bold text-gray-900 mb-2">1. Select Report Period</label>
+                <label class="block text-sm font-bold text-white mb-2">1. Select Report Period</label>
                 <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                    <button type="button" @click="setPeriod('daily')" :class="period === 'daily' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'" class="p-3 border rounded-xl text-center text-xs transition-all">
+                    <button type="button" @click="setPeriod('daily')" :class="period === 'daily' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-white/10 bg-[#10231C]/60 text-gray-300 hover:bg-white/[0.03]'" class="p-3 border rounded-xl text-center text-xs transition-all">
                         📅 Daily
                     </button>
-                    <button type="button" @click="setPeriod('weekly')" :class="period === 'weekly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'" class="p-3 border rounded-xl text-center text-xs transition-all">
+                    <button type="button" @click="setPeriod('weekly')" :class="period === 'weekly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-white/10 bg-[#10231C]/60 text-gray-300 hover:bg-white/[0.03]'" class="p-3 border rounded-xl text-center text-xs transition-all">
                         🗓️ Weekly
                     </button>
-                    <button type="button" @click="setPeriod('monthly')" :class="period === 'monthly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'" class="p-3 border rounded-xl text-center text-xs transition-all">
+                    <button type="button" @click="setPeriod('monthly')" :class="period === 'monthly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-white/10 bg-[#10231C]/60 text-gray-300 hover:bg-white/[0.03]'" class="p-3 border rounded-xl text-center text-xs transition-all">
                         📆 Monthly
                     </button>
-                    <button type="button" @click="setPeriod('yearly')" :class="period === 'yearly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'" class="p-3 border rounded-xl text-center text-xs transition-all">
+                    <button type="button" @click="setPeriod('yearly')" :class="period === 'yearly' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-white/10 bg-[#10231C]/60 text-gray-300 hover:bg-white/[0.03]'" class="p-3 border rounded-xl text-center text-xs transition-all">
                         📊 Yearly
                     </button>
-                    <button type="button" @click="setPeriod('custom')" :class="period === 'custom' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'" class="p-3 border rounded-xl text-center text-xs transition-all">
+                    <button type="button" @click="setPeriod('custom')" :class="period === 'custom' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary font-bold' : 'border-white/10 bg-[#10231C]/60 text-gray-300 hover:bg-white/[0.03]'" class="p-3 border rounded-xl text-center text-xs transition-all">
                         ⚙️ Custom Range
                     </button>
                 </div>
@@ -114,27 +114,27 @@
             <!-- Date Pickers (auto-filled for presets, editable for custom) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">
                         Start Date
                         <span x-show="isPreset" class="ml-1 text-brand-primary text-[10px] font-normal">(auto-set)</span>
                     </label>
-                    <input type="date" x-model="startDate" :readonly="isPreset" :class="isPreset ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : ''" class="w-full rounded-xl border-gray-300 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <input type="date" x-model="startDate" :readonly="isPreset" :class="isPreset ? 'bg-white/[0.03] text-gray-400 cursor-not-allowed' : ''" class="w-full rounded-xl border-white/10 text-sm focus:ring-brand-primary focus:border-brand-primary bg-[#0a1612] text-white border-white/10">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">
                         End Date
                         <span x-show="isPreset" class="ml-1 text-brand-primary text-[10px] font-normal">(auto-set)</span>
                     </label>
-                    <input type="date" x-model="endDate" :readonly="isPreset" :class="isPreset ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : ''" class="w-full rounded-xl border-gray-300 text-sm focus:ring-brand-primary focus:border-brand-primary">
+                    <input type="date" x-model="endDate" :readonly="isPreset" :class="isPreset ? 'bg-white/[0.03] text-gray-400 cursor-not-allowed' : ''" class="w-full rounded-xl border-white/10 text-sm focus:ring-brand-primary focus:border-brand-primary bg-[#0a1612] text-white border-white/10">
                 </div>
             </div>
 
-            <hr class="border-gray-100">
+            <hr class="border-white/10">
 
             <!-- 2. Team Member Filter -->
             <div>
-                <label class="block text-sm font-bold text-gray-900 mb-2">2. Target Audience / Team Scope</label>
-                <select x-model="userId" class="w-full rounded-xl border-gray-300 text-sm focus:ring-brand-primary focus:border-brand-primary p-3">
+                <label class="block text-sm font-bold text-white mb-2">2. Target Audience / Team Scope</label>
+                <select x-model="userId" class="w-full rounded-xl border-white/10 text-sm focus:ring-brand-primary focus:border-brand-primary p-3 bg-[#0a1612] text-white border-white/10">
                     <optgroup label="📋 Group Reports">
                         <option value="">All Team Members (General Corporate Report)</option>
                         <option value="group_active">✅ All Active Team Members Only</option>
@@ -149,52 +149,52 @@
                 </select>
             </div>
 
-            <hr class="border-gray-100">
+            <hr class="border-white/10">
 
             <!-- 3. Report Content Toggles -->
             <div>
-                <label class="block text-sm font-bold text-gray-900 mb-3">3. Include Sections & Content</label>
+                <label class="block text-sm font-bold text-white mb-3">3. Include Sections & Content</label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label class="flex items-center gap-3 p-3 border rounded-xl border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <label class="flex items-center gap-3 p-3 border rounded-xl border-white/10 hover:bg-white/[0.03] cursor-pointer">
                         <input type="checkbox" x-model="includeKpis" class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4">
-                        <span class="text-sm font-medium text-gray-700">Executive KPI Summary Cards</span>
+                        <span class="text-sm font-medium text-gray-300">Executive KPI Summary Cards</span>
                     </label>
 
-                    <label class="flex items-center gap-3 p-3 border rounded-xl border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <label class="flex items-center gap-3 p-3 border rounded-xl border-white/10 hover:bg-white/[0.03] cursor-pointer">
                         <input type="checkbox" x-model="includePerformance" class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4">
-                        <span class="text-sm font-medium text-gray-700">Task Performance, Workload & Assigned Projects</span>
+                        <span class="text-sm font-medium text-gray-300">Task Performance, Workload & Assigned Projects</span>
                     </label>
 
-                    <label class="flex items-center gap-3 p-3 border rounded-xl border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <label class="flex items-center gap-3 p-3 border rounded-xl border-white/10 hover:bg-white/[0.03] cursor-pointer">
                         <input type="checkbox" x-model="includePlanned" class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4">
-                        <span class="text-sm font-medium text-gray-700">Planned Focus & Tasks</span>
+                        <span class="text-sm font-medium text-gray-300">Planned Focus & Tasks</span>
                     </label>
 
-                    <label class="flex items-center gap-3 p-3 border rounded-xl border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <label class="flex items-center gap-3 p-3 border rounded-xl border-white/10 hover:bg-white/[0.03] cursor-pointer">
                         <input type="checkbox" x-model="includeAccomplishments" class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4">
-                        <span class="text-sm font-medium text-gray-700">Accomplishments & Outcomes</span>
+                        <span class="text-sm font-medium text-gray-300">Accomplishments & Outcomes</span>
                     </label>
 
-                    <label class="flex items-center gap-3 p-3 border rounded-xl border-gray-200 hover:bg-gray-50 cursor-pointer">
+                    <label class="flex items-center gap-3 p-3 border rounded-xl border-white/10 hover:bg-white/[0.03] cursor-pointer">
                         <input type="checkbox" x-model="includeChallenges" class="rounded text-brand-primary focus:ring-brand-primary h-4 w-4">
-                        <span class="text-sm font-medium text-gray-700">Blockers & Challenges</span>
+                        <span class="text-sm font-medium text-gray-300">Blockers & Challenges</span>
                     </label>
                 </div>
             </div>
 
-            <hr class="border-gray-100">
+            <hr class="border-white/10">
 
             <!-- 4. Export Format -->
             <div>
-                <label class="block text-sm font-bold text-gray-900 mb-2">4. Export Format</label>
+                <label class="block text-sm font-bold text-white mb-2">4. Export Format</label>
                 <div class="flex gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="radio" name="format" value="pdf" x-model="format" class="text-brand-primary focus:ring-brand-primary">
-                        <span class="text-sm font-semibold text-gray-800">PDF Document (.pdf)</span>
+                        <span class="text-sm font-semibold text-white">PDF Document (.pdf)</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="radio" name="format" value="csv" x-model="format" class="text-brand-primary focus:ring-brand-primary">
-                        <span class="text-sm font-semibold text-gray-800">CSV Spreadsheet (.csv)</span>
+                        <span class="text-sm font-semibold text-white">CSV Spreadsheet (.csv)</span>
                     </label>
                 </div>
             </div>
@@ -244,7 +244,7 @@
                 </a>
 
                 <template x-if="format === 'pdf'">
-                    <a :href="previewUrl" target="_blank" class="w-full flex items-center justify-center gap-2 px-5 py-3 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all text-sm">
+                    <a :href="previewUrl" target="_blank" class="w-full flex items-center justify-center gap-2 px-5 py-3 bg-[#10231C]/60/10 text-white font-semibold rounded-xl hover:bg-[#10231C]/60/20 transition-all text-sm">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.573 16.49 16.638 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

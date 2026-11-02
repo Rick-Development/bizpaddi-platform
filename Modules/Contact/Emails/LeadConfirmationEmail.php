@@ -26,7 +26,7 @@ class LeadConfirmationEmail extends Mailable
      */
     public function build(): self
     {
-        return $this->subject('Thank you for reaching out to Rick Development')
+        return $this->subject('Thank you for reaching out to Bizpaddi')
                     ->markdown('contact::emails.lead-confirmation');
     }
 }

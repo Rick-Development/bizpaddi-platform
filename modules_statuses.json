@@ -24,5 +24,6 @@
     "KYC": true,
     "Mcp": true,
     "AiEmployees": true,
-    "SocialMedia": true
+    "SocialMedia": true,
+    "SuperAdmin": true
 }

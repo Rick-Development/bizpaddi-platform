@@ -7,8 +7,8 @@
     <!-- Header Section -->
     <div class="sm:flex sm:items-center sm:justify-between mb-8">
         <div class="flex-1 min-w-0">
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight sm:truncate">Milestones</h1>
-            <p class="mt-2 text-sm text-gray-500 font-medium">
+            <h1 class="text-3xl font-extrabold text-white tracking-tight sm:truncate">Milestones</h1>
+            <p class="mt-2 text-sm text-gray-400 font-medium">
                 Track and manage major project milestones and their deliverables.
             </p>
         </div>
@@ -24,11 +24,11 @@
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
+    <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-5 mb-8">
         <form method="GET" action="{{ route('admin.pm-milestones.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="relative">
                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">Project Filter</label>
-                <select name="project_id" class="block w-full pl-3 pr-10 py-3 text-sm border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-xl transition-all">
+                <select name="project_id" class="block w-full pl-3 pr-10 py-3 text-sm border-white/10 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary rounded-xl transition-all bg-[#0a1612] text-white border-white/10">
                     <option value="">All Projects</option>
                     @foreach($projects as $project)
                         <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
@@ -45,24 +45,24 @@
 
     <!-- Content Section -->
     @if($milestones->isEmpty())
-        <div class="bg-white rounded-3xl shadow-sm border border-dashed border-gray-200 p-12 text-center">
-            <div class="mx-auto h-24 w-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+        <div class="bg-[#10231C]/60 rounded-3xl shadow-sm border border-dashed border-white/10 p-12 text-center">
+            <div class="mx-auto h-24 w-24 bg-white/[0.03] rounded-full flex items-center justify-center mb-4">
                 <svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900">No Milestones Found</h3>
-            <p class="mt-2 text-gray-500 max-w-sm mx-auto">Start by creating your first project milestone to track progress effectively.</p>
+            <h3 class="text-xl font-bold text-white">No Milestones Found</h3>
+            <p class="mt-2 text-gray-400 max-w-sm mx-auto">Start by creating your first project milestone to track progress effectively.</p>
             <button onclick="document.getElementById('new-milestone-modal').classList.remove('hidden')" class="mt-6 text-brand-primary font-bold hover:underline">
                 Create One Now &rarr;
             </button>
         </div>
     @else
         <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 rounded-2xl">
-            <table class="min-w-full divide-y divide-gray-100">
+        <div class="hidden md:block overflow-hidden bg-[#10231C]/60 border border-white/10 ring-1 ring-gray-900/5 rounded-2xl">
+            <table class="min-w-full divide-y divide-white/5">
                 <thead>
-                    <tr class="bg-gray-50/50">
+                    <tr class="bg-white/[0.03]/50">
                         <th scope="col" class="py-4 pl-6 pr-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Milestone & Project</th>
                         <th scope="col" class="px-3 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Progress</th>
                         <th scope="col" class="px-3 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
@@ -70,12 +70,12 @@
                         <th scope="col" class="relative py-4 pl-3 pr-6 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50 bg-white">
+                <tbody class="divide-y divide-gray-50 bg-[#10231C]/60">
                     @foreach($milestones as $milestone)
-                    <tr class="hover:bg-gray-50/50 transition-colors">
+                    <tr class="hover:bg-white/[0.03]/50 transition-colors">
                         <td class="py-5 pl-6 pr-3">
                             <div class="flex flex-col">
-                                <span class="text-sm font-bold text-gray-900">{{ $milestone->title }}</span>
+                                <span class="text-sm font-bold text-white">{{ $milestone->title }}</span>
                                 <a href="{{ route('admin.pm-projects.show', $milestone->project_id) }}" class="text-xs text-brand-primary font-medium hover:underline mt-0.5">
                                     {{ $milestone->project->name }}
                                 </a>
@@ -83,10 +83,10 @@
                         </td>
                         <td class="px-3 py-5">
                             <div class="flex items-center gap-3 w-40">
-                                <div class="flex-1 bg-gray-100 rounded-full h-2">
+                                <div class="flex-1 bg-white/[0.06] rounded-full h-2">
                                     <div class="bg-brand-primary h-2 rounded-full shadow-sm" style="width: {{ $milestone->progress }}%"></div>
                                 </div>
-                                <span class="text-xs font-bold text-gray-700 min-w-[30px]">{{ $milestone->progress }}%</span>
+                                <span class="text-xs font-bold text-gray-300 min-w-[30px]">{{ $milestone->progress }}%</span>
                             </div>
                         </td>
                         <td class="px-3 py-5">
@@ -99,7 +99,7 @@
                             </span>
                         </td>
                         <td class="px-3 py-5">
-                            <span class="text-xs font-semibold text-gray-600">
+                            <span class="text-xs font-semibold text-gray-400">
                                 @if($milestone->due_date)
                                     <div class="flex items-center gap-1.5">
                                         <svg class="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,7 +124,7 @@
                                     <input type="hidden" name="project_id" value="{{ $milestone->project_id }}">
                                     <input type="hidden" name="title" value="{{ $milestone->title }}">
                                     <input type="hidden" name="status" value="{{ $milestone->status === 'completed' ? 'pending' : 'completed' }}">
-                                    <button type="submit" class="text-[10px] px-2.5 py-1 rounded bg-gray-50 border border-brand-primary/10 text-brand-primary uppercase tracking-tight hover:bg-brand-primary hover:text-white transition-all">
+                                    <button type="submit" class="text-[10px] px-2.5 py-1 rounded bg-white/[0.03] border border-brand-primary/10 text-brand-primary uppercase tracking-tight hover:bg-brand-primary hover:text-white transition-all">
                                         {{ $milestone->status === 'completed' ? 'Mark Pending' : 'Mark Done' }}
                                     </button>
                                 </form>
@@ -147,10 +147,10 @@
         <!-- Mobile Card View -->
         <div class="grid grid-cols-1 gap-4 md:hidden">
             @foreach($milestones as $milestone)
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-5">
+            <div class="bg-[#10231C]/60 rounded-3xl border border-white/10 backdrop-blur-xl shadow-xl p-5">
                 <div class="flex justify-between items-start mb-4">
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-base font-bold text-gray-900 truncate">{{ $milestone->title }}</h4>
+                        <h4 class="text-base font-bold text-white truncate">{{ $milestone->title }}</h4>
                         <p class="text-xs text-brand-primary font-bold mt-1">{{ $milestone->project->name }}</p>
                     </div>
                     <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold border 
@@ -164,7 +164,7 @@
                         <span>Progress</span>
                         <span>{{ $milestone->progress }}%</span>
                     </div>
-                    <div class="w-full bg-gray-50 rounded-full h-2">
+                    <div class="w-full bg-white/[0.03] rounded-full h-2">
                         <div class="bg-brand-primary h-2 rounded-full shadow-sm" style="width: {{ $milestone->progress }}%"></div>
                     </div>
                 </div>
@@ -207,13 +207,13 @@
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="this.parentElement.parentElement.classList.add('hidden')"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-white/20">
+        <div class="inline-block align-bottom bg-[#10231C]/60 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-white/20">
             <form action="{{ route('admin.pm-milestones.store') }}" method="POST">
                 @csrf
-                <div class="bg-white px-6 pt-6 pb-4 sm:p-8 sm:pb-6">
+                <div class="bg-[#10231C]/60 px-6 pt-6 pb-4 sm:p-8 sm:pb-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-gray-900">Create New Milestone</h3>
-                        <button type="button" onclick="document.getElementById('new-milestone-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+                        <h3 class="text-xl font-bold text-white">Create New Milestone</h3>
+                        <button type="button" onclick="document.getElementById('new-milestone-modal').classList.add('hidden')" class="text-gray-400 hover:text-gray-400">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l18 18" />
                             </svg>
@@ -223,7 +223,7 @@
                     <div class="space-y-5">
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Assign to Project</label>
-                            <select name="project_id" required class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium">
+                            <select name="project_id" required class="w-full px-4 py-3 border border-white/10 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium bg-[#0a1612] text-white border-white/10">
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
                                 @endforeach
@@ -231,23 +231,23 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Milestone Title</label>
-                            <input type="text" name="title" required placeholder="e.g., Phase 1 Completion" class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium">
+                            <input type="text" name="title" required placeholder="e.g., Phase 1 Completion" class="w-full px-4 py-3 border border-white/10 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium bg-[#0a1612] text-white border-white/10">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Description</label>
-                            <textarea name="description" rows="3" placeholder="Briefly describe the key deliverables..." class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium"></textarea>
+                            <textarea name="description" rows="3" placeholder="Briefly describe the key deliverables..." class="w-full px-4 py-3 border border-white/10 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium bg-[#0a1612] text-white border-white/10"></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Expected Due Date</label>
-                            <input type="date" name="due_date" class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium">
+                            <input type="date" name="due_date" class="w-full px-4 py-3 border border-white/10 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary transition-all text-sm font-medium bg-[#0a1612] text-white border-white/10">
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50/50 px-6 py-4 sm:px-8 sm:flex sm:flex-row-reverse gap-4 border-t border-gray-100">
+                <div class="bg-white/[0.03]/50 px-6 py-4 sm:px-8 sm:flex sm:flex-row-reverse gap-4 border-t border-white/10">
                     <button type="submit" class="w-full inline-flex justify-center rounded-2xl px-6 py-3 bg-brand-primary text-sm font-bold text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary/90 hover:-translate-y-0.5 transition-all sm:w-auto">
                         Create Milestone
                     </button>
-                    <button type="button" onclick="document.getElementById('new-milestone-modal').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-2xl px-6 py-3 bg-white border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all sm:mt-0 sm:w-auto">
+                    <button type="button" onclick="document.getElementById('new-milestone-modal').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-2xl px-6 py-3 bg-[#10231C]/60 border border-white/10 text-sm font-bold text-gray-400 hover:bg-white/[0.03] transition-all sm:mt-0 sm:w-auto">
                         Discard
                     </button>
                 </div>

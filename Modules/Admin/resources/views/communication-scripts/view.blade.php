@@ -8,16 +8,16 @@
     <div class="mb-6 flex items-center justify-between">
         <div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.communication-scripts.index') }}" class="text-gray-400 hover:text-gray-600">
+                <a href="{{ route('admin.communication-scripts.index') }}" class="text-gray-400 hover:text-gray-400">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
                 </a>
-                <h1 class="text-2xl font-bold text-gray-900">{{ $script->title }}</h1>
+                <h1 class="text-2xl font-bold text-white">{{ $script->title }}</h1>
                     {{ $script->channel->name ?? 'No Channel' }}
                 </span>
             </div>
-            <p class="mt-1 text-sm text-gray-500 ml-7">{{ $script->description }}</p>
+            <p class="mt-1 text-sm text-gray-400 ml-7">{{ $script->description }}</p>
         </div>
         <div class="flex gap-2">
             @php
@@ -28,8 +28,8 @@
                     \Illuminate\Support\Facades\Log::error('View/Edit Route Error: ' . $e->getMessage(), ['id' => $script->id ?? 'null', 'script' => $script]);
                 }
             @endphp
-            <a href="{{ $editUrl }}" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
-                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="{{ $editUrl }}" class="inline-flex items-center justify-center rounded-md border border-white/10 bg-[#10231C]/60 px-4 py-2 text-sm font-medium text-gray-300 shadow-sm hover:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Edit Steps
@@ -84,10 +84,10 @@
         }
     }">
         @forelse($script->steps as $index => $step)
-            <div class="bg-white shadow sm:rounded-lg border border-gray-200 overflow-hidden">
-                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 text-xs font-bold text-gray-600 flex items-center justify-center border border-gray-300">
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl border border-white/10 overflow-hidden">
+                <div class="bg-white/[0.03] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-gray-200 text-xs font-bold text-gray-400 flex items-center justify-center border border-white/10">
                             {{ $step->order }}
                         </span>
                         {{ $step->name }}
@@ -108,14 +108,14 @@
                 </div>
                 
                 <div class="p-6">
-                    <div class="prose max-w-none text-gray-800">
+                    <div class="prose max-w-none text-white">
                         <p x-ref="stepContent{{ $step->id }}" class="whitespace-pre-wrap font-medium text-lg leading-relaxed">{{ $step->content }}</p>
                     </div>
 
                     @if($step->key_points && count($step->key_points) > 0)
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Key Points</h4>
-                            <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                        <div class="mt-4 pt-4 border-t border-white/10">
+                            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Key Points</h4>
+                            <ul class="list-disc pl-5 text-sm text-gray-400 space-y-1">
                                 @foreach($step->key_points as $point)
                                     <li>{{ $point }}</li>
                                 @endforeach
@@ -124,7 +124,7 @@
                     @endif
 
                     @if($step->exceptions->count() > 0)
-                        <div class="mt-4 pt-4 border-t border-gray-100" x-data="{ showExceptions: false }">
+                        <div class="mt-4 pt-4 border-t border-white/10" x-data="{ showExceptions: false }">
                             <button @click="showExceptions = !showExceptions" class="text-xs font-semibold text-red-600 flex items-center gap-1 hover:text-red-700">
                                 <svg class="w-3 h-3" :class="{'rotate-180': showExceptions}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -136,7 +136,7 @@
                                 @foreach($step->exceptions as $exception)
                                     <div class="bg-red-50 rounded-md p-3 border border-red-100">
                                         <p class="text-xs font-bold text-red-800 mb-1">If they say: "{{ $exception->trigger_text }}"</p>
-                                        <p class="text-sm text-gray-800">{{ $exception->response_content }}</p>
+                                        <p class="text-sm text-white">{{ $exception->response_content }}</p>
                                     </div>
                                 @endforeach
                             </div>
@@ -145,12 +145,12 @@
                 </div>
             </div>
         @empty
-            <div class="text-center py-12 bg-white rounded-lg shadow border border-gray-200">
+            <div class="text-center py-12 bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-xl border border-white/10">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No steps defined</h3>
-                <p class="mt-1 text-sm text-gray-500">Get started by creating the first step of this playbook.</p>
+                <h3 class="mt-2 text-sm font-medium text-white">No steps defined</h3>
+                <p class="mt-1 text-sm text-gray-400">Get started by creating the first step of this playbook.</p>
                 <div class="mt-6">
                     @php
                         try {

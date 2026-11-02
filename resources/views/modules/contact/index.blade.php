@@ -47,7 +47,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-semibold text-white/80">{{ __('Email') }}</p>
-                                <p class="text-lg font-bold">{{ \Modules\Settings\Models\Setting::get('contact_email', 'info@rickdevelopment.com') }}</p>
+                                <p class="text-lg font-bold">{{ \Modules\Settings\Models\Setting::get('contact_email', 'info@bizpaddi.com') }}</p>
                             </div>
                         </div>
 

@@ -157,7 +157,7 @@
                 <form action="{{ route('team.bdm.leads.update-status', $lead) }}" method="POST">
                     @csrf
                     <div class="flex items-center space-x-3 mb-4">
-                        <select name="status" onchange="this.form.submit()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#FB4C4B] sm:text-sm sm:leading-6">
+                        <select name="status" onchange="this.form.submit()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6">
                             @foreach(['new' => 'New', 'contacted' => 'Contacted', 'nurturing' => 'Nurturing', 'qualified' => 'Qualified', 'converted' => 'Converted', 'lost' => 'Lost'] as $val => $label)
                                 <option value="{{ $val }}" {{ $lead->status === $val ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -195,7 +195,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Interaction Type</label>
-                            <select name="type" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#FB4C4B] sm:text-sm sm:leading-6">
+                            <select name="type" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6">
                                 <option value="email">Email</option>
                                 <option value="call">Phone Call</option>
                                 <option value="meeting">Meeting</option>
@@ -204,9 +204,9 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Details</label>
-                            <textarea name="description" rows="3" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-[#FB4C4B] sm:text-sm sm:leading-6" placeholder="What was discussed?"></textarea>
+                            <textarea name="description" rows="3" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6" placeholder="What was discussed?"></textarea>
                         </div>
-                        <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#FB4C4B] hover:bg-[#D93837]">
+                        <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-500">
                             Save Activity
                         </button>
                     </div>

@@ -32,13 +32,13 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Source Name <span class="text-red-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $leadSource->name) }}" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea name="description" rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent resize-y">{{ old('description', $leadSource->description) }}</textarea>
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-y">{{ old('description', $leadSource->description) }}</textarea>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -47,14 +47,14 @@
                     <div class="flex items-center gap-3">
                         <input type="color" id="color-picker" value="{{ old('color', $leadSource->color) }}" class="h-10 w-10 border-0 rounded cursor-pointer">
                         <input type="text" name="color" id="color-hex" value="{{ old('color', $leadSource->color) }}" pattern="^#[0-9A-Fa-f]{6}$"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
                     <input type="number" name="sort_order" value="{{ old('sort_order', $leadSource->sort_order) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FB4C4B] focus:border-transparent">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
                     <!-- Hidden field to ensure '0' is sent if unchecked -->
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $leadSource->is_active) ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
+                        class="rounded border-gray-300 text-emerald-400 focus:ring-emerald-500">
                     <span class="text-sm font-medium text-gray-700">Active (available for selection)</span>
                 </label>
             </div>
@@ -75,7 +75,7 @@
                 Cancel
             </a>
             <button type="submit"
-                class="px-5 py-2 bg-[#FB4C4B] text-white rounded-md text-sm font-semibold hover:bg-[#D93837] transition-colors">
+                class="px-5 py-2 bg-emerald-600 text-white rounded-md text-sm font-semibold hover:bg-emerald-500 transition-colors">
                 Save Changes
             </button>
         </div>

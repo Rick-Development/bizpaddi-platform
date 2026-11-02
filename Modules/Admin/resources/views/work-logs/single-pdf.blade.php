@@ -20,7 +20,7 @@
         .header-table {
             width: 100%;
             margin-bottom: 25px;
-            border-bottom: 2px solid #FB4C4B;
+            border-bottom: 2px solid #0E5E4A;
             padding-bottom: 12px;
         }
         .logo-cell {
@@ -39,12 +39,12 @@
         .company-name {
             font-size: 20px;
             font-weight: bold;
-            color: #191C47;
+            color: #10231C;
         }
         .report-title {
             font-size: 18px;
             font-weight: bold;
-            color: #FB4C4B;
+            color: #0E5E4A;
             text-transform: uppercase;
             margin: 0 0 4px 0;
         }
@@ -71,7 +71,7 @@
         .watermark-text {
             font-size: 60px;
             font-weight: bold;
-            color: #191C47;
+            color: #10231C;
         }
 
         /* Session Summary Cards */
@@ -99,7 +99,7 @@
         .val {
             font-size: 13px;
             font-weight: bold;
-            color: #191C47;
+            color: #10231C;
         }
 
         .section-card {
@@ -112,7 +112,7 @@
         .section-header {
             font-size: 13px;
             font-weight: bold;
-            color: #191C47;
+            color: #10231C;
             border-bottom: 1px solid #f3f4f6;
             padding-bottom: 6px;
             margin-bottom: 10px;
@@ -188,7 +188,7 @@
         @if($fullPath && file_exists($fullPath))
             <img src="{{ $fullPath }}" class="watermark-img">
         @else
-            <div class="watermark-text">RICK DEVELOPMENT</div>
+            <div class="watermark-text">BIZPADDI</div>
         @endif
     </div>
 
@@ -204,7 +204,7 @@
                     @if($fullLogoPath && file_exists($fullLogoPath))
                         <img src="{{ $fullLogoPath }}" class="logo">
                     @else
-                        <div class="company-name">{{ \Modules\Settings\Models\Setting::get('site_name', 'Rick Development LTD') }}</div>
+                        <div class="company-name">{{ \Modules\Settings\Models\Setting::get('site_name', 'Bizpaddi') }}</div>
                     @endif
                     <div class="meta-info">Work Session & Task Performance Record</div>
                 </td>
@@ -242,7 +242,7 @@
                     </td>
                     <td style="width: 25%;">
                         <div class="label">Total Session Duration</div>
-                        <div class="val" style="color: #FB4C4B;">
+                        <div class="val" style="color: #0E5E4A;">
                             @if($workLog->duration_minutes)
                                 {{ floor($workLog->duration_minutes / 60) }}h {{ $workLog->duration_minutes % 60 }}m
                             @else
@@ -320,7 +320,7 @@
         </div>
 
         <div class="footer">
-            Official Work Session Record • Rick Development LTD Internal System • Exported {{ now()->format('M d, Y H:i:s') }}
+            Official Work Session Record • Bizpaddi Internal System • Exported {{ now()->format('M d, Y H:i:s') }}
         </div>
     </div>
 </body>

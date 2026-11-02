@@ -2,7 +2,7 @@
     <div class="bg-brand-secondary py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center">
             <h1 class="text-3xl font-bold tracking-tight text-white sm:text-5xl">Press Releases</h1>
-            <p class="mt-4 text-lg leading-8 text-gray-300">Latest news and announcements from Rick Development.</p>
+            <p class="mt-4 text-lg leading-8 text-gray-300">Latest news and announcements from Bizpaddi.</p>
         </div>
     </div>
 

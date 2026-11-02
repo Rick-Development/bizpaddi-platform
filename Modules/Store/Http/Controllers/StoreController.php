@@ -3,50 +3,33 @@
 namespace Modules\Store\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 
 class StoreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a tenant's public digital storefront.
      */
-    public function index()
+    public function tenantStore(string $slug, \Illuminate\Http\Request $request)
     {
-        $products = $this->fetchProducts();
-        return view('store::index', compact('products'));
-    }
+        $tenant = \App\Models\Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
 
-    /**
-     * Fetch products from the external API with caching.
-     */
-    private function fetchProducts($limit = 4)
-    {
-        return Cache::remember('store_products_' . $limit, 3600, function () use ($limit) {
-            $apiKey = env('STORE_API_KEY');
-            $apiUrl = 'https://store.rickdevelopment.com/api/items/all';
+        $query = $tenant->products()->where('is_active', true);
 
-            try {
-                $response = Http::get($apiUrl, [
-                    'api_key' => $apiKey,
-                ]);
+        if ($request->filled('category')) {
+            $query->where('category', $request->input('category'));
+        }
 
-                if ($response->successful()) {
-                    $data = $response->json();
-                    
-                    if (($data['status'] ?? '') === 'success') {
-                        // Sort by published_at descending and take the limit
-                        return collect($data['items'] ?? [])
-                            ->sortByDesc('published_at')
-                            ->take($limit)
-                            ->values();
-                    }
-                }
-                
-                return collect([]);
-            } catch (\Exception $e) {
-                return collect([]);
-            }
-        });
+        $products = $query->latest()->paginate(12)->withQueryString();
+
+        $categories = $tenant->products()
+            ->where('is_active', true)
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category')
+            ->filter();
+
+        return view('store::tenant_store', compact('tenant', 'products', 'categories'));
     }
 }

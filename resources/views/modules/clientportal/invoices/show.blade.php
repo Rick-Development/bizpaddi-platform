@@ -47,7 +47,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">From</h3>
-                <div class="text-sm text-gray-900 font-medium">{{ \Modules\Settings\Models\Setting::get('site_name', 'Rick Development') }}</div>
+                <div class="text-sm text-gray-900 font-medium">{{ \Modules\Settings\Models\Setting::get('site_name', 'Bizpaddi') }}</div>
                 <div class="text-sm text-gray-500 mt-1">
                     {!! nl2br(e(\Modules\Settings\Models\Setting::get('contact_address'))) !!}<br>
                     {{ \Modules\Settings\Models\Setting::get('contact_email') }}<br>

@@ -6,8 +6,8 @@
 <div class="mb-6">
     <div class="sm:flex sm:items-center sm:justify-between">
         <div class="mb-4 sm:mb-0">
-            <h1 class="text-2xl font-bold text-gray-900">Accounts</h1>
-            <p class="mt-1 text-sm text-gray-600">Manage chart of accounts and balances</p>
+            <h1 class="text-2xl font-bold text-white">Accounts</h1>
+            <p class="mt-1 text-sm text-gray-400">Manage chart of accounts and balances</p>
         </div>
         <div class="flex-shrink-0">
             <a href="{{ route('admin.accounting.accounts.create') }}" class="inline-flex items-center justify-center px-6 py-3 bg-brand-primary text-white text-base font-semibold rounded-lg hover:bg-brand-primary/90 transition-all shadow-lg hover:shadow-xl">
@@ -21,12 +21,12 @@
 </div>
 
 @if($accounts->isEmpty())
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+<div class="bg-[#10231C]/60 rounded-2xl border border-white/10 backdrop-blur-xl shadow-xl p-12 text-center">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
     </svg>
-    <h3 class="mt-4 text-lg font-semibold text-gray-900">No accounts yet</h3>
-    <p class="mt-2 text-sm text-gray-600">Create your first account to start tracking finances.</p>
+    <h3 class="mt-4 text-lg font-semibold text-white">No accounts yet</h3>
+    <p class="mt-2 text-sm text-gray-400">Create your first account to start tracking finances.</p>
     <div class="mt-6">
         <a href="{{ route('admin.accounting.accounts.create') }}" class="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -37,46 +37,46 @@
     </div>
 </div>
 @else
-<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+<div class="bg-[#10231C]/60 rounded-2xl shadow-sm border border-white/10 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full whitespace-nowrap text-left text-sm">
-            <thead class="bg-gray-50/50">
+            <thead class="bg-[#10231C]/60/[0.04]">
                 <tr>
-                    <th class="px-6 py-4 font-semibold text-gray-900">Account</th>
-                    <th class="px-6 py-4 font-semibold text-gray-900">Category</th>
-                    <th class="px-6 py-4 font-semibold text-gray-900">Balance</th>
-                    <th class="px-6 py-4 font-semibold text-gray-900">Transactions</th>
-                    <th class="px-6 py-4 font-semibold text-gray-900">Status</th>
-                    <th class="px-6 py-4 font-semibold text-gray-900 text-right">Actions</th>
+                    <th class="px-6 py-4 font-semibold text-white">Account</th>
+                    <th class="px-6 py-4 font-semibold text-white">Category</th>
+                    <th class="px-6 py-4 font-semibold text-white">Balance</th>
+                    <th class="px-6 py-4 font-semibold text-white">Transactions</th>
+                    <th class="px-6 py-4 font-semibold text-white">Status</th>
+                    <th class="px-6 py-4 font-semibold text-white text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100 bg-white">
+            <tbody class="divide-y divide-white/5 bg-[#10231C]/60">
                 @foreach($accounts as $account)
-                <tr class="group hover:bg-gray-50/50 transition-colors duration-200">
+                <tr class="group hover:bg-white/[0.03]/50 transition-colors duration-200">
                     <td class="px-6 py-4">
-                        <div class="font-medium text-gray-900">{{ $account->name }}</div>
-                        <div class="text-xs text-gray-500 font-mono mt-0.5">{{ $account->code }}</div>
+                        <div class="font-medium text-white">{{ $account->name }}</div>
+                        <div class="text-xs text-gray-400 font-mono mt-0.5">{{ $account->code }}</div>
                     </td>
                     <td class="px-6 py-4">
                         @if($account->category)
-                        <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                        <span class="inline-flex items-center rounded-md bg-white/[0.03] px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-gray-500/10">
                             {{ $account->category->name }}
                         </span>
                         @else
                         <span class="text-xs text-gray-400">-</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 font-semibold {{ $account->balance < 0 ? 'text-red-600' : 'text-gray-900' }}">
+                    <td class="px-6 py-4 font-semibold {{ $account->balance < 0 ? 'text-red-600' : 'text-white' }}">
                         ${{ number_format($account->balance, 2) }}
                     </td>
-                    <td class="px-6 py-4 text-gray-500">
+                    <td class="px-6 py-4 text-gray-400">
                         {{ $account->transactions_count }}
                     </td>
                     <td class="px-6 py-4">
                         @if($account->is_active)
                         <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Active</span>
                         @else
-                        <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Inactive</span>
+                        <span class="inline-flex items-center rounded-md bg-white/[0.03] px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-gray-500/10">Inactive</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">

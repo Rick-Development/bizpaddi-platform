@@ -8,6 +8,6 @@ class CommunicationSeeder extends Seeder {
         Subscriber::create(['email' => 'subscriber1@example.com', 'name' => 'Alice Johnson', 'is_active' => true]);
         Subscriber::create(['email' => 'subscriber2@example.com', 'name' => 'Bob Williams', 'is_active' => true]);
         
-        Campaign::create(['name' => 'Monthly Newsletter', 'subject' => 'Rick Development - January Updates', 'content' => 'Latest news and updates from Rick Development', 'type' => 'email', 'status' => 'draft']);
+        Campaign::create(['name' => 'Monthly Newsletter', 'subject' => 'Bizpaddi - January Updates', 'content' => 'Latest news and updates from Bizpaddi', 'type' => 'email', 'status' => 'draft']);
     }
 }

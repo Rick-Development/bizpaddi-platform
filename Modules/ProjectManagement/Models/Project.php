@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Clients\Models\Client;
+use App\Traits\BelongsToTenant;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, BelongsToTenant;
 
     protected $table = 'pm_projects';
 
@@ -28,6 +29,7 @@ class Project extends Model implements HasMedia
     }
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'description',
         'client_id',

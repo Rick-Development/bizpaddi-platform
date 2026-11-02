@@ -6,12 +6,12 @@
 
     {{-- Breadcrumb & Actions --}}
     <div class="flex items-center justify-between">
-        <a href="{{ route('admin.bugs.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-900 flex items-center gap-1.5 transition">
+        <a href="{{ route('admin.bugs.index') }}" class="text-sm font-medium text-gray-400 hover:text-white flex items-center gap-1.5 transition">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
             Back to Bug Reports
         </a>
         <div class="flex items-center gap-2">
-            <a href="{{ route('admin.bugs.edit', $bug) }}" class="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold px-3.5 py-2 rounded-xl transition">
+            <a href="{{ route('admin.bugs.edit', $bug) }}" class="inline-flex items-center gap-1.5 bg-white/[0.06] hover:bg-gray-200 text-gray-300 text-sm font-semibold px-3.5 py-2 rounded-xl transition">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
                 Edit Bug
             </a>
@@ -26,14 +26,14 @@
     </div>
 
     {{-- Main Header Card --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+    <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-6">
         <div class="flex items-start justify-between gap-4 flex-wrap">
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                     <span class="text-xs font-bold text-gray-400">#{{ $bug->id }}</span>
                     <span class="text-xs font-semibold text-brand-primary uppercase tracking-wider">{{ $bug->project?->name ?? 'No Project Assigned' }}</span>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">{{ $bug->title }}</h1>
+                <h1 class="text-2xl font-bold text-white tracking-tight">{{ $bug->title }}</h1>
                 <div class="flex flex-wrap items-center gap-2 mt-3">
                     <span class="text-xs font-bold px-3 py-1 rounded-full
                         @if($bug->severity === 'critical') bg-red-100 text-red-700
@@ -42,14 +42,14 @@
                         @else bg-green-100 text-green-700 @endif">
                         {{ ucfirst($bug->severity) }} Severity
                     </span>
-                    <span class="text-xs font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+                    <span class="text-xs font-medium px-3 py-1 rounded-full bg-white/[0.06] text-gray-300">
                         {{ ucfirst($bug->priority) }} Priority
                     </span>
                     <span class="text-xs font-semibold px-3 py-1 rounded-full border
                         @if($bug->status === 'open') border-blue-200 bg-blue-50 text-blue-700
                         @elseif($bug->status === 'in_progress') border-amber-200 bg-amber-50 text-amber-700
                         @elseif($bug->status === 'resolved') border-emerald-200 bg-emerald-50 text-emerald-700
-                        @elseif($bug->status === 'closed') border-gray-200 bg-gray-50 text-gray-600
+                        @elseif($bug->status === 'closed') border-white/10 bg-white/[0.03] text-gray-400
                         @else border-red-200 bg-red-50 text-red-700 @endif">
                         {{ $bug->status_label }}
                     </span>
@@ -81,9 +81,9 @@
         <div class="lg:col-span-2 space-y-6">
 
             {{-- Description --}}
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Issue Description</h3>
-                <div class="prose prose-sm max-w-none text-gray-700 leading-relaxed">
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-6">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Issue Description</h3>
+                <div class="prose prose-sm max-w-none text-gray-300 leading-relaxed">
                     @if(strip_tags($bug->description) !== $bug->description)
                         {!! $bug->description !!}
                     @else
@@ -94,22 +94,22 @@
 
             {{-- Steps to Reproduce --}}
             @if($bug->steps_to_reproduce)
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Steps to Reproduce</h3>
-                <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed font-mono bg-gray-50 p-4 rounded-xl border border-gray-100">{{ $bug->steps_to_reproduce }}</p>
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-6">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Steps to Reproduce</h3>
+                <p class="text-sm text-gray-300 whitespace-pre-line leading-relaxed font-mono bg-white/[0.03] p-4 rounded-xl border border-white/10">{{ $bug->steps_to_reproduce }}</p>
             </div>
             @endif
 
             {{-- Expected vs Actual --}}
             @if($bug->expected_result || $bug->actual_result)
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 @if($bug->expected_result)
                 <div>
                     <h3 class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Expected Behaviour
                     </h3>
-                    <p class="text-sm text-gray-700 whitespace-pre-line bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">{{ $bug->expected_result }}</p>
+                    <p class="text-sm text-gray-300 whitespace-pre-line bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">{{ $bug->expected_result }}</p>
                 </div>
                 @endif
                 @if($bug->actual_result)
@@ -118,7 +118,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Actual Behaviour
                     </h3>
-                    <p class="text-sm text-gray-700 whitespace-pre-line bg-red-50/50 p-3 rounded-xl border border-red-100">{{ $bug->actual_result }}</p>
+                    <p class="text-sm text-gray-300 whitespace-pre-line bg-red-50/50 p-3 rounded-xl border border-red-100">{{ $bug->actual_result }}</p>
                 </div>
                 @endif
             </div>
@@ -134,11 +134,11 @@
 
             {{-- Screenshots & Media --}}
             @if($bug->getMedia('screenshots')->count())
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Screenshots ({{ $bug->getMedia('screenshots')->count() }})</h3>
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-6">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Screenshots ({{ $bug->getMedia('screenshots')->count() }})</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     @foreach($bug->getMedia('screenshots') as $media)
-                    <a href="{{ $media->getUrl() }}" target="_blank" class="block rounded-xl overflow-hidden border border-gray-200 hover:shadow-md transition">
+                    <a href="{{ $media->getUrl() }}" target="_blank" class="block rounded-xl overflow-hidden border border-white/10 hover:shadow-md transition">
                         <img src="{{ $media->getUrl() }}" alt="Screenshot" class="w-full h-36 object-cover hover:scale-105 transition-transform duration-200">
                     </a>
                     @endforeach
@@ -152,14 +152,14 @@
         <div class="space-y-6">
 
             {{-- Admin Control Card --}}
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
-                <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">Manage Status & Assignment</h3>
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-5 space-y-4">
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider">Manage Status & Assignment</h3>
                 <form action="{{ route('admin.bugs.update-status', $bug) }}" method="POST" class="space-y-3">
                     @csrf @method('PATCH')
 
                     <div>
-                        <label for="status" class="block text-xs font-medium text-gray-600 mb-1">Status</label>
-                        <select name="status" id="status" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <label for="status" class="block text-xs font-medium text-gray-400 mb-1">Status</label>
+                        <select name="status" id="status" class="w-full rounded-xl border border-white/10 px-3 py-2 text-sm bg-[#10231C]/60 focus:ring-brand-primary focus:border-brand-primary bg-[#0a1612] text-white border-white/10">
                             <option value="open" {{ $bug->status === 'open' ? 'selected' : '' }}>Open</option>
                             <option value="in_progress" {{ $bug->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
                             <option value="resolved" {{ $bug->status === 'resolved' ? 'selected' : '' }}>Resolved (Fixed)</option>
@@ -169,8 +169,8 @@
                     </div>
 
                     <div>
-                        <label for="assigned_to" class="block text-xs font-medium text-gray-600 mb-1">Assign Developer / Team Member</label>
-                        <select name="assigned_to" id="assigned_to" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                        <label for="assigned_to" class="block text-xs font-medium text-gray-400 mb-1">Assign Developer / Team Member</label>
+                        <select name="assigned_to" id="assigned_to" class="w-full rounded-xl border border-white/10 px-3 py-2 text-sm bg-[#10231C]/60 focus:ring-brand-primary focus:border-brand-primary bg-[#0a1612] text-white border-white/10">
                             <option value="">Unassigned</option>
                             @foreach($users as $user)
                             <option value="{{ $user->id }}" {{ $bug->assigned_to == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ ucfirst($user->role ?? 'Team') }})</option>
@@ -179,16 +179,16 @@
                     </div>
 
                     <div>
-                        <label for="due_date" class="block text-xs font-medium text-gray-600 mb-1">Deadline / Timeframe</label>
+                        <label for="due_date" class="block text-xs font-medium text-gray-400 mb-1">Deadline / Timeframe</label>
                         <input type="datetime-local" name="due_date" id="due_date"
                             value="{{ old('due_date', $bug->due_date ? $bug->due_date->format('Y-m-d\TH:i') : '') }}"
-                            class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm bg-white focus:ring-brand-primary focus:border-brand-primary">
+                            class="w-full rounded-xl border border-white/10 px-3 py-2 text-sm bg-[#10231C]/60 focus:ring-brand-primary focus:border-brand-primary">
                     </div>
 
                     <div>
-                        <label for="resolution_notes" class="block text-xs font-medium text-gray-600 mb-1">Resolution Notes</label>
+                        <label for="resolution_notes" class="block text-xs font-medium text-gray-400 mb-1">Resolution Notes</label>
                         <textarea name="resolution_notes" id="resolution_notes" rows="3" placeholder="Enter fix details or internal notes..."
-                            class="w-full rounded-xl border border-gray-200 p-2.5 text-xs focus:ring-brand-primary focus:border-brand-primary">{{ old('resolution_notes', $bug->resolution_notes) }}</textarea>
+                            class="w-full rounded-xl border border-white/10 p-2.5 text-xs focus:ring-brand-primary focus:border-brand-primary bg-[#0a1612] text-white border-white/10">{{ old('resolution_notes', $bug->resolution_notes) }}</textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition shadow-sm">
@@ -198,47 +198,47 @@
             </div>
 
             {{-- Bug Metadata --}}
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
-                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Meta Details</h3>
+            <div class="bg-[#10231C]/60 rounded-2xl border border-white/10 shadow-sm p-5 space-y-3">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Meta Details</h3>
                 <div class="space-y-2.5 text-sm">
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Project</span>
-                        <span class="font-medium text-gray-800">{{ $bug->project?->name ?? '—' }}</span>
+                        <span class="text-gray-400">Project</span>
+                        <span class="font-medium text-white">{{ $bug->project?->name ?? '—' }}</span>
                     </div>
                     @if($bug->task)
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Linked Task</span>
-                        <span class="font-medium text-gray-800 text-right max-w-[60%] truncate" title="{{ $bug->task->title }}">{{ $bug->task->title }}</span>
+                        <span class="text-gray-400">Linked Task</span>
+                        <span class="font-medium text-white text-right max-w-[60%] truncate" title="{{ $bug->task->title }}">{{ $bug->task->title }}</span>
                     </div>
                     @endif
                     @if($bug->environment)
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Environment</span>
-                        <span class="font-medium text-gray-800">{{ $bug->environment }}</span>
+                        <span class="text-gray-400">Environment</span>
+                        <span class="font-medium text-white">{{ $bug->environment }}</span>
                     </div>
                     @endif
                     @if($bug->browser)
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Browser</span>
-                        <span class="font-medium text-gray-800">{{ $bug->browser }}</span>
+                        <span class="text-gray-400">Browser</span>
+                        <span class="font-medium text-white">{{ $bug->browser }}</span>
                     </div>
                     @endif
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Reported By</span>
-                        <span class="font-medium text-gray-800">{{ $bug->reporter?->name ?? 'Admin' }}</span>
+                        <span class="text-gray-400">Reported By</span>
+                        <span class="font-medium text-white">{{ $bug->reporter?->name ?? 'Admin' }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Assigned To</span>
-                        <span class="font-medium text-gray-800">{{ $bug->assignee?->name ?? 'Unassigned' }}</span>
+                        <span class="text-gray-400">Assigned To</span>
+                        <span class="font-medium text-white">{{ $bug->assignee?->name ?? 'Unassigned' }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Report Date</span>
-                        <span class="font-medium text-gray-800">{{ $bug->created_at->format('M j, Y') }}</span>
+                        <span class="text-gray-400">Report Date</span>
+                        <span class="font-medium text-white">{{ $bug->created_at->format('M j, Y') }}</span>
                     </div>
                     <div class="flex justify-between items-center pt-1 border-t border-gray-50">
-                        <span class="text-gray-500">Deadline</span>
+                        <span class="text-gray-400">Deadline</span>
                         @if($bug->due_date)
-                        <span class="font-medium text-xs text-right {{ $bug->is_overdue ? 'text-red-600 font-bold' : 'text-gray-800' }}">
+                        <span class="font-medium text-xs text-right {{ $bug->is_overdue ? 'text-red-600 font-bold' : 'text-white' }}">
                             {{ $bug->due_date->format('M j, Y \a\t g:i A') }}
                             @if($bug->is_overdue)
                             <span class="block text-[10px] text-red-500 font-bold uppercase">Overdue</span>

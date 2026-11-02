@@ -13,20 +13,44 @@ use Modules\Admin\Http\Controllers\KanbanController;
 |--------------------------------------------------------------------------
 */
 
-// Admin Authentication Routes
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::redirect('/', '/admin/dashboard');
+// Business Workspace Routes
+Route::prefix('dashboard')->name('admin.')->group(function () {
 
-    // Login routes (guest only)
+    // Login & Register routes (guest only)
     Route::middleware('guest:admin')->group(function () {
         Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [LoginController::class, 'login']);
+        Route::get('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register']);
     });
 
     // Protected admin routes
     Route::middleware(['Modules\Admin\Http\Middleware\AdminAuth'])->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+        // Business Subscription & Plan Billing
+        Route::get('/billing', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'index'])->name('billing.index');
+        Route::post('/billing/checkout', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'renewOrUpgrade'])->name('billing.checkout');
+        Route::post('/billing/topup', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'topupWallet'])->name('billing.topup');
+        Route::post('/billing/switch-model', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'switchModel'])->name('billing.switch-model');
+        Route::get('/billing/pay', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'pay'])->name('billing.pay');
+        Route::post('/billing/verify-now', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'verifyNow'])->name('billing.verify-now');
+        Route::get('/billing/callback', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'callback'])->name('billing.callback');
+
+        // Digital Storefront & Catalog
+        Route::prefix('storefront')->name('storefront.')->group(function () {
+            Route::get('/products', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'index'])->name('products.index');
+            Route::get('/products/create', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'create'])->name('products.create');
+            Route::post('/products', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'store'])->name('products.store');
+            Route::get('/products/{product}/edit', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'edit'])->name('products.edit');
+            Route::put('/products/{product}', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'update'])->name('products.update');
+            Route::delete('/products/{product}', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'destroy'])->name('products.destroy');
+
+            Route::get('/settings', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'settings'])->name('settings');
+            Route::put('/settings', [\Modules\Admin\Http\Controllers\StorefrontController::class, 'updateSettings'])->name('settings.update');
+        });
 
         // Account Profile & Details
         Route::get('account/profile', [\Modules\Admin\Http\Controllers\AdminProfileController::class, 'edit'])->name('account.profile.edit');
@@ -157,35 +181,75 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{contract}/status', [\Modules\Admin\Http\Controllers\ContractController::class, 'updateStatus'])->name('status');
         });
         
-        // Hero Sliders Management
-        Route::resource('hero-sliders', \Modules\Admin\Http\Controllers\HeroSliderController::class);
+        // Platform CMS, Infrastructure & Corporate Marketing Routes (Platform Super Admin Only)
+        Route::middleware([\Modules\Admin\Http\Middleware\EnsureSuperAdmin::class])->group(function () {
+            // Hero Sliders Management
+            Route::resource('hero-sliders', \Modules\Admin\Http\Controllers\HeroSliderController::class);
+            
+            // Featured Content Management
+            Route::resource('featured-content', \Modules\Admin\Http\Controllers\FeaturedContentController::class);
+            
+            // Testimonials Management
+            Route::resource('testimonials', \Modules\Admin\Http\Controllers\TestimonialController::class);
+            
+            // About Section Management
+            Route::resource('leaders', \Modules\Admin\Http\Controllers\LeaderController::class);
+            Route::resource('timeline', \Modules\Admin\Http\Controllers\TimelineController::class);
+            Route::resource('awards', \Modules\Admin\Http\Controllers\AwardController::class);
+            
+            // Portfolio Management
+            Route::resource('projects', \Modules\Admin\Http\Controllers\ProjectController::class);
+            Route::resource('industries', \Modules\Admin\Http\Controllers\IndustryController::class);
+            
+            // Blog Management
+            Route::resource('posts', \Modules\Admin\Http\Controllers\PostController::class);
+            Route::resource('categories', \Modules\Admin\Http\Controllers\CategoryController::class);
+            
+            // Careers Management
+            Route::resource('jobs', \Modules\Admin\Http\Controllers\JobController::class);
+            Route::get('applications/{application}/download-resume', [\Modules\Admin\Http\Controllers\ApplicationController::class, 'downloadResume'])->name('applications.download-resume');
+            Route::resource('applications', \Modules\Admin\Http\Controllers\ApplicationController::class)->only(['index', 'show', 'update']);
+
+            // SEO Manager
+            Route::get('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'index'])->name('seo.index');
+            Route::put('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'update'])->name('seo.update');
+
+            // Navigation Management
+            Route::resource('navigation', \Modules\Admin\Http\Controllers\NavigationItemController::class);
+
+            // Home Page Management
+            Route::prefix('home')->name('home.')->group(function () {
+                Route::resource('stats', \Modules\Admin\Http\Controllers\HomeStatsController::class);
+                Route::resource('features', \Modules\Admin\Http\Controllers\HomeFeaturesController::class);
+                Route::resource('processes', \Modules\Admin\Http\Controllers\HomeProcessesController::class);
+                Route::resource('ctas', \Modules\Admin\Http\Controllers\HomeCtaController::class);
+                Route::resource('client-logos', \Modules\Admin\Http\Controllers\ClientLogoController::class);
+                Route::resource('trust-badges', \Modules\Admin\Http\Controllers\TrustBadgeController::class);
+            });
+            
+            // Investor Relations
+            Route::prefix('investor')->name('investor.')->group(function () {
+                Route::resource('financial-reports', \Modules\Admin\Http\Controllers\FinancialReportController::class);
+                Route::resource('press-releases', \Modules\Admin\Http\Controllers\InvestorPressReleaseController::class);
+                Route::resource('stock-data', \Modules\Admin\Http\Controllers\StockDataController::class);
+                Route::resource('shareholder-meetings', \Modules\Admin\Http\Controllers\ShareholderMeetingController::class);
+            });
+            
+            // Visitor Sessions Management
+            Route::resource('visitors', \Modules\Admin\Http\Controllers\VisitorController::class)->only(['index', 'show', 'destroy']);
+            Route::post('visitors/bulk-delete', [\Modules\Admin\Http\Controllers\VisitorController::class, 'bulkDelete'])->name('visitors.bulk-delete');
+            
+            // Rate Limiting
+            Route::get('rate-limits/sync', [\Modules\Admin\Http\Controllers\RateLimitController::class, 'sync'])->name('rate-limits.sync');
+            Route::resource('rate-limits', \Modules\Admin\Http\Controllers\RateLimitController::class)->only(['index', 'edit', 'update', 'destroy']);
+
+            // System Maintenance
+            Route::get('system', [\Modules\Admin\Http\Controllers\SystemController::class, 'index'])->name('system.index');
+            Route::post('system/run', [\Modules\Admin\Http\Controllers\SystemController::class, 'runCommand'])->name('system.run');
+        });
         
-        // Featured Content Management
-        Route::resource('featured-content', \Modules\Admin\Http\Controllers\FeaturedContentController::class);
-        
-        // Services Management
+        // Tenant Services Catalog
         Route::resource('services', \Modules\Admin\Http\Controllers\ServiceController::class);
-        
-        // Testimonials Management
-        Route::resource('testimonials', \Modules\Admin\Http\Controllers\TestimonialController::class);
-        
-        // About Section Management
-        Route::resource('leaders', \Modules\Admin\Http\Controllers\LeaderController::class);
-        Route::resource('timeline', \Modules\Admin\Http\Controllers\TimelineController::class);
-        Route::resource('awards', \Modules\Admin\Http\Controllers\AwardController::class);
-        
-        // Portfolio Management
-        Route::resource('projects', \Modules\Admin\Http\Controllers\ProjectController::class);
-        Route::resource('industries', \Modules\Admin\Http\Controllers\IndustryController::class);
-        
-        // Blog Management
-        Route::resource('posts', \Modules\Admin\Http\Controllers\PostController::class);
-        Route::resource('categories', \Modules\Admin\Http\Controllers\CategoryController::class);
-        
-        // Careers Management
-        Route::resource('jobs', \Modules\Admin\Http\Controllers\JobController::class);
-        Route::get('applications/{application}/download-resume', [\Modules\Admin\Http\Controllers\ApplicationController::class, 'downloadResume'])->name('applications.download-resume');
-        Route::resource('applications', \Modules\Admin\Http\Controllers\ApplicationController::class)->only(['index', 'show', 'update']);
         
         // Contact Management
         Route::post('contact-submissions/bulk-delete', [\Modules\Admin\Http\Controllers\ContactSubmissionController::class, 'bulkDestroy'])->name('contact-submissions.bulk-delete');
@@ -322,45 +386,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/', [\Modules\Admin\Http\Controllers\MailSettingsController::class, 'update'])->name('update');
             Route::post('/test', [\Modules\Admin\Http\Controllers\MailSettingsController::class, 'sendTest'])->name('test');
         });
-
-        // SEO Manager
-        Route::get('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'index'])->name('seo.index');
-        Route::put('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'update'])->name('seo.update');
-        
-        // Store
-        Route::get('store', [\Modules\Admin\Http\Controllers\StoreController::class, 'index'])->name('store.index');
-
-        // Navigation Management
-        Route::resource('navigation', \Modules\Admin\Http\Controllers\NavigationItemController::class);
-        
-        // Home Page Management
-        Route::prefix('home')->name('home.')->group(function () {
-            Route::resource('stats', \Modules\Admin\Http\Controllers\HomeStatsController::class);
-            Route::resource('features', \Modules\Admin\Http\Controllers\HomeFeaturesController::class);
-            Route::resource('processes', \Modules\Admin\Http\Controllers\HomeProcessesController::class);
-            Route::resource('ctas', \Modules\Admin\Http\Controllers\HomeCtaController::class);
-            Route::resource('client-logos', \Modules\Admin\Http\Controllers\ClientLogoController::class);
-            Route::resource('trust-badges', \Modules\Admin\Http\Controllers\TrustBadgeController::class);
-        });
-        
-        // Investor Relations
-        Route::prefix('investor')->name('investor.')->group(function () {
-            Route::resource('financial-reports', \Modules\Admin\Http\Controllers\FinancialReportController::class);
-            Route::resource('press-releases', \Modules\Admin\Http\Controllers\InvestorPressReleaseController::class);
-            Route::resource('stock-data', \Modules\Admin\Http\Controllers\StockDataController::class);
-            Route::resource('shareholder-meetings', \Modules\Admin\Http\Controllers\ShareholderMeetingController::class);
-        });
-        
-        // Visitor Sessions Management
-        Route::resource('visitors', \Modules\Admin\Http\Controllers\VisitorController::class)->only(['index', 'show', 'destroy']);
-        Route::post('visitors/bulk-delete', [\Modules\Admin\Http\Controllers\VisitorController::class, 'bulkDelete'])->name('visitors.bulk-delete');
-        
-        // Rate Limiting
-        Route::get('rate-limits/sync', [\Modules\Admin\Http\Controllers\RateLimitController::class, 'sync'])->name('rate-limits.sync');
-        Route::resource('rate-limits', \Modules\Admin\Http\Controllers\RateLimitController::class)->only(['index', 'edit', 'update', 'destroy']);
-
-        // System Maintenance
-        Route::get('system', [\Modules\Admin\Http\Controllers\SystemController::class, 'index'])->name('system.index');
-        Route::post('system/run', [\Modules\Admin\Http\Controllers\SystemController::class, 'runCommand'])->name('system.run');
     });
 });

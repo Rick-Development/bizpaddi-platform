@@ -38,7 +38,7 @@ class FeaturedContentSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'title' => 'Rick Development Launches New AI Platform',
+                'title' => 'Bizpaddi Launches New AI Platform',
                 'excerpt' => 'Introducing our latest AI-powered platform for automated content generation and management.',
                 'type' => 'news',
                 'link' => '/blog/ai-platform-launch',
@@ -47,7 +47,7 @@ class FeaturedContentSeeder extends Seeder
             ],
             [
                 'title' => 'Global Expansion Announcement',
-                'excerpt' => 'Rick Development opens new offices in Asia-Pacific region to better serve our growing client base.',
+                'excerpt' => 'Bizpaddi opens new offices in Asia-Pacific region to better serve our growing client base.',
                 'type' => 'news',
                 'link' => '/blog/global-expansion',
                 'order' => 5,

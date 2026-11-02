@@ -36,10 +36,10 @@
         }
 
         /* ─── Header ────────────────────────────────── */
-        .header-table { width: 100%; margin-bottom: 28px; border-bottom: 2px solid #FB4C4B; padding-bottom: 18px; }
+        .header-table { width: 100%; margin-bottom: 28px; border-bottom: 2px solid #0E5E4A; padding-bottom: 18px; }
         .logo { max-height: 70px; max-width: 180px; }
         .company-address { font-size: 11px; color: #777; margin-top: 6px; line-height: 1.6; }
-        .report-title { font-size: 26px; font-weight: bold; text-transform: uppercase; color: #FB4C4B; margin: 0 0 4px 0; }
+        .report-title { font-size: 26px; font-weight: bold; text-transform: uppercase; color: #0E5E4A; margin: 0 0 4px 0; }
         .report-subtitle { font-size: 12px; color: #555; }
         .report-meta { font-size: 10px; color: #999; margin-top: 6px; }
 
@@ -57,12 +57,12 @@
             border-right: 1px solid #e5e7eb;
         }
         .summary-table td:last-child { border-right: none; }
-        .summary-value { font-size: 22px; font-weight: bold; color: #FB4C4B; display: block; }
+        .summary-value { font-size: 22px; font-weight: bold; color: #0E5E4A; display: block; }
         .summary-label { font-size: 8px; text-transform: uppercase; color: #6b7280; letter-spacing: 0.6px; display: block; margin-top: 2px; }
 
         /* ─── Table ─────────────────────────────────── */
         .leads-table { width: 100%; border-collapse: collapse; }
-        .leads-table thead tr { background-color: #FB4C4B; }
+        .leads-table thead tr { background-color: #0E5E4A; }
         .leads-table thead th {
             padding: 9px 10px;
             text-align: left;

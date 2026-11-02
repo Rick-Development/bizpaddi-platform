@@ -5,12 +5,15 @@ namespace Modules\Admin\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Traits\BelongsToTenant;
 
 class SalaryDisbursement extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     protected $fillable = [
+        'tenant_id',
         'user_id',
         'amount',
         'currency',

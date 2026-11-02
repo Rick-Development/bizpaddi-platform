@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') - Rick Development</title>
-    @php
-        $favicon = \Modules\Settings\Models\Setting::get('favicon');
-    @endphp
-    @if($favicon)
-        <link rel="icon" href="{{ asset('storage/' . $favicon) }}" type="image/x-icon">
-    @else
-        <link rel="icon" href="/logo.png" type="image/png">
-    @endif
+    <title>@yield('title', 'Admin Dashboard') - {{ config('app.name', 'Bizpaddi') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/bizpaddi/icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/bizpaddi/icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -23,7 +18,7 @@
         * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         
         .sidebar-gradient {
-            background: linear-gradient(180deg, #191C47 0%, #0F1229 100%);
+            background: linear-gradient(180deg, #10231C 0%, #08110e 100%);
         }
         
         .stat-card-hover {
@@ -37,8 +32,8 @@
     </style>
     @stack('styles')
 </head>
-<body class="h-full bg-gray-50" x-data="{ sidebarOpen: false }">
-    <div class="min-h-full">
+<body class="h-full bg-[#08110e] text-white antialiased overflow-x-hidden w-full max-w-[100vw]" x-data="{ sidebarOpen: false }">
+    <div class="min-h-full bg-[#08110e] w-full max-w-[100vw] overflow-x-hidden">
         <!-- Mobile sidebar -->
         <div x-show="sidebarOpen" 
              x-transition:enter="transition-opacity ease-linear duration-300"
@@ -51,10 +46,10 @@
              role="dialog" 
              aria-modal="true"
              style="display: none;">
-            <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm"></div>
+            <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
             <div class="fixed inset-0 flex">
                 <div x-show="sidebarOpen"
-                     x-transition:enter="transition ease-in-out duration-300 transform"
+                     x-transition:enter="transition-ease-in-out duration-300 transform"
                      x-transition:enter-start="-translate-x-full"
                      x-transition:enter-end="translate-x-0"
                      x-transition:leave="transition ease-in-out duration-300 transform"
@@ -75,46 +70,45 @@
         </div>
 
         <!-- Desktop sidebar -->
-        <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col border-r border-white/10">
             @include('admin::layouts.partials.sidebar')
         </div>
 
         <!-- Main content -->
-        <div class="lg:pl-72">
+        <div class="lg:pl-72 flex flex-col min-h-screen bg-[#08110e] w-full max-w-full overflow-x-hidden min-w-0">
             <!-- Top bar -->
-            <div class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-md shadow-sm">
+            <div class="sticky top-0 z-40 border-b border-white/10 bg-[#10231C]/90 backdrop-blur-md shadow-sm">
                 <div class="mx-auto max-w-7xl 2xl:max-w-[1600px] flex h-16 shrink-0 items-center gap-x-4 px-4 sm:gap-x-6 sm:px-6 lg:px-8">
-                    <button type="button" @click="sidebarOpen = true" class="-m-2.5 p-2.5 text-gray-700 lg:hidden relative z-30 cursor-pointer focus:outline-none">
+                    <button type="button" @click="sidebarOpen = true" class="-m-2.5 p-2.5 text-gray-300 hover:text-white lg:hidden relative z-30 cursor-pointer focus:outline-none">
                         <span class="sr-only">Open sidebar</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
 
-
-                    <div class="h-6 w-px bg-gray-200 lg:hidden"></div>
+                    <div class="h-6 w-px bg-white/10 lg:hidden"></div>
 
                     <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                         <div class="flex flex-1 items-center">
-                            <h2 class="text-lg font-semibold text-gray-900">@yield('title', 'Dashboard')</h2>
+                            <h2 class="text-lg font-bold text-white tracking-tight">@yield('title', 'Dashboard')</h2>
                         </div>
                         <div class="flex items-center gap-x-4 lg:gap-x-6">
                             <x-bell-notification />
                             
                             <!-- User menu -->
                             <div class="flex items-center gap-x-3">
-                                <a href="{{ route('admin.account.profile.edit') }}" class="flex items-center gap-x-2.5 px-2.5 py-1.5 rounded-xl hover:bg-gray-100 transition-colors group" title="Edit Admin Profile & Details">
-                                    <div class="w-8 h-8 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-xs group-hover:bg-brand-primary group-hover:text-white transition">
+                                <a href="{{ route('admin.account.profile.edit') }}" class="flex items-center gap-x-2.5 px-2.5 py-1.5 rounded-xl hover:bg-white/10 transition-colors group" title="Edit Admin Profile & Details">
+                                    <div class="w-8 h-8 rounded-full bg-[#0E5E4A] text-white flex items-center justify-center font-bold text-xs border border-emerald-400/30">
                                         {{ strtoupper(substr(auth('admin')->user()->name, 0, 2)) }}
                                     </div>
                                     <div class="hidden sm:block text-left">
-                                        <p class="text-sm font-semibold text-gray-900 group-hover:text-brand-primary transition-colors leading-tight">{{ auth('admin')->user()->name }}</p>
-                                        <p class="text-[11px] text-gray-500 font-medium leading-tight">{{ str_replace('_', ' ', ucfirst(auth('admin')->user()->role)) }} &bull; <span class="text-brand-primary underline">Edit Details</span></p>
+                                        <p class="text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors leading-tight">{{ auth('admin')->user()->name }}</p>
+                                        <p class="text-[11px] text-gray-400 font-medium leading-tight">{{ str_replace('_', ' ', ucfirst(auth('admin')->user()->role)) }} &bull; <span class="text-emerald-400 underline">Edit Details</span></p>
                                     </div>
                                 </a>
                                 <form method="POST" action="{{ route('admin.logout') }}">
                                     @csrf
-                                    <button type="submit" class="flex items-center gap-x-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors">
+                                    <button type="submit" class="flex items-center gap-x-1.5 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-gray-300 hover:text-red-400 hover:bg-white/10 transition-colors">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                                         </svg>
@@ -128,33 +122,49 @@
             </div>
 
             <!-- Page content -->
-            <main class="py-8">
-                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1600px] mx-auto">
+            <main class="py-8 flex-1 w-full max-w-full overflow-x-hidden min-w-0">
+                <div class="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1600px] mx-auto w-full min-w-0">
                     @if(session('success'))
-                    <div class="mb-6 rounded-xl bg-green-50 p-4 border-l-4 border-green-500">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                            </div>
+                    <div class="mb-6 rounded-2xl bg-emerald-500/10 p-4 border border-emerald-500/30 flex items-center gap-3">
+                        <div class="flex-shrink-0 text-emerald-400">
+                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-emerald-300">{{ session('success') }}</p>
                         </div>
                     </div>
                     @endif
 
                     @if(session('error'))
-                    <div class="mb-6 rounded-xl bg-red-50 p-4 border-l-4 border-red-500">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                    <div class="mb-6 rounded-2xl bg-rose-500/10 p-4 border border-rose-500/30 flex items-center gap-3">
+                        <div class="flex-shrink-0 text-rose-400">
+                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-rose-300">{{ session('error') }}</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($errors->any())
+                    <div class="mb-6 rounded-2xl bg-rose-500/10 p-4 border border-rose-500/30">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 text-rose-400 mt-0.5">
+                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                            <div>
+                                <h3 class="text-sm font-bold text-rose-200">Please review the errors below:</h3>
+                                <ul class="mt-1 list-disc list-inside text-xs text-rose-300 space-y-0.5">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -167,27 +177,27 @@
     <div id="global-toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
     <!-- Desktop Notification Modal Prompt -->
-    <div id="desktop-notif-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-gray-100 transform scale-95 transition-all duration-300 text-center relative overflow-hidden">
+    <div id="desktop-notif-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-md transition-opacity duration-300 opacity-0">
+        <div class="bg-[#10231C] rounded-3xl shadow-2xl max-w-md w-full p-6 border border-white/10 transform scale-95 transition-all duration-300 text-center relative overflow-hidden">
             
-            <div class="h-16 w-16 rounded-2xl bg-gradient-to-tr from-[#191C47] to-[#FB4C4B] text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/20">
+            <div class="h-16 w-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/10">
                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
             </div>
 
-            <h3 class="text-base font-bold text-gray-900">Enable Admin Desktop Notifications?</h3>
-            <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+            <h3 class="text-base font-bold text-white">Enable Admin Desktop Notifications?</h3>
+            <p class="text-xs text-gray-400 mt-2 leading-relaxed">
                 Get instant desktop alerts for new admin messages and global task comments even when your browser is in the background.
             </p>
 
             <div class="mt-6 flex items-center justify-center gap-3">
                 <button type="button" onclick="closeNotifModal()" 
-                        class="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-semibold transition-all">
+                        class="px-4 py-2.5 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 text-xs font-semibold transition-all">
                     Cancel / Not Now
                 </button>
                 <button type="button" onclick="grantNotifPermissionFromModal()" 
-                        class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FB4C4B] to-[#e03b3a] text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">
+                        class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">
                     Enable Notifications 🔔
                 </button>
             </div>
@@ -296,20 +306,20 @@
             if (!container) return;
 
             const toastId = 'toast-' + Date.now();
-            const bgGradient = iconType === 'chat' ? 'from-[#191C47] to-[#2B2F6C]' : 'from-[#FB4C4B] to-[#D93635]';
+            const bgGradient = iconType === 'chat' ? 'from-emerald-800 to-teal-900' : 'from-emerald-600 to-teal-700';
 
             const toastHtml = `
-                <div id="${toastId}" class="pointer-events-auto bg-white rounded-2xl shadow-xl border border-gray-200/80 p-4 flex items-start gap-3 transform translate-x-full transition-all duration-300 opacity-0 cursor-pointer hover:border-[#FB4C4B]"
+                <div id="${toastId}" class="pointer-events-auto bg-[#10231C] rounded-2xl shadow-xl border border-white/10 p-4 flex items-start gap-3 transform translate-x-full transition-all duration-300 opacity-0 cursor-pointer hover:border-emerald-500/50"
                      onclick="window.location.href='${url}'">
                     <div class="h-9 w-9 rounded-xl bg-gradient-to-br ${bgGradient} text-white flex items-center justify-center flex-shrink-0 font-bold text-xs shadow-sm">
                         ${iconType === 'chat' ? '💬' : '📝'}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-gray-900 truncate">${title}</h4>
-                        <p class="text-xs text-gray-600 truncate mt-0.5">${body}</p>
-                        <span class="text-[10px] text-[#FB4C4B] font-semibold mt-1 inline-block">Click to view →</span>
+                        <h4 class="text-xs font-bold text-white truncate">${title}</h4>
+                        <p class="text-xs text-gray-400 truncate mt-0.5">${body}</p>
+                        <span class="text-[10px] text-emerald-400 font-semibold mt-1 inline-block">Click to view →</span>
                     </div>
-                    <button type="button" onclick="event.stopPropagation(); document.getElementById('${toastId}').remove();" class="text-gray-400 hover:text-gray-600 p-1">
+                    <button type="button" onclick="event.stopPropagation(); document.getElementById('${toastId}').remove();" class="text-gray-400 hover:text-white p-1">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>

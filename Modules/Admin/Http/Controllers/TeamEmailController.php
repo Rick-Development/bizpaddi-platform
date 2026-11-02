@@ -218,9 +218,9 @@ class TeamEmailController extends Controller
                 'avg_response_hours' => '1.5',
 
                 // Company & Site Info
-                'site_name' => config('app.name', 'Rick Development LTD'),
-                'company' => config('app.name', 'Rick Development LTD'),
-                'company_name' => config('app.name', 'Rick Development LTD'),
+                'site_name' => config('app.name', 'Bizpaddi'),
+                'company' => config('app.name', 'Bizpaddi'),
+                'company_name' => config('app.name', 'Bizpaddi'),
                 'site_url' => config('app.url', url('/')),
                 'date' => now()->format('F j, Y'),
                 'current_date' => now()->format('F j, Y'),

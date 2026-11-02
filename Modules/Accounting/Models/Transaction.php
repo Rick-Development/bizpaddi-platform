@@ -4,10 +4,14 @@ namespace Modules\Accounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use App\Traits\BelongsToTenant;
 
 class Transaction extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'tenant_id',
         'account_id',
         'transaction_number',
         'transaction_date',

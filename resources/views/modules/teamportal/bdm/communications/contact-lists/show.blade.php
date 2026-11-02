@@ -148,7 +148,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">CSV File <span class="text-red-500">*</span></label>
                     <input type="file" name="file" accept=".csv,.txt" required
-                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#FB4C4B]/10 file:text-[#FB4C4B] hover:file:bg-[#FB4C4B]/20">
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-600/10 file:text-emerald-400 hover:file:bg-emerald-600/20">
                     <p class="mt-2 text-xs text-gray-500 bg-gray-50 rounded p-2">
                         <strong>Required header row:</strong> first_name, last_name, email, phone, company<br>
                         Duplicate emails will be skipped. All added contacts will be added to this list.
@@ -158,7 +158,7 @@
                     <button type="button" onclick="document.getElementById('import-modal').classList.add('hidden')"
                             class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
                     <button type="submit"
-                            class="px-4 py-2 bg-[#FB4C4B] text-white rounded-lg text-sm font-medium hover:bg-[#D93837]">
+                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-500">
                         <i class="fa-solid fa-upload mr-1.5"></i> Import
                     </button>
                 </div>

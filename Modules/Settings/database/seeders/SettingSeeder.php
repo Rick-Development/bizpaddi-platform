@@ -5,8 +5,8 @@ use Modules\Settings\Models\Setting;
 
 class SettingSeeder extends Seeder {
     public function run(): void {
-        Setting::updateOrCreate(['key' => 'site_name'], ['value' => 'Rick Development LTD', 'type' => 'string', 'description' => 'Website name']);
-        Setting::updateOrCreate(['key' => 'contact_email'], ['value' => 'info@rickdevelopment.com', 'type' => 'string', 'description' => 'Primary contact email']);
+        Setting::updateOrCreate(['key' => 'site_name'], ['value' => 'Bizpaddi', 'type' => 'string', 'description' => 'Website name']);
+        Setting::updateOrCreate(['key' => 'contact_email'], ['value' => 'hello@bizpaddi.com', 'type' => 'string', 'description' => 'Primary contact email']);
         Setting::updateOrCreate(['key' => 'suspended_message'], [
             'value' => '<strong>Your account has been suspended.</strong><br><br>This may be due to a violation of our terms of service or a pending administrative review. Please contact the HR department or your supervisor for more details.',
             'type' => 'string',

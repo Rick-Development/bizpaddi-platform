@@ -23,7 +23,7 @@
                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                     <i class="fa-solid fa-file-import mr-2 text-blue-600"></i> Import CSV
                 </button>
-                <a href="{{ route('team.bdm.contacts.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-[#FB4C4B] hover:bg-[#D93837] shadow-sm transform hover:-translate-y-0.5 transition-all duration-200">
+                <a href="{{ route('team.bdm.contacts.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-500 shadow-sm transform hover:-translate-y-0.5 transition-all duration-200">
                     <i class="fa-solid fa-plus mr-2"></i> Add Contact
                 </a>
             </div>
@@ -40,10 +40,10 @@
                     </div>
                     <input type="text" name="search" value="{{ request('search') }}" 
                            placeholder="Search by name, email, or company..." 
-                           class="pl-10 w-full block rounded-lg border-gray-300 shadow-sm focus:ring-[#FB4C4B] focus:border-[#FB4C4B] sm:text-sm h-11">
+                           class="pl-10 w-full block rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm h-11">
                 </div>
                 <div class="md:col-span-4 lg:col-span-3">
-                    <select name="status" class="w-full block rounded-lg border-gray-300 shadow-sm focus:ring-[#FB4C4B] focus:border-[#FB4C4B] sm:text-sm h-11">
+                    <select name="status" class="w-full block rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm h-11">
                         <option value="">All Statuses</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="unsubscribed" {{ request('status') == 'unsubscribed' ? 'selected' : '' }}>Unsubscribed</option>
@@ -60,7 +60,7 @@
     </div>
 
     <!-- Selection Bar -->
-    <div id="selection-bar" class="hidden sticky top-16 z-30 bg-[#FB4C4B] text-white px-6 py-3 rounded-lg shadow-lg mb-6 flex items-center justify-between transition-all">
+    <div id="selection-bar" class="hidden sticky top-16 z-30 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg mb-6 flex items-center justify-between transition-all">
         <div class="flex items-center gap-4">
             <span class="font-bold text-sm"><span id="selected-count">0</span> contacts selected</span>
             <div class="h-4 w-px bg-white/30 hidden sm:block"></div>
@@ -94,7 +94,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-4 text-left w-10">
-                            <input type="checkbox" id="select-all-desktop" class="rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
+                            <input type="checkbox" id="select-all-desktop" class="rounded border-gray-300 text-emerald-400 focus:ring-emerald-500">
                         </th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Contact Name & Email</th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role & Company</th>
@@ -108,11 +108,11 @@
                     @forelse($contacts as $contact)
                     <tr class="hover:bg-gray-50 transition-colors contact-row" data-id="{{ $contact->id }}">
                         <td class="px-6 py-4">
-                            <input type="checkbox" name="contact_ids[]" value="{{ $contact->id }}" class="contact-checkbox rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
+                            <input type="checkbox" name="contact_ids[]" value="{{ $contact->id }}" class="contact-checkbox rounded border-gray-300 text-emerald-400 focus:ring-emerald-500">
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="h-10 w-10 flex-shrink-0 rounded-full bg-red-50 text-[#FB4C4B] flex items-center justify-center font-bold text-sm">
+                                <div class="h-10 w-10 flex-shrink-0 rounded-full bg-red-50 text-emerald-400 flex items-center justify-center font-bold text-sm">
                                     {{ strtoupper(substr($contact->first_name ?? $contact->email ?? 'C', 0, 1)) }}{{ strtoupper(substr($contact->last_name ?? '', 0, 1)) }}
                                 </div>
                                 <div class="ml-4 min-w-0">
@@ -159,7 +159,7 @@
                                     <i class="fa-solid fa-comment-dots mr-1.5"></i>
                                     SMS
                                 </a>
-                                <a href="{{ route('team.bdm.contacts.edit', $contact) }}" class="inline-flex items-center text-[#FB4C4B] hover:text-[#D93837] font-semibold transition-colors">
+                                <a href="{{ route('team.bdm.contacts.edit', $contact) }}" class="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
                                     <i class="fa-solid fa-pen-to-square mr-1.5"></i>
                                     Edit
                                 </a>
@@ -193,11 +193,11 @@
         @forelse($contacts as $contact)
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative contact-card" data-id="{{ $contact->id }}">
             <div class="absolute top-4 right-4">
-                <input type="checkbox" name="contact_ids[]" value="{{ $contact->id }}" class="contact-checkbox rounded border-gray-300 text-[#FB4C4B] focus:ring-[#FB4C4B]">
+                <input type="checkbox" name="contact_ids[]" value="{{ $contact->id }}" class="contact-checkbox rounded border-gray-300 text-emerald-400 focus:ring-emerald-500">
             </div>
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center">
-                    <div class="h-10 w-10 rounded-full bg-red-50 text-[#FB4C4B] flex items-center justify-center font-bold flex-shrink-0">
+                    <div class="h-10 w-10 rounded-full bg-red-50 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0">
                         {{ strtoupper(substr($contact->first_name ?? $contact->email ?? 'C', 0, 1)) }}
                     </div>
                     <div class="ml-3 pr-8">
@@ -233,7 +233,7 @@
                     <i class="fa-solid fa-comment-dots mr-1.5"></i>
                     SMS
                 </a>
-                <a href="{{ route('team.bdm.contacts.edit', $contact) }}" class="text-sm font-semibold text-[#FB4C4B] flex items-center">
+                <a href="{{ route('team.bdm.contacts.edit', $contact) }}" class="text-sm font-semibold text-emerald-400 flex items-center">
                     <i class="fa-solid fa-pen-to-square mr-1.5"></i>
                     Edit
                 </a>
@@ -274,7 +274,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">CSV File <span class="text-red-500">*</span></label>
                     <input type="file" name="file" accept=".csv,.txt" required
-                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#FB4C4B]/10 file:text-[#FB4C4B] hover:file:bg-[#FB4C4B]/20">
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-600/10 file:text-emerald-400 hover:file:bg-emerald-600/20">
                     <p class="mt-2 text-xs text-gray-500 bg-gray-50 rounded p-2">
                         <strong>Required header row:</strong> first_name, last_name, email, phone, company<br>
                         Duplicate emails will be skipped automatically.
@@ -282,7 +282,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Add to Contact List <span class="text-gray-400">(Optional)</span></label>
-                    <select name="list_id" class="w-full rounded-lg border-gray-300 text-sm focus:ring-[#FB4C4B] focus:border-[#FB4C4B]">
+                    <select name="list_id" class="w-full rounded-lg border-gray-300 text-sm focus:ring-emerald-500 focus:border-emerald-500">
                         <option value="">-- Don't add to any list --</option>
                         @foreach(\Modules\Communications\Models\ContactList::where('is_active', true)->get() as $list)
                             <option value="{{ $list->id }}">{{ $list->name }}</option>
@@ -293,7 +293,7 @@
                     <button type="button" onclick="document.getElementById('import-modal').classList.add('hidden')"
                             class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
                     <button type="submit"
-                            class="px-4 py-2 bg-[#FB4C4B] text-white rounded-lg text-sm font-medium hover:bg-[#D93837]">
+                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-500">
                         <i class="fa-solid fa-upload mr-1.5"></i> Import
                     </button>
                 </div>
