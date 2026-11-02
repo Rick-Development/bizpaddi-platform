@@ -288,9 +288,16 @@
                 </div>
 
                 <div class="mt-6 pt-4 border-t border-white/10">
-                    <form action="{{ route('admin.billing.checkout') }}" method="POST">
+                    <form action="{{ route('admin.billing.checkout') }}" method="POST" class="space-y-3">
                         @csrf
                         <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                        @if($plan->billing_type === 'per_seat')
+                        <div class="flex items-center justify-between text-xs bg-white/5 px-3 py-2 rounded-xl border border-white/10">
+                            <label for="seats_{{ $plan->id }}" class="text-gray-300 font-semibold">Total Team Seats:</label>
+                            <input type="number" id="seats_{{ $plan->id }}" name="seats" value="{{ max($activeSeats, $plan->included_users) }}" min="{{ $plan->included_users }}" max="{{ $plan->max_users ?? 500 }}"
+                                   class="w-20 px-2 py-1 rounded-lg bg-[#08110e] border border-white/15 text-white text-center font-bold text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+                        </div>
+                        @endif
                         <button type="submit" class="w-full py-2.5 rounded-xl text-xs font-bold {{ ($subscription && $subscription->plan_id === $plan->id && $tenant->billing_model === 'subscription') ? 'bg-emerald-600 text-white hover:bg-emerald-500' : 'bg-white/10 text-white hover:bg-white/20 border border-white/10' }} shadow-sm transition">
                             {{ ($subscription && $subscription->plan_id === $plan->id && $tenant->billing_model === 'subscription') ? 'Renew via Billway' : 'Activate Plan' }}
                         </button>

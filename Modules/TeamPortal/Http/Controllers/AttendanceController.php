@@ -23,6 +23,14 @@ class AttendanceController extends Controller
             return back()->with('error', 'You have already clocked in today.');
         }
 
+        if ($user->tenant_id && ($tenant = \App\Models\Tenant::find($user->tenant_id))) {
+            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', 20);
+            $billingCheck = $tenant->chargeOrAuthorizeAction('team_operation', $fee, "Team Member Daily Clock-in ({$user->name})");
+            if (!$billingCheck['allowed']) {
+                return back()->with('error', $billingCheck['message']);
+            }
+        }
+
         Attendance::create([
             'user_id' => $user->id,
             'date' => $today,
