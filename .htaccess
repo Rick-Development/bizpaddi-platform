@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to sensitive root files
+    RewriteRule ^(\.env|composer\.(json|lock)|package(-lock)?\.json|artisan)$ - [F,L,NC]
+
+    # Forward all requests to the public/ directory
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
