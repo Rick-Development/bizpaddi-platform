@@ -25,7 +25,7 @@
 
                 <!-- CTA Buttons -->
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
-                    <a href="{{ route('register') }}" target="_blank" rel="noopener" class="w-full sm:w-auto px-9 py-4 rounded-2xl text-base font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white shadow-xl hover:shadow-emerald-900/50 transform hover:-translate-y-0.5 transition duration-200 flex items-center justify-center space-x-2 border border-emerald-400/40">
+                    <a href="{{ route('admin.register') }}" target="_blank" rel="noopener" class="w-full sm:w-auto px-9 py-4 rounded-2xl text-base font-extrabold bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white shadow-xl hover:shadow-emerald-900/50 transform hover:-translate-y-0.5 transition duration-200 flex items-center justify-center space-x-2 border border-emerald-400/40">
                         <span>{{ \Modules\Settings\Models\Setting::get('home_hero_primary_cta_text', 'Get Started Now') }}</span>
                         <svg class="w-5 h-5 text-[#F2A900]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                     </a>
@@ -154,7 +154,7 @@
                     </ul>
 
                     <div class="pt-2">
-                        <a href="{{ route('register') }}" target="_blank" rel="noopener" class="block w-full py-3.5 rounded-xl bg-[#F2A900] hover:bg-amber-300 text-[#08110e] font-extrabold text-sm text-center shadow-lg transition">
+                        <a href="{{ route('admin.register') }}" target="_blank" rel="noopener" class="block w-full py-3.5 rounded-xl bg-[#F2A900] hover:bg-amber-300 text-[#08110e] font-extrabold text-sm text-center shadow-lg transition">
                             Digitize Your Business With Bizpaddi &rarr;
                         </a>
                     </div>
@@ -316,7 +316,7 @@
                         <p class="text-[11px] text-gray-400 leading-relaxed">
                             Separate individual tool subscriptions average ~₦<span x-text="calculateNairaUsd().toLocaleString()"></span>/mo. On Bizpaddi, your entire business runs for just ₦<span x-text="calculateBizpaddi().toLocaleString()"></span>/mo.
                         </p>
-                        <a href="{{ route('register') }}" target="_blank" rel="noopener" class="block w-full py-3 rounded-xl bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white text-xs font-extrabold shadow-md transition border border-emerald-400/30">
+                        <a href="{{ route('admin.register') }}" target="_blank" rel="noopener" class="block w-full py-3 rounded-xl bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white text-xs font-extrabold shadow-md transition border border-emerald-400/30">
                             Claim These Savings (Start Free) &rarr;
                         </a>
                     </div>
@@ -375,7 +375,7 @@
                         </p>
                     </div>
                     <div class="flex-shrink-0">
-                        <a href="{{ route('register') }}?plan=pay_as_you_go" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 px-7 py-3.5 rounded-xl text-sm font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-xl transition transform hover:-translate-y-0.5">
+                        <a href="{{ route('admin.register') }}?plan=pay_as_you_go" target="_blank" rel="noopener" class="inline-flex items-center space-x-2 px-7 py-3.5 rounded-xl text-sm font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-xl transition transform hover:-translate-y-0.5">
                             <span>Get Started with Wallet</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </a>
@@ -488,7 +488,7 @@
                         </div>
 
                         <div class="mt-8 pt-4">
-                            <a href="{{ route('register') }}?plan={{ $plan->code }}" target="_blank" rel="noopener" class="block w-full py-3.5 rounded-2xl text-center text-sm font-extrabold {{ $plan->enable_ai ? 'bg-[#F2A900] text-[#08110e] hover:bg-amber-300' : 'bg-[#0E5E4A] text-white hover:bg-[#0c4e3e]' }} shadow-md transition transform hover:-translate-y-0.5 border border-emerald-400/30">
+                            <a href="{{ route('admin.register') }}?plan={{ $plan->code }}" target="_blank" rel="noopener" class="block w-full py-3.5 rounded-2xl text-center text-sm font-extrabold {{ $plan->enable_ai ? 'bg-[#F2A900] text-[#08110e] hover:bg-amber-300' : 'bg-[#0E5E4A] text-white hover:bg-[#0c4e3e]' }} shadow-md transition transform hover:-translate-y-0.5 border border-emerald-400/30">
                                 Get Started Now
                             </a>
                         </div>
@@ -635,7 +635,7 @@
                 {{ \Modules\Settings\Models\Setting::get('home_bottom_cta_subheadline', 'Join ambitious businesses running on Bizpaddi. Invoicing with automated payment tracking, project management, staff payroll, and your brand\'s digital storefront.') }}
             </p>
             <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="{{ route('register') }}" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
+                <a href="{{ route('admin.register') }}" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-9 py-4 rounded-2xl text-base font-extrabold bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-2xl transition transform hover:-translate-y-1">
                     <span>{{ \Modules\Settings\Models\Setting::get('home_bottom_cta_btn', 'Launch Your Workspace') }}</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                 </a>

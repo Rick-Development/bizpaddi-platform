@@ -19,9 +19,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('lang.switch');
 
-// Self-service SaaS onboarding
-Route::get('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register']);
+// Self-service SaaS onboarding (standardized under /dashboard/* prefix)
+Route::get('/dashboard/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])
+    ->middleware('guest:admin')
+    ->name('register');
+Route::post('/dashboard/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register'])
+    ->middleware('guest:admin');
+
+Route::get('/register', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('admin.register', $request->query());
+});
+Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register'])
+    ->middleware('guest:admin');
+
 Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
