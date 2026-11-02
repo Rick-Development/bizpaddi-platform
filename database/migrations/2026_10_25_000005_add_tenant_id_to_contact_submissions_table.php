@@ -17,7 +17,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('tenant_id')->nullable()->after('id')->index();
             });
 
-            // Backfill existing contact inquiries to tenant 1 (Rick Development)
+            // Backfill existing contact inquiries to tenant 1 (Bizpaddi)
             DB::table('contact_submissions')->whereNull('tenant_id')->update(['tenant_id' => 1]);
         }
 

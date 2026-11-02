@@ -14,7 +14,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('tenant_id')->nullable()->after('id')->index();
             });
 
-            // Backfill all existing feature prices to Tenant 1 (Rick Development LTD)
+            // Backfill all existing feature prices to Tenant 1 (Bizpaddi)
             DB::table('feature_prices')->update(['tenant_id' => 1]);
         }
     }

@@ -465,13 +465,13 @@
                                         <span class="block text-[9px] text-white/60 uppercase font-semibold">Total Balance</span>
                                         <span class="block text-base font-extrabold text-white">$64,820.00</span>
                                     </div>
-                                    <div class="w-7 h-7 rounded-full bg-[#FC4C4B]/20 flex items-center justify-center text-[10px] text-[#FC4C4B] font-bold">RD</div>
+                                    <div class="w-7 h-7 rounded-full bg-[#FC4C4B]/20 flex items-center justify-center text-[10px] text-[#FC4C4B] font-bold">BP</div>
                                 </div>
 
                                 <div class="bg-gradient-to-r from-red-600 to-[#FC4C4B] rounded-2xl p-4 shadow-lg mb-4 text-white">
                                     <div class="flex justify-between items-start mb-6">
                                         <span class="text-[9px] font-bold tracking-wider">PREMIUM VIRTUAL CARD</span>
-                                        <span class="text-[9px] font-light">Rick Dev Core</span>
+                                        <span class="text-[9px] font-light">Bizpaddi Core</span>
                                     </div>
                                     <span class="block text-sm font-semibold tracking-widest mb-2 font-mono">5412 •••• •••• 9845</span>
                                     <div class="flex justify-between text-[8px] opacity-90">
@@ -707,7 +707,7 @@
             </div>
         </section>
 
-        <!-- WHY RICK DEV VS GENERIC AGENCIES / IN-HOUSE (Comparison Matrix) -->
+        <!-- WHY BIZPADDI VS GENERIC AGENCIES / IN-HOUSE (Comparison Matrix) -->
         <section id="comparison" class="py-24 border-t border-white/10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16">

@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
         // Create super admin
         Admin::create([
             'name' => 'Super Admin',
-            'email' => 'admin@rickdevelopment.com',
+            'email' => 'admin@bizpaddi.com',
             'password' => Hash::make('password'), // Change this in production!
             'role' => 'super_admin',
             'is_active' => true,
@@ -29,7 +29,7 @@ class AdminSeeder extends Seeder
         // Create regular admin
         Admin::create([
             'name' => 'Admin User',
-            'email' => 'user@rickdevelopment.com',
+            'email' => 'user@bizpaddi.com',
             'password' => Hash::make('password'), // Change this in production!
             'role' => 'admin',
             'is_active' => true,

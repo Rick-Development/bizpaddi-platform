@@ -4,9 +4,9 @@ importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js')
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDaTw9u2l83Cb8RuPQ99p1sNZUxYo0w5Bk",
-    authDomain: "rick-development-7a9b8.firebaseapp.com",
-    projectId: "rick-development-7a9b8",
-    storageBucket: "rick-development-7a9b8.firebasestorage.app",
+    authDomain: "bizpaddi-app.firebaseapp.com",
+    projectId: "bizpaddi-app",
+    storageBucket: "bizpaddi-app.firebasestorage.app",
     messagingSenderId: "243007112605",
     appId: "1:243007112605:web:5ab31079e4dd9625fe1b74",
     measurementId: "G-C8L2HPF310"

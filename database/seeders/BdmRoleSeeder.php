@@ -20,7 +20,7 @@ class BdmRoleSeeder extends Seeder
         
         // Ensure a test BDM user exists
         $user = \App\Models\User::firstOrCreate(
-            ['email' => 'bdm@rickdevelopment.com'],
+            ['email' => 'bdm@bizpaddi.com'],
             [
                 'name' => 'Test BDM',
                 'password' => \Illuminate\Support\Facades\Hash::make('password'),
