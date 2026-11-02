@@ -8,8 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Drop old campaigns table if it exists
-        Schema::dropIfExists('campaigns');
+        // Drop legacy subscribers table if it exists
         Schema::dropIfExists('subscribers');
     }
 

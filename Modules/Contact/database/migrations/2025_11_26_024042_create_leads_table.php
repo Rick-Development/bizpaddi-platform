@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
+        Schema::dropIfExists('leads');
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -23,8 +24,8 @@ return new class extends Migration {
             // Activity tracking
             $table->timestamp('last_contacted_at')->nullable();
             
-            // Conversion tracking
-            $table->foreignId('converted_to_contact_id')->nullable()->constrained('contacts')->onDelete('set null');
+            // Conversion tracking (contacts table is created in a later migration)
+            $table->unsignedBigInteger('converted_to_contact_id')->nullable();
             $table->timestamp('converted_at')->nullable();
             
             // Flexible data storage
