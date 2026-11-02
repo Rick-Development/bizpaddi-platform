@@ -9,6 +9,10 @@ class SaasPlanSeeder extends Seeder
 {
     public function run(): void
     {
+        if (\Illuminate\Support\Facades\DB::getDriverName() === 'mysql') {
+            \Illuminate\Support\Facades\DB::statement("ALTER TABLE saas_plans MODIFY billing_type VARCHAR(30) NOT NULL DEFAULT 'flat_tiered'");
+        }
+
         $plans = [
             [
                 'name' => 'Pay-As-You-Transact (Micro-Fees)',

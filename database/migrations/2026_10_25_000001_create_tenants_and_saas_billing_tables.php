@@ -49,7 +49,7 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('code')->unique();
                 $table->text('description')->nullable();
-                $table->enum('billing_type', ['flat_tiered', 'per_seat', 'hybrid'])->default('flat_tiered');
+                $table->string('billing_type', 30)->default('flat_tiered');
                 $table->decimal('price', 15, 2)->default(0.00); // Base price
                 $table->decimal('price_per_user', 15, 2)->default(0.00); // Additional user seat price
                 $table->enum('billing_interval', ['monthly', 'yearly'])->default('monthly');
