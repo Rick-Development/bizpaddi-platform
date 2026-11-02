@@ -22,6 +22,7 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
         Route::post('/login', [LoginController::class, 'login']);
         Route::get('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
         Route::post('/register/send-otp', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'sendOtp'])->name('register.send-otp');
+        Route::post('/register/verify-otp', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'verifyOtp'])->name('register.verify-otp');
         Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register']);
     });
 

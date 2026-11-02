@@ -178,7 +178,44 @@ class RegisterController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "We sent a 6-digit verification code to {$email}. Please check your inbox or spam folder.",
+            'message' => "We sent a 6-digit verification code to {$email}.",
+        ]);
+    }
+
+    /**
+     * Step 2: Verify the 6-digit OTP code before advancing to Step 3 (Basic Info).
+     */
+    public function verifyOtp(Request $request)
+    {
+        $email = strtolower(trim((string) $request->input('email')));
+        $submittedOtp = trim((string) $request->input('otp_code'));
+
+        if (empty($email) || strlen($submittedOtp) !== 6) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please enter the 6-digit verification code sent to your email.',
+            ], 422);
+        }
+
+        $cacheKey = 'bizpaddi_reg_otp_' . hash('sha256', $email);
+        $cachedOtp = Cache::get($cacheKey);
+        $sessionData = $request->session()->get($cacheKey);
+        $sessionOtp = (is_array($sessionData) && ($sessionData['expires_at'] ?? 0) >= now()->timestamp)
+            ? ($sessionData['otp'] ?? null)
+            : null;
+
+        $expectedOtp = $cachedOtp ?: $sessionOtp;
+
+        if (!$expectedOtp || !hash_equals((string) $expectedOtp, $submittedOtp)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired verification code. Please check the code or request a new one.',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email verified successfully.',
         ]);
     }
 
