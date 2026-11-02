@@ -5,6 +5,7 @@ namespace Modules\SuperAdmin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class PlatformAdminAuthController extends Controller
 {
@@ -37,27 +38,31 @@ class PlatformAdminAuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $throttleKey = 'platform-admin-login:' . strtolower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
+            ])->onlyInput('email');
+        }
+
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $user = Auth::guard('admin')->user();
 
             // Strict Validation: Platform staff only (tenant_id must be null)
-            if (!is_null($user->tenant_id)) {
+            if (!is_null($user->tenant_id) || !$user->is_active) {
                 Auth::guard('admin')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+                RateLimiter::hit($throttleKey, 60);
 
                 return back()->withErrors([
-                    'email' => 'This portal is restricted to Platform Internal Team. Subscribing businesses must sign in at /dashboard/login.',
+                    'email' => 'Invalid credentials.',
                 ])->onlyInput('email');
             }
 
-            if (!$user->is_active) {
-                Auth::guard('admin')->logout();
-                return back()->withErrors([
-                    'email' => 'Your staff account has been deactivated.',
-                ]);
-            }
-
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             if ($user->role === 'super_admin') {
@@ -67,8 +72,10 @@ class PlatformAdminAuthController extends Controller
             return redirect()->intended(url('/admin'));
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         return back()->withErrors([
-            'email' => 'Invalid credentials for Platform Admin portal.',
+            'email' => 'Invalid credentials.',
         ])->onlyInput('email');
     }
 

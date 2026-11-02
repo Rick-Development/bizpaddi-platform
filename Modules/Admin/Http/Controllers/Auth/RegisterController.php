@@ -47,7 +47,10 @@ class RegisterController extends Controller
             'agree_terms.accepted' => 'You must accept the Terms of Service to create a workspace.',
         ]);
 
-        $plan = SaasPlan::where('code', 'starter_monthly')->first() ?? SaasPlan::active()->first() ?? SaasPlan::first();
+        $requestedPlanCode = $request->input('plan') ?? $request->query('plan');
+        $plan = $requestedPlanCode
+            ? SaasPlan::where('code', $requestedPlanCode)->first()
+            : null;
 
         DB::beginTransaction();
         try {
@@ -101,6 +104,11 @@ class RegisterController extends Controller
             Auth::guard('admin')->login($admin);
             $request->session()->put('current_tenant_id', $tenant->id);
             $request->session()->regenerate();
+
+            if ($plan && !$isPayg) {
+                return redirect()->route('admin.billing.index')
+                    ->with('success', "🎉 Welcome to Bizpaddi! Activate your selected {$plan->name} plan below or top up your operating wallet.");
+            }
 
             return redirect()->route('admin.dashboard')->with('success', "🎉 Welcome to Bizpaddi! Your workspace for {$tenant->name} has been provisioned successfully.");
         } catch (\Throwable $e) {

@@ -62,6 +62,14 @@ class InvoiceController extends Controller
         $validated['created_by'] = auth('admin')->id();
         $validated['status'] = 'draft';
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', 50);
+            $billingCheck = $tenant->chargeOrAuthorizeAction('invoice_generation', $fee, 'Smart Invoice Generation');
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         // Default currency if not provided
         if (empty($validated['currency_id'])) {
             $validated['currency_id'] = \Modules\Accounting\Models\Currency::where('is_default', true)->value('id');

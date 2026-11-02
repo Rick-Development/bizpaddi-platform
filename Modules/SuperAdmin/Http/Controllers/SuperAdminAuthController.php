@@ -5,6 +5,7 @@ namespace Modules\SuperAdmin\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class SuperAdminAuthController extends Controller
 {
@@ -44,6 +45,14 @@ class SuperAdminAuthController extends Controller
         $email = $request->email;
         $password = (string) $request->password;
         $remember = $request->filled('remember');
+        $throttleKey = 'superadmin-login:' . $email . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
+            ])->onlyInput('email');
+        }
 
         // Primary attempt
         $authenticated = Auth::guard('admin')->attempt(['email' => $email, 'password' => $password], $remember);
@@ -57,29 +66,26 @@ class SuperAdminAuthController extends Controller
             $user = Auth::guard('admin')->user();
 
             // Strict Role Validation: Super Admin only
-            if ($user->role !== 'super_admin') {
+            if ($user->role !== 'super_admin' || !$user->is_active) {
                 Auth::guard('admin')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+                RateLimiter::hit($throttleKey, 60);
 
                 return back()->withErrors([
-                    'email' => 'Access denied. Only Super Administrators can log in through this portal.',
+                    'email' => 'Invalid credentials.',
                 ])->onlyInput('email');
             }
 
-            if (!$user->is_active) {
-                Auth::guard('admin')->logout();
-                return back()->withErrors([
-                    'email' => 'Your administrator account has been deactivated.',
-                ]);
-            }
-
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
             return redirect()->intended(route('super-admin.dashboard'));
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         return back()->withErrors([
-            'email' => 'Invalid credentials for Super Admin portal. Ensure email is admin@bizpaddi.com and master password is correct.',
+            'email' => 'Invalid credentials.',
         ])->onlyInput('email');
     }
 

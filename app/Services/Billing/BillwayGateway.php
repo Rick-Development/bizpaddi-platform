@@ -255,9 +255,44 @@ class BillwayGateway
     }
 
     /**
+     * Check transaction payment status directly with Billway API.
+     */
+    public function checkRemoteTransactionStatus(TenantPayment $payment): bool
+    {
+        if (empty($this->secretKey) && empty($this->apiKey)) {
+            return false;
+        }
+
+        $lookupRefs = array_filter(array_unique([
+            $payment->gateway_reference,
+            $payment->reference,
+        ]));
+
+        foreach ($lookupRefs as $ref) {
+            try {
+                $response = Http::withHeaders($this->getHeaders())
+                    ->timeout(15)
+                    ->get("{$this->baseUrl}/collections/verify/" . urlencode($ref));
+
+                if ($response->successful()) {
+                    $data = $response->json('data') ?? $response->json();
+                    $status = strtolower((string) ($data['status'] ?? $data['payment_status'] ?? ''));
+                    if (in_array($status, ['success', 'successful', 'completed', 'paid'], true)) {
+                        return true;
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::warning('Billway verify check exception: ' . $e->getMessage());
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Verify payment and activate/renew tenant subscription or credit wallet.
      */
-    public function verifyAndActivate(string $reference): array
+    public function verifyAndActivate(string $reference, bool $trustedWebhook = false): array
     {
         $payment = TenantPayment::where('reference', $reference)
             ->orWhere('gateway_reference', $reference)
@@ -269,6 +304,14 @@ class BillwayGateway
 
         if ($payment->status === 'successful') {
             return ['success' => true, 'message' => 'Payment already verified.', 'payment' => $payment];
+        }
+
+        // Unless triggered by a verified Billway webhook, confirm payment status against Billway API first
+        if (!$trustedWebhook && !$this->checkRemoteTransactionStatus($payment)) {
+            return [
+                'success' => false,
+                'message' => 'Payment has not yet been confirmed by Billway. Please allow a moment after transferring for bank settlement.',
+            ];
         }
 
         // Mark payment successful
@@ -326,6 +369,7 @@ class BillwayGateway
 
         $tenant->update([
             'status' => 'active',
+            'billing_model' => 'subscription',
             'trial_ends_at' => null,
             'ai_enabled' => (bool) $plan->enable_ai,
         ]);

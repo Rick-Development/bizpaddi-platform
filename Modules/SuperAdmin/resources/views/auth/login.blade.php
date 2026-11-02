@@ -25,13 +25,9 @@
 </head>
 <body class="min-h-full bg-gradient-to-b from-[#10231C] via-[#08110e] to-[#10231C] text-white flex flex-col justify-between selection:bg-emerald-500 selection:text-white"
       x-data="{
-          email: '{{ old('email', 'admin@bizpaddi.com') }}',
-          password: 'password',
-          showPassword: false,
-          fillCredentials() {
-              this.email = 'admin@bizpaddi.com';
-              this.password = 'password';
-          }
+          email: '{{ old('email', '') }}',
+          password: '',
+          showPassword: false
       }">
 
     <!-- Top Bar -->
@@ -90,7 +86,7 @@
                             <input id="email" name="email" type="email" autocomplete="email" required 
                                 x-model="email"
                                 class="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0a1612] border border-white/15 text-sm text-white placeholder-gray-500 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 outline-none transition" 
-                                placeholder="admin@bizpaddi.com">
+                                placeholder="Enter your email">
                         </div>
                     </div>
 
@@ -114,15 +110,12 @@
                         </div>
                     </div>
 
-                    <!-- Remember Me & Quick Autofill button -->
+                    <!-- Remember Me -->
                     <div class="flex items-center justify-between text-xs">
                         <label class="flex items-center space-x-2 text-gray-400 cursor-pointer">
                             <input type="checkbox" name="remember" class="w-4 h-4 rounded border-white/20 bg-[#0a1612] text-[#F2A900] focus:ring-[#F2A900]">
                             <span>Remember terminal</span>
                         </label>
-                        <button type="button" @click="fillCredentials()" class="text-[#F2A900] hover:underline font-semibold flex items-center gap-1">
-                            <span>⚡ Fill Demo Login</span>
-                        </button>
                     </div>
 
                     <!-- Submit Button -->
@@ -132,15 +125,6 @@
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </button>
                 </form>
-
-                <div class="mt-6 pt-5 border-t border-white/10 text-center space-y-2">
-                    <p class="text-xs text-gray-500">Other access portals:</p>
-                    <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold">
-                        <a href="{{ route('platform-admin.login') }}" class="text-emerald-400 hover:underline">Platform Staff (/admin)</a>
-                        <span class="text-gray-600">&bull;</span>
-                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace (/dashboard)</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

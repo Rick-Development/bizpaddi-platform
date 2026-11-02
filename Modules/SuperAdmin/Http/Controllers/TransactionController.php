@@ -47,6 +47,21 @@ class TransactionController extends Controller
     {
         Log::info('Billway Webhook incoming', ['payload' => $request->all()]);
 
+        $webhookSecret = config('services.billway.webhook_secret');
+        if (!empty($webhookSecret)) {
+            $signature = $request->header('X-Billway-Signature') ?? $request->header('X-Webhook-Signature');
+            $computed = hash_hmac('sha256', $request->getContent(), $webhookSecret);
+            if (!$signature || !hash_equals($computed, $signature)) {
+                Log::warning('Billway Webhook rejected due to invalid signature');
+                return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 401);
+            }
+        }
+
+        $status = strtolower((string) ($request->input('data.status') ?? $request->input('status') ?? 'successful'));
+        if (!in_array($status, ['success', 'successful', 'completed', 'paid'], true)) {
+            return response()->json(['status' => 'ignored', 'message' => 'Non-success event status'], 200);
+        }
+
         $reference = $request->input('data.reference') 
             ?? $request->input('reference') 
             ?? $request->input('data.transaction_reference');
@@ -55,7 +70,7 @@ class TransactionController extends Controller
             return response()->json(['status' => 'ignored', 'message' => 'No reference found in payload'], 200);
         }
 
-        $result = $gateway->verifyAndActivate($reference);
+        $result = $gateway->verifyAndActivate($reference, true);
 
         return response()->json($result, $result['success'] ? 200 : 400);
     }

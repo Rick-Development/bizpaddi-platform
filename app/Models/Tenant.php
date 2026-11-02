@@ -139,6 +139,53 @@ class Tenant extends Model
     }
 
     /**
+     * Resolve the currently authenticated tenant workspace.
+     */
+    public static function resolveCurrent(): ?self
+    {
+        if (session('impersonated_tenant_id')) {
+            return static::find((int) session('impersonated_tenant_id'));
+        }
+        if (auth('admin')->check() && auth('admin')->user()->tenant_id) {
+            return static::find((int) auth('admin')->user()->tenant_id);
+        }
+        if (auth()->check() && auth()->user()->tenant_id) {
+            return static::find((int) auth()->user()->tenant_id);
+        }
+        return null;
+    }
+
+    /**
+     * Verify active subscription or deduct Pay-As-You-Transact micro-fee from operating wallet.
+     */
+    public function chargeOrAuthorizeAction(string $action, float $fee, string $description): array
+    {
+        if ($this->billing_model === 'subscription') {
+            if ($this->hasActiveAccess()) {
+                return ['allowed' => true];
+            }
+
+            return [
+                'allowed' => false,
+                'message' => 'Your subscription is inactive or expired. Please renew your plan or switch to Pay-As-You-Transact in Subscription & Billing.',
+            ];
+        }
+
+        if ($fee <= 0) {
+            return ['allowed' => true];
+        }
+
+        if ($this->debitWallet($fee, $action, $description)) {
+            return ['allowed' => true];
+        }
+
+        return [
+            'allowed' => false,
+            'message' => 'Insufficient Operating Wallet balance (₦' . number_format((float) $this->wallet_balance, 2) . '). A micro-fee of ₦' . number_format($fee, 0) . ' is required. Please top up your wallet or activate an unlimited monthly plan.',
+        ];
+    }
+
+    /**
      * Credit business operating wallet.
      */
     public function creditWallet(float $amount, string $action, string $description, ?string $reference = null, ?array $metadata = null)

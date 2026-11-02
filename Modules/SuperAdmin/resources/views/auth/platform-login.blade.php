@@ -104,15 +104,6 @@
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </button>
                 </form>
-
-                <div class="mt-6 pt-5 border-t border-white/10 text-center space-y-2">
-                    <p class="text-xs text-gray-500">Other access portals:</p>
-                    <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold">
-                        <a href="{{ route('super-admin.login') }}" class="text-[#F2A900] hover:underline">Super Admin (/super-admin)</a>
-                        <span class="text-gray-600">&bull;</span>
-                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace (/dashboard)</a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

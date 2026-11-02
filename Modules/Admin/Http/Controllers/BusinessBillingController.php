@@ -96,6 +96,14 @@ class BusinessBillingController extends Controller
         $tenantId = $this->getTenantId();
 
         $tenant = Tenant::findOrFail($tenantId);
+
+        if ($request->billing_model === 'subscription') {
+            $activeSub = $tenant->activeSubscription;
+            if (!$activeSub || !$activeSub->isValid()) {
+                return back()->with('error', 'Please select and activate a monthly or annual subscription plan below first.');
+            }
+        }
+
         $tenant->update(['billing_model' => $request->billing_model]);
 
         $modelName = $request->billing_model === 'payg' ? 'Pay-As-You-Transact (Micro-Fees)' : 'Unlimited Monthly Subscription';

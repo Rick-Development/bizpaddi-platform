@@ -49,6 +49,9 @@
             <div class="bg-[#10231C]/95 backdrop-blur-xl rounded-3xl shadow-2xl p-7 sm:p-9 border border-white/10 text-white">
                 <form action="{{ route('register') }}" method="POST" class="space-y-4">
                     @csrf
+                    @if(request('plan') || old('plan'))
+                        <input type="hidden" name="plan" value="{{ request('plan', old('plan')) }}">
+                    @endif
 
                     @if ($errors->any())
                     <div class="bg-red-950/70 border border-red-500/40 p-4 rounded-xl text-xs text-red-200 space-y-1">

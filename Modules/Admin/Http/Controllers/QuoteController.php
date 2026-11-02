@@ -64,6 +64,14 @@ class QuoteController extends Controller
             $validated['currency_id'] = \Modules\Accounting\Models\Currency::where('is_default', true)->value('id');
         }
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', 30);
+            $billingCheck = $tenant->chargeOrAuthorizeAction('quote_generation', $fee, 'Client Quotation Generation');
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         $quote = Quote::create([
             'client_id' => $request->client_id,
             'currency_id' => $validated['currency_id'],
