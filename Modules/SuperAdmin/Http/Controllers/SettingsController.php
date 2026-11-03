@@ -15,6 +15,7 @@ class SettingsController extends Controller
             'billway_public_key' => config('services.billway.public_key', ''),
             'billway_secret_key' => config('services.billway.secret_key', ''),
             'billway_webhook_secret' => config('services.billway.webhook_secret', ''),
+            'billway_default_provider' => config('services.billway.default_provider', 'p4'),
             'default_currency' => config('app.currency', 'NGN'),
             'default_trial_days' => 14,
             'webhook_url' => route('webhooks.billway'),
@@ -30,6 +31,7 @@ class SettingsController extends Controller
             'billway_public_key' => 'nullable|string',
             'billway_secret_key' => 'nullable|string',
             'billway_webhook_secret' => 'nullable|string',
+            'billway_default_provider' => 'nullable|string|in:p4,p1',
         ]);
 
         $envFile = base_path('.env');
@@ -41,6 +43,7 @@ class SettingsController extends Controller
                 'BILLWAY_PUBLIC_KEY' => $request->billway_public_key ?? '',
                 'BILLWAY_SECRET_KEY' => $request->billway_secret_key ?? '',
                 'BILLWAY_WEBHOOK_SECRET' => $request->billway_webhook_secret ?? '',
+                'BILLWAY_DEFAULT_PROVIDER' => $request->billway_default_provider ?? 'p4',
             ];
 
             foreach ($replacements as $key => $value) {

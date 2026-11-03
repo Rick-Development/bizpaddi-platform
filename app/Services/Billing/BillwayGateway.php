@@ -109,6 +109,14 @@ class BillwayGateway
             'account_type' => $accountType, // STATIC or DYNAMIC
         ];
 
+        // 9PSB and partner providers require an explicit validity range (1 - 24 hours) for dynamic accounts
+        if (strtoupper($accountType) === 'DYNAMIC') {
+            $payload['validity'] = 24;
+            $payload['validity_in_hours'] = 24;
+            $payload['expiry_in_hours'] = 24;
+            $payload['duration'] = 24;
+        }
+
         if (!empty($subUserId)) {
             $payload['sub_user_id'] = (string) $subUserId;
         }
