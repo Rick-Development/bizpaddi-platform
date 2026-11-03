@@ -190,7 +190,6 @@ class EnforceDomainRouting
             'admin/transactions',
             'admin/administrators',
             'admin/website-content',
-            'admin/social-media',
         ];
 
         foreach ($platformAdminExactOrPrefixes as $prefix) {
