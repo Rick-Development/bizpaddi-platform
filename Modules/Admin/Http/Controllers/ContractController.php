@@ -79,6 +79,13 @@ class ContractController extends Controller
         $validated['created_by'] = auth('admin')->id();
         $validated['status'] = 'draft';
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('contract_create', null, "Draft Client Contract: {$validated['title']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         $contract = Contract::create($validated);
         
         // Replace template variables with actual data

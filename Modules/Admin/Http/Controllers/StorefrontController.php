@@ -104,6 +104,14 @@ class StorefrontController extends Controller
             'image.max'      => 'The image may not be greater than 10MB.',
         ]);
 
+        $tenant = $this->getActiveTenant();
+        if ($tenant) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('product_create', null, "Add Product to Catalog: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         $data = [
             'name'           => $validated['name'],
             'slug'           => Str::slug($validated['name']) . '-' . rand(100, 999),
@@ -155,6 +163,14 @@ class StorefrontController extends Controller
             'image.mimes'    => 'The image must be a file of type: jpeg, png, jpg, gif, svg, webp, avif.',
             'image.max'      => 'The image may not be greater than 10MB.',
         ]);
+
+        $tenant = $this->getActiveTenant();
+        if ($tenant) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('product_create', null, "Add Product to Catalog: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
 
         $data = [
             'name'           => $validated['name'],

@@ -82,7 +82,6 @@
                                 <p class="text-xs text-gray-400 mt-0.5">Full control over billing, accounting, storefront, CRM & team.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-mono text-emerald-400 hidden sm:inline">/dashboard/login</span>
                     </div>
 
                     <!-- Staff & Team Portal -->

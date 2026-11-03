@@ -46,6 +46,7 @@ class BusinessBillingController extends Controller
         $availablePlans = SaasPlan::active()->where('billing_type', '!=', 'payg')->get();
         $recentPayments = TenantPayment::where('tenant_id', $tenant->id)->latest()->take(10)->get();
         $walletTransactions = $tenant->walletTransactions()->take(15)->get();
+        $dynamicRates = \App\Models\PlatformFeatureRate::where('is_active', true)->orderBy('category')->orderBy('fee', 'desc')->get();
 
         return view('admin::billing.index', compact(
             'tenant',
@@ -53,7 +54,8 @@ class BusinessBillingController extends Controller
             'activeSeats',
             'availablePlans',
             'recentPayments',
-            'walletTransactions'
+            'walletTransactions',
+            'dynamicRates'
         ));
     }
 

@@ -124,6 +124,33 @@
             <!-- Page content -->
             <main class="py-8 flex-1 w-full max-w-full overflow-x-hidden min-w-0">
                 <div class="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1600px] mx-auto w-full min-w-0">
+                    @php
+                        $currentTenant = \App\Models\Tenant::resolveCurrent();
+                        $isUnmonetized = $currentTenant && !$currentTenant->hasActiveAccess();
+                    @endphp
+
+                    @if($isUnmonetized && !request()->routeIs('admin.billing.*'))
+                    <div class="mb-6 rounded-2xl bg-amber-500/10 p-4 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 rounded-xl bg-amber-500/20 text-[#F2A900] flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-amber-200">
+                                    Workspace in Read-Only Mode &bull; Operating Wallet: ₦{{ number_format((float) ($currentTenant->wallet_balance ?? 0), 2) }}
+                                </p>
+                                <p class="text-xs text-amber-300/80 mt-0.5">
+                                    Top up your wallet (min ₦500) or activate an unlimited monthly plan to add products, generate invoices, and manage your team.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
+                            <a href="{{ route('admin.billing.index') }}" class="px-4 py-2 rounded-xl text-xs font-black bg-[#F2A900] hover:bg-amber-300 text-[#08110e] shadow-md transition">
+                                Top Up / Subscribe &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    @endif
                     @if(session('success'))
                     <div class="mb-6 rounded-2xl bg-emerald-500/10 p-4 border border-emerald-500/30 flex items-center gap-3">
                         <div class="flex-shrink-0 text-emerald-400">

@@ -84,6 +84,13 @@ class LeadController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('lead_create', null, "Capture CRM Lead: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         $lead = Lead::create($validated);
 
         return redirect()->route('admin.leads.show', $lead)

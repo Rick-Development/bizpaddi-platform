@@ -82,8 +82,7 @@
                                 <p class="text-xs text-gray-400 mt-0.5">Full control over billing, accounting, storefront, CRM & team.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-mono text-emerald-400 hidden sm:inline">/dashboard/login</span>
-                    </div>
+                          </div>
 
                     <!-- Staff & Team Portal -->
                     <a href="{{ route('team.login') }}" class="block p-4 rounded-2xl bg-[#10231C]/60 hover:bg-[#10231C] border border-white/10 hover:border-emerald-500/40 transition flex items-center justify-between group">

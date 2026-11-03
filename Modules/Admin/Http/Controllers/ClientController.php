@@ -44,6 +44,13 @@ class ClientController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_active'] = $request->has('is_active');
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('client_create', null, "Onboard Client: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         Client::create($validated);
 
         return redirect()->route('admin.clients.index')

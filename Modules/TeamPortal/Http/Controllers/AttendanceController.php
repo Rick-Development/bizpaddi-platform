@@ -24,7 +24,7 @@ class AttendanceController extends Controller
         }
 
         if ($user->tenant_id && ($tenant = \App\Models\Tenant::find($user->tenant_id))) {
-            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', 20);
+            $fee = \App\Models\PlatformFeatureRate::getFeeForAction('team_operation');
             $billingCheck = $tenant->chargeOrAuthorizeAction('team_operation', $fee, "Team Member Daily Clock-in ({$user->name})");
             if (!$billingCheck['allowed']) {
                 return back()->with('error', $billingCheck['message']);

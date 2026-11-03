@@ -213,43 +213,43 @@
                         </div>
                     </div>
 
-                    <!-- Rate Card 5: Free Digital Storefront -->
-                    <div class="p-6 rounded-3xl bg-[#0E5E4A]/20 border border-emerald-500/40 transition flex flex-col justify-between space-y-4">
+                    <!-- Rate Card 5: Product Catalog & Storefront -->
+                    <div class="p-6 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/40 transition flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-[#0E5E4A] flex items-center justify-center text-2xl">
-                                🌐
+                            <div class="w-12 h-12 rounded-2xl bg-[#0E5E4A]/40 flex items-center justify-center text-2xl border border-emerald-400/20">
+                                🛍️
                             </div>
                             <div>
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Always Included</span>
-                                <h3 class="text-lg font-extrabold text-white">Public Digital Storefront</h3>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Storefront & Inventory</span>
+                                <h3 class="text-lg font-extrabold text-white">Product Catalog & Orders</h3>
                             </div>
                             <p class="text-xs text-gray-300 leading-relaxed">
-                                Dedicated business website at `slug.bizpaddi.com`. Showcase services, accept client bookings, and display catalog.
+                                Upload products with media, SKU, inventory count, and instant order placement from your digital storefront.
                             </p>
                         </div>
                         <div class="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-2xl font-black text-emerald-400">₦0 FREE</span>
-                            <span class="text-xs text-gray-400">Included with wallet</span>
+                            <span class="text-3xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('product_create'), 0) }}</span>
+                            <span class="text-xs text-gray-400">/ product created</span>
                         </div>
                     </div>
 
-                    <!-- Rate Card 6: Free CRM & Financial Ledger -->
-                    <div class="p-6 rounded-3xl bg-[#0E5E4A]/20 border border-emerald-500/40 transition flex flex-col justify-between space-y-4">
+                    <!-- Rate Card 6: CRM & Legal Contracts -->
+                    <div class="p-6 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-emerald-500/40 transition flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-[#0E5E4A] flex items-center justify-center text-2xl">
-                                📊
+                            <div class="w-12 h-12 rounded-2xl bg-[#0E5E4A]/40 flex items-center justify-center text-2xl border border-emerald-400/20">
+                                📝
                             </div>
                             <div>
-                                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Always Included</span>
-                                <h3 class="text-lg font-extrabold text-white">CRM & Cash Flow Ledger</h3>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">CRM & Legal Suite</span>
+                                <h3 class="text-lg font-extrabold text-white">Client Management & Contracts</h3>
                             </div>
                             <p class="text-xs text-gray-300 leading-relaxed">
-                                Unlimited client directory, interaction history, revenue analytics, cash flow tracking, and income logs.
+                                Maintain verified client accounts, CRM lead pipelines, and issue binding digital agreements.
                             </p>
                         </div>
                         <div class="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-2xl font-black text-emerald-400">₦0 FREE</span>
-                            <span class="text-xs text-gray-400">Included with wallet</span>
+                            <span class="text-3xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('client_create'), 0) }}</span>
+                            <span class="text-xs text-gray-400">/ client onboarded</span>
                         </div>
                     </div>
                 </div>

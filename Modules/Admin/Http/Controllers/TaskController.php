@@ -81,6 +81,13 @@ class TaskController extends Controller
             $validated['due_date'] = null;
         }
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('task_create', null, "Create Task: {$validated['title']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         $task = Task::create($validated);
 
         if ($request->hasFile('attachments')) {

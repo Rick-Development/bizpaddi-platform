@@ -38,6 +38,11 @@ Route::prefix('super-admin')
         // Subscription Plans (Tiered & Per-Seat)
         Route::resource('plans', PlanController::class);
 
+        // Dynamic Feature Micro-Rates & Monetization Engine
+        Route::get('feature-rates', [\Modules\SuperAdmin\Http\Controllers\PlatformFeatureRateController::class, 'index'])->name('feature-rates.index');
+        Route::put('feature-rates', [\Modules\SuperAdmin\Http\Controllers\PlatformFeatureRateController::class, 'updateAll'])->name('feature-rates.update-all');
+        Route::post('feature-rates', [\Modules\SuperAdmin\Http\Controllers\PlatformFeatureRateController::class, 'store'])->name('feature-rates.store');
+
         // Billway Transactions
         Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('transactions/{payment}', [TransactionController::class, 'show'])->name('transactions.show');

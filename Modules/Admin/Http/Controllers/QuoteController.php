@@ -65,7 +65,7 @@ class QuoteController extends Controller
         }
 
         if ($tenant = \App\Models\Tenant::resolveCurrent()) {
-            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', 30);
+            $fee = \App\Models\PlatformFeatureRate::getFeeForAction('quote_generation');
             $billingCheck = $tenant->chargeOrAuthorizeAction('quote_generation', $fee, 'Client Quotation Generation');
             if (!$billingCheck['allowed']) {
                 return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);

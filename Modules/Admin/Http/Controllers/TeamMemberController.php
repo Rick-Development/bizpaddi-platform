@@ -86,12 +86,13 @@ class TeamMemberController extends Controller
         $validated['tenant_id'] = $tenantId ?? (auth('admin')->check() ? auth('admin')->user()->tenant_id : null);
 
         if ($validated['tenant_id'] && ($tenant = \App\Models\Tenant::find($validated['tenant_id']))) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('team_member_add', null, "Provision Team Seat: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+
             if ($tenant->billing_model === 'subscription') {
                 $sub = $tenant->activeSubscription;
-                if (!$sub || !$sub->isValid()) {
-                    return redirect()->route('admin.billing.index')
-                        ->with('error', 'Please activate a subscription plan or switch to Pay-As-You-Transact before adding team members.');
-                }
                 $allowedSeats = (int) ($sub->seats_purchased ?: ($sub->plan->included_users ?? 5));
                 if ($tenant->usedSeatsCount() >= $allowedSeats) {
                     return redirect()->route('admin.billing.index')

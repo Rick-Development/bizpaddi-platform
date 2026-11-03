@@ -63,6 +63,13 @@ class PMProjectController extends Controller
             $validated['due_date'] = null;
         }
 
+        if ($tenant = \App\Models\Tenant::resolveCurrent()) {
+            $billingCheck = $tenant->chargeOrAuthorizeAction('project_create', null, "Initialize Project: {$validated['name']}");
+            if (!$billingCheck['allowed']) {
+                return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);
+            }
+        }
+
         Project::create($validated);
 
         return redirect()->route('admin.pm-projects.index')->with('success', 'Project created successfully.');

@@ -63,7 +63,7 @@ class InvoiceController extends Controller
         $validated['status'] = 'draft';
 
         if ($tenant = \App\Models\Tenant::resolveCurrent()) {
-            $fee = (float) \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', 50);
+            $fee = \App\Models\PlatformFeatureRate::getFeeForAction('invoice_generation');
             $billingCheck = $tenant->chargeOrAuthorizeAction('invoice_generation', $fee, 'Smart Invoice Generation');
             if (!$billingCheck['allowed']) {
                 return redirect()->route('admin.billing.index')->with('error', $billingCheck['message']);

@@ -124,49 +124,33 @@
         
         <!-- Left: Micro-Rate Schedule -->
         <div class="bg-[#10231C]/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/10 space-y-4 text-white">
-            <h2 class="text-base font-extrabold text-white">Per-Service Micro-Rates</h2>
-            <p class="text-xs text-gray-400">When using Pay-As-You-Transact mode, fees are deducted only when actions execute.</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-base font-extrabold text-white">Live Micro-Rates Schedule</h2>
+                    <p class="text-xs text-gray-400">Deducted dynamically from your operating wallet per action.</p>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    Live from DB
+                </span>
+            </div>
             
-            <div class="space-y-3 pt-2">
-                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 flex items-center justify-between text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">📄</span>
-                        <span class="font-semibold text-gray-200">Smart Invoice Generated</span>
+            <div class="space-y-2.5 pt-2 max-h-[380px] overflow-y-auto pr-1 sidebar-scroll">
+                @forelse($dynamicRates ?? [] as $dRate)
+                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 flex items-center justify-between text-xs hover:border-emerald-500/20 transition">
+                    <div class="space-y-0.5 max-w-[190px]">
+                        <span class="font-bold text-gray-200 block truncate">{{ $dRate->name }}</span>
+                        <span class="text-[10px] text-gray-500 block truncate">{{ $dRate->category }}</span>
                     </div>
-                    <span class="font-bold text-emerald-400">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', '50') }}</span>
-                </div>
-
-                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 flex items-center justify-between text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">📝</span>
-                        <span class="font-semibold text-gray-200">Client Quotation / Proposal</span>
+                    <div class="text-right flex-shrink-0">
+                        <span class="font-black text-emerald-400 block">₦{{ number_format($dRate->fee, 0) }}</span>
+                        <span class="text-[10px] text-gray-500 font-mono block">{{ $dRate->unit_label }}</span>
                     </div>
-                    <span class="font-bold text-emerald-400">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', '30') }}</span>
                 </div>
-
-                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 flex items-center justify-between text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">👥</span>
-                        <span class="font-semibold text-gray-200">Team Member Daily Clock-in</span>
-                    </div>
-                    <span class="font-bold text-emerald-400">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', '20') }}</span>
+                @empty
+                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 text-xs text-gray-400 text-center">
+                    No active feature rates configured.
                 </div>
-
-                <div class="p-3 rounded-xl bg-[#0a1612] border border-white/5 flex items-center justify-between text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">💳</span>
-                        <span class="font-semibold text-gray-200">Payment Collection (Inflow)</span>
-                    </div>
-                    <span class="font-bold text-emerald-400">{{ \Modules\Settings\Models\Setting::get('pricing_payg_inflow_fee', '1%') }}</span>
-                </div>
-
-                <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">🌐</span>
-                        <span class="font-semibold text-emerald-200">Storefront & CRM Hub</span>
-                    </div>
-                    <span class="font-bold text-emerald-400">₦0 FREE</span>
-                </div>
+                @endforelse
             </div>
         </div>
 

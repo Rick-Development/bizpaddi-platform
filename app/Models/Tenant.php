@@ -127,7 +127,7 @@ class Tenant extends Model
     public function hasActiveAccess(): bool
     {
         if ($this->billing_model === 'payg') {
-            return $this->status === 'active';
+            return $this->status === 'active' && (float) $this->wallet_balance > 0;
         }
 
         if ($this->isOnTrial()) {
@@ -157,31 +157,48 @@ class Tenant extends Model
 
     /**
      * Verify active subscription or deduct Pay-As-You-Transact micro-fee from operating wallet.
+     * Fees are dynamically loaded from DB (platform_feature_rates) when not explicitly provided.
      */
-    public function chargeOrAuthorizeAction(string $action, float $fee, string $description): array
+    public function chargeOrAuthorizeAction(string $action, ?float $fee = null, ?string $description = null): array
     {
         if ($this->billing_model === 'subscription') {
             if ($this->hasActiveAccess()) {
-                return ['allowed' => true];
+                return ['allowed' => true, 'fee' => 0.00];
             }
 
             return [
                 'allowed' => false,
+                'fee' => 0.00,
                 'message' => 'Your subscription is inactive or expired. Please renew your plan or switch to Pay-As-You-Transact in Subscription & Billing.',
             ];
         }
 
+        // Dynamically query DB rate if not explicitly passed
+        if ($fee === null) {
+            $fee = \App\Models\PlatformFeatureRate::getFeeForAction($action);
+        }
+
+        $description = $description ?? ucwords(str_replace('_', ' ', $action));
+
         if ($fee <= 0) {
-            return ['allowed' => true];
+            return ['allowed' => true, 'fee' => 0.00];
         }
 
         if ($this->debitWallet($fee, $action, $description)) {
-            return ['allowed' => true];
+            return [
+                'allowed' => true,
+                'fee' => $fee,
+                'balance' => (float) $this->wallet_balance,
+            ];
         }
+
+        $currentBal = number_format((float) $this->wallet_balance, 2);
+        $requiredFee = number_format($fee, 2);
 
         return [
             'allowed' => false,
-            'message' => 'Insufficient Operating Wallet balance (₦' . number_format((float) $this->wallet_balance, 2) . '). A micro-fee of ₦' . number_format($fee, 0) . ' is required. Please top up your wallet or activate an unlimited monthly plan.',
+            'fee' => $fee,
+            'message' => "Insufficient Operating Wallet balance (₦{$currentBal}). This feature requires ₦{$requiredFee}. Please top up your wallet (min ₦500) or activate an unlimited monthly plan.",
         ];
     }
 
