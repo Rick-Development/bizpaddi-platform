@@ -9,6 +9,7 @@ use App\Models\TenantSubscription;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Modules\Settings\Models\Setting;
 
 class BillwayGateway
 {
@@ -21,12 +22,12 @@ class BillwayGateway
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.billway.base_url', 'https://billwayservices.com/api/v1'), '/');
-        $this->publicKey = config('services.billway.public_key') ?: env('BILLWAY_PUBLIC_KEY');
-        $this->secretKey = config('services.billway.secret_key') ?: env('BILLWAY_SECRET_KEY');
+        $this->baseUrl = rtrim(Setting::get('billway_base_url', config('services.billway.base_url', env('BILLWAY_BASE_URL', 'https://billwayservices.com/api/v1'))), '/');
+        $this->publicKey = Setting::get('billway_public_key', config('services.billway.public_key', env('BILLWAY_PUBLIC_KEY')));
+        $this->secretKey = Setting::get('billway_secret_key', config('services.billway.secret_key', env('BILLWAY_SECRET_KEY')));
         $this->apiKey = config('services.billway.api_key', $this->publicKey);
-        $this->webhookSecret = config('services.billway.webhook_secret');
-        $this->defaultProvider = config('services.billway.default_provider', 'p4'); // p4 = 9PSB, p1 = Safe Haven
+        $this->webhookSecret = Setting::get('billway_webhook_secret', config('services.billway.webhook_secret', env('BILLWAY_WEBHOOK_SECRET')));
+        $this->defaultProvider = Setting::get('billway_default_provider', config('services.billway.default_provider', env('BILLWAY_DEFAULT_PROVIDER', 'p4')));
     }
 
     /**

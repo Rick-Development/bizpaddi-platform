@@ -47,7 +47,7 @@ class TransactionController extends Controller
     {
         Log::info('Billway Webhook incoming', ['payload' => $request->all()]);
 
-        $webhookSecret = config('services.billway.webhook_secret');
+        $webhookSecret = \Modules\Settings\Models\Setting::get('billway_webhook_secret', config('services.billway.webhook_secret'));
         if (!empty($webhookSecret)) {
             $signature = $request->header('X-Billway-Signature') ?? $request->header('X-Webhook-Signature');
             $computed = hash_hmac('sha256', $request->getContent(), $webhookSecret);
