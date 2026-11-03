@@ -46,12 +46,14 @@ class DashboardController extends ApiController
             $totalVisitors = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)->count();
             $deviceDistribution = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                     ->whereNotNull('device')
+                                    ->selectRaw('device, count(*) as count')
                                     ->groupBy('device')
                                     ->pluck('count', 'device')
                                     ->toArray();
             
             $topCountries = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                 ->whereNotNull('country')
+                                ->selectRaw('country, count(*) as count')
                                 ->groupBy('country')
                                 ->orderByDesc('count')
                                 ->take(5)
