@@ -163,6 +163,53 @@ class BusinessBillingController extends Controller
     }
 
     /**
+     * AJAX status check for background auto-verification.
+     */
+    public function checkStatus(Request $request, BillwayGateway $gateway)
+    {
+        $reference = $request->get('reference');
+        if (!$reference) {
+            return response()->json(['success' => false, 'status' => 'missing_reference', 'message' => 'No reference provided.'], 400);
+        }
+
+        $payment = TenantPayment::where('reference', $reference)
+            ->orWhere('gateway_reference', $reference)
+            ->first();
+
+        if (!$payment) {
+            return response()->json(['success' => false, 'status' => 'not_found', 'message' => 'Payment record not found.'], 404);
+        }
+
+        // If already marked successful (e.g. via Billway webhook)
+        if ($payment->status === 'successful') {
+            return response()->json([
+                'success' => true,
+                'status' => 'successful',
+                'message' => 'Payment verified successfully! Updating your workspace...',
+                'redirect_url' => route('admin.billing.index'),
+            ]);
+        }
+
+        // Active verify check against Billway API
+        $result = $gateway->verifyAndActivate($reference);
+
+        if ($result['success']) {
+            return response()->json([
+                'success' => true,
+                'status' => 'successful',
+                'message' => $result['message'] ?? 'Payment verified successfully! Updating your workspace...',
+                'redirect_url' => route('admin.billing.index'),
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'status' => 'pending',
+            'message' => 'Waiting for bank transfer settlement...',
+        ]);
+    }
+
+    /**
      * Instant verification check.
      */
     public function verifyNow(Request $request, BillwayGateway $gateway)
@@ -170,9 +217,18 @@ class BusinessBillingController extends Controller
         $reference = $request->get('reference');
         $result = $gateway->verifyAndActivate($reference);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => $result['success'],
+                'status' => $result['success'] ? 'successful' : 'pending',
+                'message' => $result['message'] ?? ($result['success'] ? 'Payment verified successfully!' : 'Payment still pending bank settlement.'),
+                'redirect_url' => route('admin.billing.index'),
+            ]);
+        }
+
         if ($result['success']) {
             return redirect()->route('admin.billing.index')
-                ->with('success', 'Payment verified! Your subscription is now active.');
+                ->with('success', $result['message'] ?? 'Payment verified! Your subscription is now active.');
         }
 
         return back()->with('info', 'Payment is still processing or waiting for bank settlement. Please give it a few moments.');

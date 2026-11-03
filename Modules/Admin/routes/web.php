@@ -42,7 +42,8 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
         Route::post('/billing/topup', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'topupWallet'])->name('billing.topup');
         Route::post('/billing/switch-model', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'switchModel'])->name('billing.switch-model');
         Route::get('/billing/pay', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'pay'])->name('billing.pay');
-        Route::post('/billing/verify-now', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'verifyNow'])->name('billing.verify-now');
+        Route::get('/billing/check-status', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'checkStatus'])->name('billing.check-status');
+        Route::match(['GET', 'POST'], '/billing/verify-now', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'verifyNow'])->name('billing.verify-now');
         Route::get('/billing/callback', [\Modules\Admin\Http\Controllers\BusinessBillingController::class, 'callback'])->name('billing.callback');
 
         // Digital Storefront & Catalog
