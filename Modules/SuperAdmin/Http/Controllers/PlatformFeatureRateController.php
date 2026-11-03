@@ -82,3 +82,4 @@ class PlatformFeatureRateController extends Controller
             ->with('success', "Feature rate '{$validated['name']}' created successfully.");
     }
 }
+

@@ -24,6 +24,10 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
         Route::post('/register/send-otp', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'sendOtp'])->name('register.send-otp');
         Route::post('/register/verify-otp', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'verifyOtp'])->name('register.verify-otp');
         Route::post('/register', [\Modules\Admin\Http\Controllers\Auth\RegisterController::class, 'register']);
+        Route::get('/forgot-password', [\Modules\Admin\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/forgot-password', [\Modules\Admin\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/reset-password/{token}', [\Modules\Admin\Http\Controllers\Auth\ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset-password', [\Modules\Admin\Http\Controllers\Auth\ForgotPasswordController::class, 'reset'])->name('password.update');
     });
 
     // Protected admin routes

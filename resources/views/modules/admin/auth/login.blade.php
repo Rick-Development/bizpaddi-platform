@@ -82,7 +82,7 @@
                                 <p class="text-xs text-gray-400 mt-0.5">Full control over billing, accounting, storefront, CRM & team.</p>
                             </div>
                         </div>
-                          </div>
+                    </div>
 
                     <!-- Staff & Team Portal -->
                     <a href="{{ route('team.login') }}" class="block p-4 rounded-2xl bg-[#10231C]/60 hover:bg-[#10231C] border border-white/10 hover:border-emerald-500/40 transition flex items-center justify-between group">
@@ -95,7 +95,6 @@
                                 <p class="text-xs text-gray-400 mt-0.5">Clock-in attendance, project tasks, BDM leads, QA & work logs.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-mono text-gray-500 hidden sm:inline">/dashboard/team/login</span>
                     </a>
 
                     <!-- Client Portal -->
@@ -109,7 +108,6 @@
                                 <p class="text-xs text-gray-400 mt-0.5">Approve milestones, pay invoices, sign contracts & raise tickets.</p>
                             </div>
                         </div>
-                        <span class="text-xs font-mono text-gray-500 hidden sm:inline">/dashboard/client/login</span>
                     </a>
                 </div>
             </div>
@@ -165,6 +163,9 @@
                                 <label for="password" class="block text-xs font-bold uppercase tracking-wider text-gray-300">
                                     Password
                                 </label>
+                                <a href="{{ route('admin.password.request') }}" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 hover:underline transition">
+                                    Forgot Password?
+                                </a>
                             </div>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">

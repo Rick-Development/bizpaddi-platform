@@ -10,7 +10,8 @@
         </div>
         <div class="flex items-center space-x-3">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ $tenant->billing_model === 'payg' ? 'bg-amber-500/20 text-amber-300 border border-amber-400/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' }}">
-                {{ $tenant->billing_model === 'payg' ? '⚡ Pay-As-You-Transact Mode' : '🏢 Subscription Mode' }}
+                {{ $tenant->billing_model === 'payg' ? '⚡ Pay-As-You
+' : '🏢 Subscription Mode' }}
             </span>
             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ $tenant->status === 'active' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-400/30' }}">
                 {{ ucfirst($tenant->status) }} Account

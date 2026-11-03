@@ -204,3 +204,4 @@ class PlatformFeatureRate extends Model
         Cache::forget('platform_feature_rates_map');
     }
 }
+
