@@ -243,11 +243,12 @@ class RegisterController extends Controller
             ],
             'phone_country_code' => ['nullable', 'string', 'max:10'],
             'phone'              => ['nullable', 'string', 'max:25'],
-            'password'           => ['required', 'string', 'min:8'],
+            'password'           => ['required', 'string', 'min:8', 'confirmed'],
             'otp_code'           => ['required', 'string', 'size:6'],
             'agree_terms'        => ['required', 'accepted'],
         ], [
             'email.unique'         => 'An account with this email address already exists. Please sign in.',
+            'password.confirmed'   => 'The password confirmation does not match.',
             'otp_code.required'    => 'Please enter the 6-digit OTP verification code sent to your email.',
             'otp_code.size'        => 'The OTP verification code must be 6 digits.',
             'agree_terms.accepted' => 'You must accept the Terms of Service to create a workspace.',

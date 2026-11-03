@@ -58,3 +58,4 @@ class TestMailCommand extends Command
         }
     }
 }
+
