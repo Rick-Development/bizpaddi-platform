@@ -172,7 +172,7 @@ class RegisterController extends Controller
             Log::error('Registration OTP email failed: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Unable to deliver verification email to ' . $email . '. Please check your email address or try again shortly.',
+                'message' => 'Email delivery error: ' . $e->getMessage(),
             ], 500);
         }
 
