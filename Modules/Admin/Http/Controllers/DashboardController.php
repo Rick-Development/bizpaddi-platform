@@ -42,13 +42,45 @@ class DashboardController extends Controller
         $revenueGrowth = $revenueLastMonth > 0 ? (($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100 : 0;
 
         // 1.1 Salary Metrics scoped to tenant
-        $salaryQuery = \Modules\Admin\Models\SalaryDisbursement::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId));
+        $hasSalaryTenantCol = \Illuminate\Support\Facades\Schema::hasTable('salary_disbursements')
+            && \Illuminate\Support\Facades\Schema::hasColumn('salary_disbursements', 'tenant_id');
 
-        $totalSalaries = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])->sum('amount');
-        $salariesThisMonth = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])
-                                ->whereMonth('payment_date', now()->month)
-                                ->whereYear('payment_date', now()->year)
-                                ->sum('amount');
+        $totalSalaries = 0;
+        $salariesThisMonth = 0;
+        $salaryChart = ['labels' => [], 'data' => []];
+        $recentSalaries = collect([]);
+
+        if ($hasSalaryTenantCol) {
+            $salaryQuery = \Modules\Admin\Models\SalaryDisbursement::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId));
+
+            $totalSalaries = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])->sum('amount');
+            $salariesThisMonth = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])
+                                    ->whereMonth('payment_date', now()->month)
+                                    ->whereYear('payment_date', now()->year)
+                                    ->sum('amount');
+
+            for ($i = 5; $i >= 0; $i--) {
+                $date = now()->subMonths($i);
+                $monthName = $date->format('M Y');
+                $amount = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])
+                            ->whereYear('payment_date', $date->year)
+                            ->whereMonth('payment_date', $date->month)
+                            ->sum('amount');
+                $salaryChart['labels'][] = $monthName;
+                $salaryChart['data'][] = (float)$amount;
+            }
+
+            $recentSalaries = \Modules\Admin\Models\SalaryDisbursement::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
+                                    ->with('user')
+                                    ->latest()
+                                    ->take(5)
+                                    ->get();
+        } else {
+            for ($i = 5; $i >= 0; $i--) {
+                $salaryChart['labels'][] = now()->subMonths($i)->format('M Y');
+                $salaryChart['data'][] = 0.0;
+            }
+        }
                                 
         // 2. User & Traffic Metrics (Clients & Analytics) scoped to tenant
         $activeClients = \Modules\Clients\Models\Client::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
@@ -136,19 +168,6 @@ class DashboardController extends Controller
             $visitorChart['data'][] = $count;
         }
 
-        // Salary Trend (Last 6 Months)
-        $salaryChart = ['labels' => [], 'data' => []];
-        for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $monthName = $date->format('M Y');
-            $amount = (clone $salaryQuery)->whereIn('status', ['successful', 'completed'])
-                        ->whereYear('payment_date', $date->year)
-                        ->whereMonth('payment_date', $date->month)
-                        ->sum('amount');
-            $salaryChart['labels'][] = $monthName;
-            $salaryChart['data'][] = (float)$amount;
-        }
-
         // Project Status Distribution
         $projectStatusCounts = \Modules\ProjectManagement\Models\Project::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
                                 ->selectRaw('status, count(*) as count')
@@ -164,12 +183,6 @@ class DashboardController extends Controller
                                 ->get();
 
         $recentInquiries = \Modules\Contact\Models\ContactSubmission::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
-                                ->latest()
-                                ->take(5)
-                                ->get();
-
-        $recentSalaries = \Modules\Admin\Models\SalaryDisbursement::when($tenantId, fn($q) => $q->where('tenant_id', $tenantId))
-                                ->with('user')
                                 ->latest()
                                 ->take(5)
                                 ->get();
