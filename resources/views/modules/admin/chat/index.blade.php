@@ -15,41 +15,42 @@
         background: transparent;
     }
     .chat-scroll::-webkit-scrollbar-thumb {
-        background-color: rgba(148, 163, 184, 0.3);
+        background-color: rgba(255, 255, 255, 0.15);
         border-radius: 9999px;
     }
     .chat-scroll::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(148, 163, 184, 0.5);
+        background-color: rgba(255, 255, 255, 0.25);
     }
     .conversation-item {
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
     }
     .conversation-item:hover {
-        background-color: #F1F5F9;
+        background-color: rgba(255, 255, 255, 0.04);
     }
     .conversation-item.active {
-        background: linear-gradient(90deg, rgba(251, 76, 75, 0.08) 0%, rgba(25, 28, 71, 0.05) 100%);
-        border-left: 4px solid #0E5E4A;
+        background: rgba(14, 94, 74, 0.25);
+        border-left: 3px solid #10B981;
     }
     .message-bubble-me {
-        background: linear-gradient(135deg, #10231C 0%, #2b3070 100%);
+        background: linear-gradient(135deg, #0E5E4A 0%, #094738 100%);
         color: #FFFFFF;
-        box-shadow: 0 4px 14px rgba(25, 28, 71, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
     .message-bubble-other {
-        background: #FFFFFF;
-        color: #1E293B;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        background: #10231C;
+        color: #F1F5F9;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
     .status-dot-online {
         background-color: #10B981;
-        box-shadow: 0 0 0 2px #FFFFFF, 0 0 8px rgba(16, 185, 129, 0.6);
+        box-shadow: 0 0 0 2px #0a1612, 0 0 8px rgba(16, 185, 129, 0.8);
     }
     .status-dot-offline {
-        background-color: #94A3B8;
-        box-shadow: 0 0 0 2px #FFFFFF;
+        background-color: #64748B;
+        box-shadow: 0 0 0 2px #0a1612;
     }
 </style>
 @endpush
@@ -71,17 +72,17 @@
     </div>
 
     {{-- Main Container Card --}}
-    <div class="bg-[#10231C]/60 rounded-3xl shadow-sm border border-white/10 overflow-hidden chat-card-height flex flex-col md:flex-row">
+    <div class="bg-[#0b1612] rounded-3xl shadow-2xl border border-white/10 overflow-hidden chat-card-height flex flex-col md:flex-row">
         
         {{-- ===== LEFT PANEL: CONVERSATIONS & CONTACTS ===== --}}
-        <div id="chat-sidebar" class="w-full md:w-80 lg:w-96 border-r border-white/10 flex flex-col h-full bg-slate-50/60 flex-shrink-0">
+        <div id="chat-sidebar" class="w-full md:w-80 lg:w-96 border-r border-white/10 flex flex-col h-full bg-[#0e1d17] flex-shrink-0">
             
             {{-- Panel Header & Search --}}
-            <div class="p-4 border-b border-white/10 bg-[#10231C]/60">
+            <div class="p-4 border-b border-white/10 bg-[#0b1612]">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <div class="h-2.5 w-2.5 rounded-full bg-emerald-600"></div>
-                        <h2 class="text-sm font-bold text-white tracking-wide uppercase">Conversations</h2>
+                        <div class="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+                        <h2 class="text-xs font-extrabold text-emerald-400 tracking-wider uppercase">Conversations</h2>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button onclick="openCreateGroupModal()" class="h-7 w-7 rounded-lg bg-white/[0.06] text-gray-400 hover:bg-emerald-500 hover:text-white transition-all flex items-center justify-center shadow-xs" title="Create Group Chat">
@@ -98,9 +99,9 @@
                 {{-- Search Box --}}
                 <div class="relative">
                     <input type="text" id="contact-search" placeholder="Search team members..." 
-                           class="w-full pl-9 pr-4 py-2 bg-white/[0.06]/80 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs transition-all placeholder-gray-400 bg-[#0a1612] text-white border-white/10"
+                           class="w-full pl-9 pr-4 py-2 bg-[#08110e] border border-white/10 rounded-xl text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-xs transition-all placeholder-gray-500"
                            onkeyup="filterContacts()">
-                    <svg class="h-4 w-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg class="h-4 w-4 text-gray-500 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
@@ -112,7 +113,7 @@
                 {{-- Active Conversations Section --}}
                 <div>
                     <div class="flex items-center justify-between px-2 mb-2">
-                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Active Chats</span>
+                        <span class="text-[10px] font-extrabold text-emerald-400/80 uppercase tracking-widest">Active Chats</span>
                     </div>
 
                     <div id="active-conversations-list" class="space-y-1">
@@ -122,14 +123,14 @@
                                     id="convo-btn-{{ $convo['id'] }}">
                                 <div class="relative flex-shrink-0">
                                     @if($convo['avatar'])
-                                        <img src="{{ $convo['avatar'] }}" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs" alt="">
+                                        <img src="{{ $convo['avatar'] }}" class="h-11 w-11 rounded-full object-cover border-2 border-[#0e1d17] shadow-xs" alt="">
                                     @else
-                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-white shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
+                                        <div class="h-11 w-11 rounded-full flex items-center justify-center text-white font-bold text-xs border-2 border-[#0e1d17] shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($convo['name'] ?? 'U', 0, 2)) }}
                                         </div>
                                     @endif
                                     {{-- Presence Indicator Dot --}}
-                                    <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white {{ ($convo['is_online'] ?? false) ? 'status-dot-online' : 'status-dot-offline' }}" 
+                                    <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#0e1d17] {{ ($convo['is_online'] ?? false) ? 'status-dot-online' : 'status-dot-offline' }}" 
                                           id="presence-dot-{{ $convo['partner_key'] ?? $convo['id'] }}"></span>
                                 </div>
 
@@ -158,21 +159,21 @@
                                 </div>
                             </button>
                         @empty
-                            <p class="text-xs text-gray-400 italic px-3 py-2">No active discussions.</p>
+                            <p class="text-xs text-gray-500 italic px-3 py-2">No active discussions.</p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Start New Chat Directory Section --}}
-                <div class="pt-2 border-t border-white/10/80">
+                <div class="pt-2 border-t border-white/10">
                     <div class="flex items-center justify-between px-2 mb-2">
-                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Start New Chat</span>
+                        <span class="text-[10px] font-extrabold text-emerald-400/80 uppercase tracking-widest">Start New Chat</span>
                     </div>
 
                     <div id="team-contacts-list" class="space-y-1">
                         @forelse($contacts as $contact)
                             <button onclick="startDirectChat({{ $contact['id'] }}, '{{ addslashes($contact['type']) }}')"
-                                    class="w-full text-left p-2.5 rounded-2xl flex items-center gap-3 hover:bg-white/[0.06] transition-all contact-search-item"
+                                    class="w-full text-left p-2.5 rounded-2xl flex items-center gap-3 hover:bg-white/[0.04] transition-all contact-search-item"
                                     data-name="{{ strtolower($contact['name']) }}">
                                 <div class="relative flex-shrink-0">
                                     @if($contact['avatar'])
@@ -182,7 +183,7 @@
                                             {{ strtoupper(substr($contact['name'], 0, 2)) }}
                                         </div>
                                     @endif
-                                    <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white {{ ($contact['is_online'] ?? false) ? 'status-dot-online' : 'status-dot-offline' }}" 
+                                    <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-[#0e1d17] {{ ($contact['is_online'] ?? false) ? 'status-dot-online' : 'status-dot-offline' }}" 
                                           id="presence-dot-{{ $contact['key'] }}"></span>
                                 </div>
 
@@ -198,7 +199,7 @@
                                 </span>
                             </button>
                         @empty
-                            <p class="text-xs text-gray-400 italic px-3 py-2">No additional team members found.</p>
+                            <p class="text-xs text-gray-500 italic px-3 py-2">No additional team members found.</p>
                         @endforelse
                     </div>
                 </div>
@@ -207,11 +208,11 @@
         </div>
 
         {{-- ===== RIGHT PANEL: CHAT CANVAS ===== --}}
-        <div id="chat-canvas" class="hidden md:flex flex-1 flex-col h-full bg-[#10231C]/60 relative">
+        <div id="chat-canvas" class="hidden md:flex flex-1 flex-col h-full bg-[#08110e] relative">
             
             {{-- Default Placeholder View --}}
-            <div id="chat-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50/40">
-                <div class="h-20 w-20 rounded-3xl bg-gradient-to-tr from-[#10231C] to-emerald-600 text-white flex items-center justify-center shadow-lg shadow-red-500/10 mb-4 transform hover:scale-105 transition-transform">
+            <div id="chat-placeholder" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-[#08110e]">
+                <div class="h-20 w-20 rounded-3xl bg-[#0E5E4A]/30 border border-emerald-400/30 text-emerald-400 flex items-center justify-center shadow-xl shadow-emerald-950/50 mb-4 transform hover:scale-105 transition-transform">
                     <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.596.596 0 01-.743-.65l.398-2.617A8.995 8.995 0 013 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                     </svg>
@@ -224,7 +225,7 @@
             <div id="active-chat-container" class="hidden flex-1 flex flex-col h-full">
                 
                 {{-- Active Chat Header --}}
-                <div class="px-6 py-3.5 border-b border-white/10 bg-[#10231C]/60/90 backdrop-blur-md flex items-center justify-between shadow-xs">
+                <div class="px-6 py-3.5 border-b border-white/10 bg-[#0b1612] backdrop-blur-md flex items-center justify-between shadow-xs">
                     <div class="flex items-center gap-3.5">
                         <button onclick="goBackToSidebar()" class="md:hidden mr-1 p-1 text-gray-400 hover:text-white focus:outline-none" title="Back to chats">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -232,14 +233,14 @@
                             </svg>
                         </button>
                         <div class="relative">
-                            <div id="active-partner-avatar" class="h-11 w-11 rounded-full object-cover border-2 border-white shadow-xs"></div>
-                            <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white status-dot-offline" id="active-partner-dot"></span>
+                            <div id="active-partner-avatar" class="h-11 w-11 rounded-full object-cover border-2 border-[#0e1d17] shadow-xs"></div>
+                            <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#0e1d17] status-dot-offline" id="active-partner-dot"></span>
                         </div>
                         <div>
                             <h3 class="text-sm font-bold text-white" id="active-partner-name">...</h3>
                             <div class="flex items-center gap-2 mt-0.5">
                                 <span class="text-[11px] text-gray-400 font-medium" id="active-partner-status">Offline</span>
-                                <span class="text-gray-300">•</span>
+                                <span class="text-gray-600">•</span>
                                 <span class="text-[11px] text-emerald-400 font-semibold" id="active-partner-role">Team Member</span>
                             </div>
                         </div>
@@ -255,15 +256,15 @@
                 </div>
 
                 {{-- Messages Canvas --}}
-                <div class="flex-1 overflow-y-auto chat-scroll p-6 space-y-4 bg-slate-50/50" id="messages-container">
+                <div class="flex-1 overflow-y-auto chat-scroll p-6 space-y-4 bg-[#08110e]" id="messages-container">
                     {{-- Dynamically populated --}}
                 </div>
 
                 {{-- Input Composer --}}
-                <div class="p-4 border-t border-white/10 bg-[#10231C]/60 flex flex-col gap-2">
+                <div class="p-4 border-t border-white/10 bg-[#0b1612] flex flex-col gap-2">
                     
                     {{-- Upload Preview Tray --}}
-                    <div id="upload-preview-container" class="hidden flex flex-wrap gap-2 p-2 bg-slate-55 rounded-2xl border border-white/10">
+                    <div id="upload-preview-container" class="hidden flex flex-wrap gap-2 p-2 bg-[#0e1d17] rounded-2xl border border-white/10">
                     </div>
 
                     <form onsubmit="sendMessage(event)" class="flex items-center gap-3" enctype="multipart/form-data">
@@ -274,14 +275,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.75m0-12.75a6 6 0 11-8.485 8.485L5.636 10.25a3.75 3.75 0 115.303 5.304L6.182 20.3a1.5 1.5 0 11-2.122-2.12L8.82 13.4" />
                             </svg>
                         </button>
-                        <input type="file" id="attachment-input" class="hidden bg-[#0a1612] text-white border-white/10" multiple onchange="handleFileSelect(event)">
+                        <input type="file" id="attachment-input" class="hidden" multiple onchange="handleFileSelect(event)">
 
                         <textarea id="message-input" rows="1" placeholder="Type a message..." 
-                               class="flex-1 px-4 py-3 bg-white/[0.06]/90 border border-white/10 rounded-2xl text-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-[#10231C]/60 transition-all placeholder-gray-400 resize-none overflow-hidden bg-[#0a1612] text-white border-white/10"
+                               class="flex-1 px-4 py-3 bg-[#08110e] border border-white/10 rounded-2xl text-white text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder-gray-500 resize-none overflow-hidden"
                                style="min-height: 44px; max-height: 120px; line-height: 1.5;"></textarea>
 
                         <button type="submit" id="send-btn" 
-                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] hover:brightness-110 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
                             <span>Send</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -297,11 +298,11 @@
     </div>
 
     <!-- Create Group Chat Modal -->
-    <div id="create-group-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-        <div class="bg-[#10231C]/60 rounded-3xl shadow-xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+    <div id="create-group-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-[#0b1612] rounded-3xl shadow-2xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-white/10 bg-[#0e1d17] flex items-center justify-between">
                 <h3 class="text-sm font-bold text-white font-display">Create New Group Chat</h3>
-                <button onclick="closeCreateGroupModal()" class="text-gray-400 hover:text-gray-400 focus:outline-none">
+                <button onclick="closeCreateGroupModal()" class="text-gray-400 hover:text-white focus:outline-none">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -309,16 +310,16 @@
             </div>
             
             <form onsubmit="submitCreateGroup(event)" class="flex flex-col flex-1 overflow-hidden">
-                <div class="p-6 space-y-4 flex-1 overflow-y-auto chat-scroll">
+                <div class="p-6 space-y-4 flex-1 overflow-y-auto chat-scroll bg-[#0b1612]">
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Group Name</label>
+                        <label class="block text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider mb-1.5">Group Name</label>
                         <input type="text" id="group-name" required placeholder="e.g. Design Team Sync" 
-                               class="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all bg-[#0a1612] text-white border-white/10">
+                               class="w-full px-3.5 py-2.5 bg-[#08110e] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-emerald-500 transition-all placeholder-gray-500">
                     </div>
                     
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
-                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium bg-[#0a1612] text-white border-white/10">
+                        <label class="block text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider mb-1.5">Link to Project (Optional)</label>
+                        <select id="group-project" class="w-full px-3.5 py-2.5 bg-[#08110e] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-emerald-500 transition-all font-medium">
                             <option value="">-- No Project Link --</option>
                             @foreach($projects as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -327,13 +328,13 @@
                     </div>
                     
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Select Members</label>
+                        <label class="block text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider mb-1.5">Select Members</label>
                         <input type="text" placeholder="Search members..." onkeyup="filterGroupModalMembers(this.value)"
-                               class="w-full px-3.5 py-2 mb-3 bg-white/[0.03] border border-gray-155 rounded-lg text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-[#0a1612] text-white border-white/10">
+                               class="w-full px-3.5 py-2 mb-3 bg-[#08110e] border border-white/10 rounded-xl text-white text-[11px] focus:outline-none focus:border-emerald-500 placeholder-gray-500">
                         
-                        <div class="space-y-2 max-h-48 overflow-y-auto chat-scroll pr-1" id="group-members-checklist">
+                        <div class="space-y-1.5 max-h-48 overflow-y-auto chat-scroll pr-1" id="group-members-checklist">
                             @foreach($allContacts as $c)
-                                <label class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl cursor-pointer group-modal-member-item transition-all" data-name="{{ strtolower($c['name']) }}">
+                                <label class="flex items-center justify-between p-2 hover:bg-white/[0.04] rounded-xl cursor-pointer group-modal-member-item transition-all" data-name="{{ strtolower($c['name']) }}">
                                     <div class="flex items-center gap-3">
                                         <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                                             {{ strtoupper(substr($c['name'], 0, 2)) }}
@@ -344,59 +345,59 @@
                                         </div>
                                     </div>
                                     <input type="checkbox" name="group_participants[]" value="{{ $c['key'] }}"
-                                           class="rounded border-white/10 text-emerald-400 focus:ring-emerald-500 h-4 w-4">
+                                           class="rounded border-white/20 text-emerald-500 focus:ring-emerald-500 bg-[#08110e] h-4 w-4">
                                 </label>
                             @endforeach
                         </div>
                     </div>
                 </div>
                 
-                <div class="px-6 py-4 border-t border-white/10 bg-slate-50/50 flex items-center justify-end gap-3 flex-shrink-0">
-                    <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/[0.06] active:scale-95 transition-all">Cancel</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
+                <div class="px-6 py-4 border-t border-white/10 bg-[#0e1d17] flex items-center justify-end gap-3 flex-shrink-0">
+                    <button type="button" onclick="closeCreateGroupModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/[0.06] active:scale-95 transition-all">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] hover:brightness-110 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition-all">Create Group</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Manage Group Members Modal -->
-    <div id="manage-members-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-        <div class="bg-[#10231C]/60 rounded-3xl shadow-xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+    <div id="manage-members-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-[#0b1612] rounded-3xl shadow-2xl border border-white/10 w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-white/10 bg-[#0e1d17] flex items-center justify-between">
                 <div>
                     <h3 class="text-sm font-bold text-white" id="manage-group-name">Manage Members</h3>
                     <p class="text-[10px] text-gray-400 mt-0.5" id="manage-group-project">Project Group Chat</p>
                 </div>
-                <button onclick="closeManageMembersModal()" class="text-gray-400 hover:text-gray-400 focus:outline-none">
+                <button onclick="closeManageMembersModal()" class="text-gray-400 hover:text-white focus:outline-none">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
             
-            <div class="p-6 space-y-5 flex-1 overflow-y-auto chat-scroll flex flex-col">
+            <div class="p-6 space-y-5 flex-1 overflow-y-auto chat-scroll flex flex-col bg-[#0b1612]">
                 <div class="border-b border-white/10 pb-4">
-                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Add New Member</label>
+                    <label class="block text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider mb-2">Add New Member</label>
                     <div class="flex gap-2">
-                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-white/[0.03] border border-white/10 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-semibold text-white bg-[#0a1612] text-white border-white/10">
+                        <select id="add-member-select" class="flex-1 px-3 py-2 bg-[#08110e] border border-white/10 rounded-xl text-xs focus:outline-none focus:border-emerald-500 transition-all font-semibold text-white">
                             <option value="">-- Choose Member to Add --</option>
                             @foreach($allContacts as $c)
                                 <option value="{{ $c['key'] }}">{{ $c['name'] }} ({{ $c['type_label'] }})</option>
                             @endforeach
                         </select>
-                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#10231C] to-emerald-600 text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
+                        <button onclick="submitAddMember()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] hover:brightness-110 text-white text-xs font-bold shadow-xs hover:shadow-md active:scale-95 transition-all">Add</button>
                     </div>
                 </div>
                 
                 <div class="flex-1 flex flex-col min-h-0">
-                    <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Current Members</label>
-                    <div class="space-y-2 overflow-y-auto chat-scroll flex-1 pr-1" id="current-members-list">
+                    <label class="block text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider mb-2">Current Members</label>
+                    <div class="space-y-1.5 overflow-y-auto chat-scroll flex-1 pr-1" id="current-members-list">
                     </div>
                 </div>
             </div>
             
-            <div class="px-6 py-3 border-t border-white/10 bg-slate-50/50 flex items-center justify-end flex-shrink-0">
-                <button type="button" onclick="closeManageMembersModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:bg-white/[0.06] active:scale-95 transition-all">Close</button>
+            <div class="px-6 py-3 border-t border-white/10 bg-[#0e1d17] flex items-center justify-end flex-shrink-0">
+                <button type="button" onclick="closeManageMembersModal()" class="px-4 py-2 border border-white/10 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/[0.06] active:scale-95 transition-all">Close</button>
             </div>
         </div>
     </div>
@@ -782,20 +783,20 @@
                         </div>`;
                 } else if (att.is_audio) {
                     attachmentsHtml += `
-                        <div class="relative rounded-2xl overflow-hidden border border-gray-150 max-w-[280px] p-2 bg-slate-50 shadow-xs flex items-center justify-center">
+                        <div class="relative rounded-2xl overflow-hidden border border-white/10 max-w-[280px] p-2 bg-[#0e1d17] shadow-xs flex items-center justify-center">
                             <audio src="${att.url}" controls class="w-full h-8 bg-transparent"></audio>
                         </div>`;
                 } else {
                     attachmentsHtml += `
                         <a href="${att.url}" target="_blank" 
-                           class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-white/10 text-slate-800 hover:bg-slate-100 transition-all max-w-[280px] shadow-xs">
-                            <div class="h-9 w-9 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 flex-shrink-0">
+                           class="flex items-center gap-3 p-3 rounded-2xl bg-[#0e1d17] border border-white/10 text-white hover:bg-white/[0.04] transition-all max-w-[280px] shadow-xs">
+                            <div class="h-9 w-9 rounded-xl bg-[#10231C] border border-white/10 flex items-center justify-center text-emerald-400 flex-shrink-0">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <span class="text-xs font-semibold truncate block">${att.name}</span>
+                                <span class="text-xs font-semibold truncate block text-white">${att.name}</span>
                                 <span class="text-[9px] text-gray-400 block">${att.size}</span>
                             </div>
                         </a>`;
@@ -809,8 +810,8 @@
         if (isSystem) {
             return `
                 <div class="flex justify-center my-2.5 msg-row" id="msg-${msg.id}">
-                    <div class="px-4 py-1.5 rounded-full bg-slate-100 border border-white/10 text-gray-400 text-[10px] font-medium shadow-xs">
-                        <strong>${escapeHtml(msg.sender_name)}</strong> ${escapeHtml(msg.content)}
+                    <div class="px-4 py-1.5 rounded-full bg-[#0e1d17] border border-white/10 text-gray-300 text-[10px] font-medium shadow-xs">
+                        <strong class="text-emerald-400">${escapeHtml(msg.sender_name)}</strong> ${escapeHtml(msg.content)}
                     </div>
                 </div>
             `;
@@ -1090,7 +1091,7 @@
                 </button>`;
 
             const html = `
-                <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-all">
+                <div class="flex items-center justify-between p-2 hover:bg-white/[0.04] rounded-xl transition-all">
                     <div class="flex items-center gap-3">
                         <div class="h-8 w-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shadow-xs" style="background: linear-gradient(135deg, #10231C 0%, #0E5E4A 100%);">
                             ${m.name.substring(0, 2).toUpperCase()}
