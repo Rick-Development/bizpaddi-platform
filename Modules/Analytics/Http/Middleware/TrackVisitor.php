@@ -63,7 +63,13 @@ class TrackVisitor
                         }
                     }
 
+                    $tenantId = $request->attributes->get('storefront_tenant_id')
+                        ?? $request->attributes->get('tenant_id')
+                        ?? optional($request->attributes->get('tenant'))->id
+                        ?? null;
+
                     Visitor::create([
+                        'tenant_id' => $tenantId,
                         'ip_address' => $ip,
                         'user_agent' => $request->userAgent(),
                         'url' => $request->fullUrl(),

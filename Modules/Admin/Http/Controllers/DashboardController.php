@@ -91,23 +91,41 @@ class DashboardController extends Controller
         $deviceDistribution = [];
         $topCountries = [];
         
-        // Only global tenant 1 shows aggregate visitors if table has no tenant_id
-        if ($tenantId === 1 || is_null($tenantId)) {
+        // Scope traffic & regional metrics strictly to the tenant's own workspace
+        if ($tenantId && \Illuminate\Support\Facades\Schema::hasColumn('visitors', 'tenant_id')) {
             if (class_exists(\Modules\Analytics\Models\Visitor::class)) {
-                $totalVisitors = \Modules\Analytics\Models\Visitor::count();
-                $deviceDistribution = \Modules\Analytics\Models\Visitor::selectRaw('device, count(*) as count')
+                $totalVisitors = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)->count();
+                $deviceDistribution = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                         ->whereNotNull('device')
                                         ->groupBy('device')
                                         ->pluck('count', 'device')
                                         ->toArray();
                 
-                $topCountries = \Modules\Analytics\Models\Visitor::selectRaw('country, count(*) as count')
+                $topCountries = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                     ->whereNotNull('country')
                                     ->groupBy('country')
                                     ->orderByDesc('count')
                                     ->take(5)
                                     ->pluck('count', 'country')
                                     ->toArray();
+            }
+        }
+
+        // If no storefront visitors yet, display regional client distribution if clients exist
+        if (empty($topCountries) && $tenantId) {
+            $clientCountries = \Modules\Clients\Models\Client::where('tenant_id', $tenantId)
+                                ->whereNotNull('country')
+                                ->where('country', '!=', '')
+                                ->selectRaw('country, count(*) as count')
+                                ->groupBy('country')
+                                ->orderByDesc('count')
+                                ->take(5)
+                                ->pluck('count', 'country')
+                                ->toArray();
+
+            if (!empty($clientCountries)) {
+                $topCountries = $clientCountries;
+                $totalVisitors = array_sum($clientCountries);
             }
         }
         

@@ -14,6 +14,7 @@ class Visitor extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
+        'tenant_id',
         'ip_address',
         'user_agent',
         'url',

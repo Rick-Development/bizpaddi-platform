@@ -38,24 +38,42 @@ class DashboardController extends ApiController
                                 
         // 2. User & Traffic Metrics (Clients & Analytics)
         $activeClients = \Modules\Clients\Models\Client::where('is_active', true)->count();
+        $tenantId = auth()->user()->tenant_id ?? null;
         $totalVisitors = 0;
         $deviceDistribution = [];
         $topCountries = [];
-        if (class_exists(\Modules\Analytics\Models\Visitor::class)) {
-            $totalVisitors = \Modules\Analytics\Models\Visitor::count();
-            $deviceDistribution = \Modules\Analytics\Models\Visitor::selectRaw('device, count(*) as count')
+        if (class_exists(\Modules\Analytics\Models\Visitor::class) && $tenantId && \Illuminate\Support\Facades\Schema::hasColumn('visitors', 'tenant_id')) {
+            $totalVisitors = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)->count();
+            $deviceDistribution = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                     ->whereNotNull('device')
                                     ->groupBy('device')
                                     ->pluck('count', 'device')
                                     ->toArray();
             
-            $topCountries = \Modules\Analytics\Models\Visitor::selectRaw('country, count(*) as count')
+            $topCountries = \Modules\Analytics\Models\Visitor::where('tenant_id', $tenantId)
                                 ->whereNotNull('country')
                                 ->groupBy('country')
                                 ->orderByDesc('count')
                                 ->take(5)
                                 ->pluck('count', 'country')
                                 ->toArray();
+        }
+
+        if (empty($topCountries) && $tenantId) {
+            $clientCountries = \Modules\Clients\Models\Client::where('tenant_id', $tenantId)
+                                ->whereNotNull('country')
+                                ->where('country', '!=', '')
+                                ->selectRaw('country, count(*) as count')
+                                ->groupBy('country')
+                                ->orderByDesc('count')
+                                ->take(5)
+                                ->pluck('count', 'country')
+                                ->toArray();
+
+            if (!empty($clientCountries)) {
+                $topCountries = $clientCountries;
+                $totalVisitors = array_sum($clientCountries);
+            }
         }
         
         $newLeads = \Modules\Contact\Models\ContactSubmission::where('status', 'new')->count();
