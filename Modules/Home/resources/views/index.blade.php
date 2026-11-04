@@ -389,7 +389,7 @@
                         <h4 class="text-base font-extrabold text-white">Smart Invoice</h4>
                         <p class="text-xs text-gray-300">Dedicated virtual account, auto-reconciliation & PDF receipt.</p>
                         <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-2xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', '50') }}</span>
+                            <span class="text-2xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('invoice_generation'), 0) }}</span>
                             <span class="text-[11px] text-gray-400">/ invoice</span>
                         </div>
                     </div>
@@ -399,7 +399,7 @@
                         <h4 class="text-base font-extrabold text-white">Client Quote</h4>
                         <p class="text-xs text-gray-300">Proposal bid with 1-click digital client acceptance.</p>
                         <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-2xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', '30') }}</span>
+                            <span class="text-2xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('quote_generation'), 0) }}</span>
                             <span class="text-[11px] text-gray-400">/ quote</span>
                         </div>
                     </div>
@@ -409,7 +409,7 @@
                         <h4 class="text-base font-extrabold text-white">Team Clock-in</h4>
                         <p class="text-xs text-gray-300">Staff attendance, daily work logs & scorecards.</p>
                         <div class="pt-2 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-2xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', '20') }}</span>
+                            <span class="text-2xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('team_operation'), 0) }}</span>
                             <span class="text-[11px] text-gray-400">/ user action</span>
                         </div>
                     </div>
@@ -456,34 +456,12 @@
                             </div>
 
                             <ul class="mt-6 space-y-3 text-xs text-gray-300">
+                                @foreach($plan->feature_list as $feature)
                                 <li class="flex items-center space-x-2.5">
-                                    <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span>Includes <strong>{{ $plan->included_users }} team seats</strong></span>
+                                    <svg class="w-4 h-4 text-[#F2A900] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                    <span>{!! $feature !!}</span>
                                 </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span><strong>Unlimited</strong> Invoices & Collections</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span>Project Management & Kanban Workflows</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span>Public Digital Storefront (`slug.bizpaddi.com`)</span>
-                                </li>
-                                @if($plan->enable_custom_domain)
-                                <li class="flex items-center space-x-2.5 font-bold text-amber-300">
-                                    <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span>Custom Domain Integration Included</span>
-                                </li>
-                                @endif
-                                @if($plan->enable_ai)
-                                <li class="flex items-center space-x-2.5 font-bold text-amber-200">
-                                    <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                    <span>Autonomous AI Employees & Copilots ✨</span>
-                                </li>
-                                @endif
+                                @endforeach
                             </ul>
                         </div>
 

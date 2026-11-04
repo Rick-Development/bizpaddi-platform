@@ -62,6 +62,64 @@ class SaasPlan extends Model
     }
 
     /**
+     * Human-readable feature labels dictionary.
+     */
+    public const AVAILABLE_FEATURES = [
+        'invoicing' => 'Unlimited Invoices & Receipts (₦0 per invoice)',
+        'quotes' => 'Unlimited Quotes, Estimates & Bids',
+        'projects' => 'Project Management & Milestone Delivery',
+        'tasks_kanban' => 'Drag-and-Drop Kanban Task Pipelines',
+        'team_attendance' => 'Staff Clock-in, Attendance & Time Logs',
+        'payroll' => 'Automated Staff Payroll & Salary Remittance',
+        'client_portal' => 'Client Self-Service Portal with Bank Transfers',
+        'crm_leads' => 'CRM Sales Leads & Client Pipeline',
+        'storefront_website' => 'Public Digital Storefront (slug.bizpaddi.com)',
+        'custom_domain' => 'Custom Domain Integration (e.g. yourbrand.com)',
+        'contracts_management' => 'Digital Contracts & Electronic Signatures',
+        'social_media_hub' => 'Omnichannel Social Media Lead Inbox',
+        'recruitment_ats' => 'Recruitment & Job Board Management',
+        'ai_center' => 'AI Business Assistant & Copywriting Copilot',
+        'ai_workforce' => 'Autonomous AI Employees & Department Copilots ✨',
+    ];
+
+    /**
+     * Dynamically assemble plan feature bullets from database settings.
+     */
+    public function getFeatureListAttribute(): array
+    {
+        $features = $this->features ?? [];
+        $list = [];
+
+        // Always show seat count first
+        $list[] = 'Includes <strong>' . $this->included_users . ' active team ' . ($this->included_users > 1 ? 'seats' : 'seat') . '</strong>';
+
+        foreach (self::AVAILABLE_FEATURES as $key => $label) {
+            if (!empty($features[$key])) {
+                $list[] = $label;
+            }
+        }
+
+        // Add custom domain if enabled
+        if ($this->enable_custom_domain && !in_array(self::AVAILABLE_FEATURES['custom_domain'], $list, true)) {
+            $list[] = self::AVAILABLE_FEATURES['custom_domain'];
+        }
+
+        // Add AI workforce if enabled
+        if ($this->enable_ai && !in_array(self::AVAILABLE_FEATURES['ai_workforce'], $list, true)) {
+            $list[] = self::AVAILABLE_FEATURES['ai_workforce'];
+        }
+
+        // If no module features checked, fall back to core business capabilities
+        if (count($list) <= 1) {
+            $list[] = 'Unlimited Invoices & Receipts (₦0 per invoice)';
+            $list[] = 'Project Management & Kanban Workflows';
+            $list[] = 'Digital Storefront (slug.bizpaddi.com)';
+        }
+
+        return $list;
+    }
+
+    /**
      * Calculate cost for a given number of seats.
      */
     public function calculateTotal(int $seatCount = 1): float

@@ -16,11 +16,13 @@ class HomeController extends Controller
         $plans = \App\Models\SaasPlan::active()->get();
         $subscriptionPlans = $plans->where('billing_type', '!=', 'payg');
         $paygPlan = $plans->firstWhere('billing_type', 'payg');
+        $featureRates = \App\Models\PlatformFeatureRate::where('is_active', true)->get()->keyBy('action_key');
 
         return view('home::index', compact(
             'plans',
             'subscriptionPlans',
-            'paygPlan'
+            'paygPlan',
+            'featureRates'
         ));
     }
 
@@ -40,7 +42,8 @@ class HomeController extends Controller
         $plans = \App\Models\SaasPlan::active()->get();
         $subscriptionPlans = $plans->where('billing_type', '!=', 'payg');
         $paygPlan = $plans->firstWhere('billing_type', 'payg');
-        return view('home::pricing', compact('plans', 'subscriptionPlans', 'paygPlan'));
+        $featureRates = \App\Models\PlatformFeatureRate::where('is_active', true)->get()->keyBy('action_key');
+        return view('home::pricing', compact('plans', 'subscriptionPlans', 'paygPlan', 'featureRates'));
     }
 
     /**

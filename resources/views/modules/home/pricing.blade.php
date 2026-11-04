@@ -8,9 +8,9 @@
                  calcQuotes: 8,
                  calcTeam: 2,
                  calcWorkDays: 22,
-                 invoiceFee: {{ (int) \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', 50) }},
-                 quoteFee: {{ (int) \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', 30) }},
-                 teamFee: {{ (int) \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', 20) }},
+                 invoiceFee: {{ (int) \App\Models\PlatformFeatureRate::getFeeForAction('invoice_generation') }},
+                 quoteFee: {{ (int) \App\Models\PlatformFeatureRate::getFeeForAction('quote_generation') }},
+                 teamFee: {{ (int) \App\Models\PlatformFeatureRate::getFeeForAction('team_operation') }},
                  get totalSpend() {
                      return (this.calcInvoices * this.invoiceFee) + (this.calcQuotes * this.quoteFee) + (this.calcTeam * this.teamFee * this.calcWorkDays);
                  },
@@ -148,7 +148,7 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-3xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_invoice_fee', '50') }}</span>
+                            <span class="text-3xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('invoice_generation'), 0) }}</span>
                             <span class="text-xs text-gray-400">/ invoice generated</span>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-3xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_quote_fee', '30') }}</span>
+                            <span class="text-3xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('quote_generation'), 0) }}</span>
                             <span class="text-xs text-gray-400">/ quote created</span>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
                             </p>
                         </div>
                         <div class="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                            <span class="text-3xl font-black text-white">₦{{ \Modules\Settings\Models\Setting::get('pricing_payg_team_fee', '20') }}</span>
+                            <span class="text-3xl font-black text-white">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('team_operation'), 0) }}</span>
                             <span class="text-xs text-gray-400">/ active user/day</span>
                         </div>
                     </div>
@@ -393,42 +393,12 @@
                         </div>
 
                         <ul class="mt-8 space-y-3.5 text-xs text-gray-300">
+                            @foreach($plan->feature_list as $feature)
                             <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Includes <strong>{{ $plan->included_users }} active team seats</strong></span>
+                                <svg class="w-4 h-4 text-[#F2A900] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>{!! $feature !!}</span>
                             </li>
-                            <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span><strong>Unlimited</strong> Invoices (₦0 per invoice)</span>
-                            </li>
-                            <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span><strong>Unlimited</strong> Quotes & Estimates</span>
-                            </li>
-                            <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Drag-and-Drop Kanban Task Pipelines</span>
-                            </li>
-                            <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Staff Remote Attendance & Clock-in</span>
-                            </li>
-                            <li class="flex items-center space-x-2.5">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Dedicated Storefront (`yourname.bizpaddi.com`)</span>
-                            </li>
-                            @if($plan->enable_custom_domain)
-                            <li class="flex items-center space-x-2.5 font-bold text-amber-300">
-                                <svg class="w-4 h-4 text-[#F2A900]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Custom Domain Integration Included</span>
-                            </li>
-                            @endif
-                            @if($plan->enable_ai)
-                            <li class="flex items-center space-x-2.5 font-bold text-amber-200">
-                                <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                <span>Autonomous AI Employees & Copilots ✨</span>
-                            </li>
-                            @endif
+                            @endforeach
                         </ul>
                     </div>
 
@@ -471,19 +441,19 @@
                         </tr>
                         <tr>
                             <td class="p-5 font-semibold text-white">Invoice Creation Cost</td>
-                            <td class="p-5 text-center text-amber-300 font-bold">₦50 / invoice</td>
+                            <td class="p-5 text-center text-amber-300 font-bold">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('invoice_generation'), 0) }} / invoice</td>
                             <td class="p-5 text-center text-emerald-400 font-bold">Unlimited (₦0)</td>
                             <td class="p-5 text-center text-emerald-400 font-bold">Unlimited (₦0)</td>
                         </tr>
                         <tr>
                             <td class="p-5 font-semibold text-white">Quotation & Proposal Cost</td>
-                            <td class="p-5 text-center text-amber-300 font-bold">₦30 / quote</td>
+                            <td class="p-5 text-center text-amber-300 font-bold">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('quote_generation'), 0) }} / quote</td>
                             <td class="p-5 text-center text-emerald-400 font-bold">Unlimited (₦0)</td>
                             <td class="p-5 text-center text-emerald-400 font-bold">Unlimited (₦0)</td>
                         </tr>
                         <tr>
                             <td class="p-5 font-semibold text-white">Team Member Clock-in</td>
-                            <td class="p-5 text-center text-amber-300 font-bold">₦20 / user action</td>
+                            <td class="p-5 text-center text-amber-300 font-bold">₦{{ number_format(\App\Models\PlatformFeatureRate::getFeeForAction('team_operation'), 0) }} / user action</td>
                             <td class="p-5 text-center">5 Included Seats</td>
                             <td class="p-5 text-center text-emerald-400 font-bold">100 Included Seats</td>
                         </tr>
