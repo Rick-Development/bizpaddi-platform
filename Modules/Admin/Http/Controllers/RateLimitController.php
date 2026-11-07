@@ -80,7 +80,8 @@ class RateLimitController extends Controller
 
         $rateLimit->update($validated);
 
-        return redirect()->route('admin.rate-limits.index')
+        $targetRoute = \Illuminate\Support\Facades\Route::has('super-admin.rate-limits.index') ? 'super-admin.rate-limits.index' : 'admin.rate-limits.index';
+        return redirect()->route($targetRoute)
             ->with('success', 'Rate limit updated successfully.');
     }
 

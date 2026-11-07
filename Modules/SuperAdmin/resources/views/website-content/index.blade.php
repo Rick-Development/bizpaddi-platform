@@ -418,6 +418,81 @@
             </div>
         </div>
 
+        <!-- 7. Search Engine Optimization & Social Sharing (WhatsApp, Twitter, Facebook, LinkedIn) -->
+        <div class="bg-[#10231C]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-500/20 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center space-x-3">
+                    <span class="w-9 h-9 rounded-xl bg-[#F2A900]/20 text-[#F2A900] font-black text-sm flex items-center justify-center border border-[#F2A900]/30">
+                        7
+                    </span>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Search Engine Optimization (SEO) & Social Sharing</h2>
+                        <p class="text-xs text-gray-400">Controls WhatsApp preview link cards, Google search results, Twitter/X cards, and meta tags.</p>
+                    </div>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    Social Card Active
+                </span>
+            </div>
+
+            <!-- WhatsApp & Social Preview Box -->
+            <div class="bg-[#08110e] border border-white/10 rounded-2xl p-4 sm:p-5">
+                <div class="flex items-center space-x-2 mb-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Live WhatsApp & Social Media Preview</span>
+                </div>
+                <div class="max-w-md bg-[#10231C] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
+                    <div class="aspect-[1200/630] w-full bg-black/40 overflow-hidden relative">
+                        <img src="{{ asset('images/bizpaddi/og-preview.png') }}" alt="Social Preview Banner" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-3.5 space-y-1 bg-[#10231C]/95">
+                        <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">bizpaddi.com</span>
+                        <h4 class="text-xs font-bold text-white truncate">{{ $content['seo_meta_title'] ?? 'Bizpaddi | All-in-One Business Operating System for African Commerce' }}</h4>
+                        <p class="text-[11px] text-gray-400 line-clamp-2 leading-relaxed">{{ $content['seo_meta_description'] ?? 'Run your entire business on autopilot. Smart invoicing with automated payment reconciliation, Kanban project pipelines, staff payroll, and digital storefronts.' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Meta Title (Browser Tab & Search Title)</label>
+                    <input type="text" name="seo_meta_title" value="{{ old('seo_meta_title', $content['seo_meta_title'] ?? '') }}" required
+                           class="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                    <p class="text-[11px] text-gray-400 mt-1">Recommended length: 50–60 characters. Appears as the headline in Google search and social shares.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Meta Description (Social & Google Snippet)</label>
+                    <textarea name="seo_meta_description" rows="3" required
+                              class="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm leading-relaxed">{{ old('seo_meta_description', $content['seo_meta_description'] ?? '') }}</textarea>
+                    <p class="text-[11px] text-gray-400 mt-1">Recommended length: 140–160 characters. Displayed under your title when shared on WhatsApp, LinkedIn, and Facebook.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Meta Keywords</label>
+                        <input type="text" name="seo_meta_keywords" value="{{ old('seo_meta_keywords', $content['seo_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm" placeholder="business management, invoicing, nigeria">
+                        <p class="text-[11px] text-gray-400 mt-1">Comma-separated keywords for search indexers.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Twitter / X Handle</label>
+                        <input type="text" name="seo_twitter_handle" value="{{ old('seo_twitter_handle', $content['seo_twitter_handle'] ?? '@bizpaddi') }}"
+                               class="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-mono" placeholder="@bizpaddi">
+                        <p class="text-[11px] text-gray-400 mt-1">For Twitter summary card authorship.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1.5">Custom OpenGraph Image Path / URL</label>
+                    <input type="text" name="seo_og_image" value="{{ old('seo_og_image', $content['seo_og_image'] ?? '') }}"
+                           class="w-full px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-mono" placeholder="/images/bizpaddi/og-preview.png">
+                    <p class="text-[11px] text-gray-400 mt-1">Leave blank to use default branded retina card (<span class="font-mono text-emerald-400">/images/bizpaddi/og-preview.png</span>).</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Sticky Save Floating Bar -->
         <div class="sticky bottom-6 z-40 bg-[#10231C] text-white p-4 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between">
             <div class="flex items-center space-x-2 text-xs sm:text-sm text-gray-300">

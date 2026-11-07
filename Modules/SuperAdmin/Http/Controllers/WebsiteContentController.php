@@ -79,6 +79,13 @@ class WebsiteContentController extends Controller
             'home_footer_bio' => 'The all-in-one business management and invoicing platform. Instant payment confirmation, automated invoice reconciliation, project tracking, staff payroll, and digital storefronts.',
             'home_footer_copyright' => 'Bizpaddi Technologies Ltd. All rights reserved.',
             'home_support_whatsapp' => '2349030117230',
+
+            // Global SEO & Social Sharing (WhatsApp, Facebook, Twitter, LinkedIn)
+            'seo_meta_title' => 'Bizpaddi | All-in-One Business Operating System for African Commerce',
+            'seo_meta_description' => 'Run your entire business on autopilot. Smart invoicing with automated payment reconciliation, Kanban project pipelines, staff payroll, omnichannel CRM, and dedicated digital storefronts.',
+            'seo_meta_keywords' => 'business management platform, invoicing software Nigeria, automated bank settlement, virtual bank accounts, payroll software Africa, digital storefront, CRM Africa, Bizpaddi',
+            'seo_og_image' => '/images/bizpaddi/og-preview.png',
+            'seo_twitter_handle' => '@bizpaddi',
         ];
     }
 
@@ -104,6 +111,21 @@ class WebsiteContentController extends Controller
                 Setting::set($key, $val, 'string', 'Public landing page copy');
                 Cache::forget("settings.{$key}");
             }
+        }
+
+        // Keep Modules\SEO\Models\SeoMeta in sync for global route
+        try {
+            \Modules\SEO\Models\SeoMeta::updateOrCreate(
+                ['route_name' => 'global'],
+                [
+                    'title' => $request->input('seo_meta_title', 'Bizpaddi | All-in-One Business Operating System for African Commerce'),
+                    'description' => $request->input('seo_meta_description', 'Run your entire business on autopilot. Smart invoicing with automated payment reconciliation, Kanban project pipelines, staff payroll, omnichannel CRM, and dedicated digital storefronts.'),
+                    'keywords' => $request->input('seo_meta_keywords'),
+                    'og_image' => $request->input('seo_og_image') ?: '/images/bizpaddi/og-preview.png',
+                ]
+            );
+        } catch (\Throwable $e) {
+            // Ignore if seo_meta table unavailable
         }
 
         // Also clear view cache so all blades re-render fresh

@@ -150,11 +150,24 @@ class User extends Authenticatable implements HasMedia
 
     public function isProjectManager()
     {
-        return $this->role === 'pm' || 
-               $this->role === 'project_manager' || 
-               $this->role === 'Project Manager' ||
-               $this->hasRole('project_manager') || 
-               $this->hasPermissionTo('pm.manage-projects');
+        $role = strtolower($this->role ?? '');
+        if (in_array($role, ['pm', 'project_manager', 'project manager'])) {
+            return true;
+        }
+
+        try {
+            if ($this->hasRole('project_manager') || $this->hasRole('pm')) {
+                return true;
+            }
+            if ($this->checkPermissionTo('pm.manage-projects')) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            // Permission or role not present in database yet
+            return false;
+        }
+
+        return false;
     }
 
     public function isBdm()

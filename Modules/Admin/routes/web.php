@@ -190,8 +190,8 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
         
         // Platform CMS, Infrastructure & Corporate Marketing Routes (Platform Super Admin Only)
         Route::middleware([\Modules\Admin\Http\Middleware\EnsureSuperAdmin::class])->group(function () {
-            // Hero Sliders Management
-            Route::resource('hero-sliders', \Modules\Admin\Http\Controllers\HeroSliderController::class);
+            // Hero Sliders Management (Redirects to modern Website Copy & CMS)
+            Route::any('hero-sliders/{any?}', fn() => redirect()->route('super-admin.website-content.index'))->where('any', '.*')->name('hero-sliders.index');
             
             // Featured Content Management
             Route::resource('featured-content', \Modules\Admin\Http\Controllers\FeaturedContentController::class);
@@ -246,13 +246,13 @@ Route::prefix('dashboard')->name('admin.')->group(function () {
             Route::resource('visitors', \Modules\Admin\Http\Controllers\VisitorController::class)->only(['index', 'show', 'destroy']);
             Route::post('visitors/bulk-delete', [\Modules\Admin\Http\Controllers\VisitorController::class, 'bulkDelete'])->name('visitors.bulk-delete');
             
-            // Rate Limiting
-            Route::get('rate-limits/sync', [\Modules\Admin\Http\Controllers\RateLimitController::class, 'sync'])->name('rate-limits.sync');
-            Route::resource('rate-limits', \Modules\Admin\Http\Controllers\RateLimitController::class)->only(['index', 'edit', 'update', 'destroy']);
+            // Rate Limiting (Platform Super Admin HQ)
+            Route::get('rate-limits/sync', fn() => redirect()->route('super-admin.rate-limits.sync'))->name('rate-limits.sync');
+            Route::any('rate-limits/{any?}', fn() => redirect()->route('super-admin.rate-limits.index'))->where('any', '.*')->name('rate-limits.index');
 
-            // System Maintenance
-            Route::get('system', [\Modules\Admin\Http\Controllers\SystemController::class, 'index'])->name('system.index');
+            // System Maintenance (Platform Super Admin HQ)
             Route::post('system/run', [\Modules\Admin\Http\Controllers\SystemController::class, 'runCommand'])->name('system.run');
+            Route::any('system/{any?}', fn() => redirect()->route('super-admin.system.index'))->where('any', '.*')->name('system.index');
         });
         
         // Tenant Services Catalog

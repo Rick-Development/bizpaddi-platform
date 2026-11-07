@@ -119,7 +119,14 @@
                         <a href="{{ route('super-admin.website-content.index') }}" 
                            class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->is('*website-content*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
                             <svg class="w-5 h-5 {{ request()->is('*website-content*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            <span>Website </span>
+                            <span>Website</span>
+                        </a>
+
+                        <!-- SEO & Social Sharing -->
+                        <a href="{{ route('super-admin.seo.index') }}" 
+                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.seo.*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.seo.*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <span>SEO & Social Cards</span>
                         </a>
 
                         <!-- Settings -->
@@ -131,16 +138,16 @@
                         </a>
 
                         <!-- Rate Limiting -->
-                        <a href="{{ route('admin.rate-limits.index') }}" 
-                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('admin.rate-limits.*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
-                            <svg class="w-5 h-5 {{ request()->routeIs('admin.rate-limits.*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z"/></svg>
+                        <a href="{{ route('super-admin.rate-limits.index') }}" 
+                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.rate-limits.*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.rate-limits.*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z"/></svg>
                             <span>Rate Limiting</span>
                         </a>
 
                         <!-- System Status & Logs -->
-                        <a href="{{ route('admin.system.index') }}" 
-                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('admin.system.*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
-                            <svg class="w-5 h-5 {{ request()->routeIs('admin.system.*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"/></svg>
+                        <a href="{{ route('super-admin.system.index') }}" 
+                           class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.system.*') ? 'bg-[#0E5E4A] text-white shadow-md border border-emerald-400/30 font-bold' : 'text-gray-300 hover:text-white hover:bg-white/5' }}">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.system.*') ? 'text-[#F2A900]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"/></svg>
                             <span>System Status</span>
                         </a>
                         @endif

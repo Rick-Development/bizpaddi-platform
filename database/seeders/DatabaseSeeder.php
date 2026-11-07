@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(\Modules\Blog\Database\Seeders\PostSeeder::class);
         // $this->call(\Modules\Blog\Database\Seeders\CategorySeeder::class);
         
+        // Permissions & Roles
+        $this->call(\Database\Seeders\ProjectManagerPermissionsSeeder::class);
+
         // Clients Module
         $this->call(\Modules\Clients\Database\Seeders\TestimonialSeeder::class);
     }

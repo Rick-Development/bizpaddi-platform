@@ -57,6 +57,18 @@ Route::prefix('super-admin')
 
         // Platform Administrators
         Route::resource('administrators', \Modules\Admin\Http\Controllers\AdminManagementController::class);
+
+        // Global SEO & Social Sharing Management
+        Route::get('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'index'])->name('seo.index');
+        Route::put('seo', [\Modules\Admin\Http\Controllers\SeoController::class, 'update'])->name('seo.update');
+
+        // Security & Route Rate Limiting
+        Route::get('rate-limits/sync', [\Modules\Admin\Http\Controllers\RateLimitController::class, 'sync'])->name('rate-limits.sync');
+        Route::resource('rate-limits', \Modules\Admin\Http\Controllers\RateLimitController::class)->only(['index', 'edit', 'update', 'destroy']);
+
+        // DevOps & System Operations
+        Route::get('system', [\Modules\Admin\Http\Controllers\SystemController::class, 'index'])->name('system.index');
+        Route::post('system/run', [\Modules\Admin\Http\Controllers\SystemController::class, 'runCommand'])->name('system.run');
     });
 
 // Platform Admin Staff Portal (/admin) for internal workers managing the platform

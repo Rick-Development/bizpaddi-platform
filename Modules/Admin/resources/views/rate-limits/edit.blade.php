@@ -1,4 +1,4 @@
-@extends('admin::layouts.app')
+@extends('superadmin::layouts.app')
 
 @section('title', 'Configure Rate Limiting Protocol')
 
@@ -17,7 +17,7 @@
                 <p class="mt-1 text-xs sm:text-sm text-gray-400">Fine-tune request limits and decay windows for this endpoint.</p>
             </div>
         </div>
-        <a href="{{ route('admin.rate-limits.index') }}" class="inline-flex items-center gap-x-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-xs sm:text-sm font-bold text-gray-200 hover:bg-white/10 hover:text-white transition-all duration-200">
+        <a href="{{ route('super-admin.rate-limits.index') }}" class="inline-flex items-center gap-x-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-xs sm:text-sm font-bold text-gray-200 hover:bg-white/10 hover:text-white transition-all duration-200">
             <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -34,7 +34,7 @@
                     <p class="text-xs text-gray-400 mt-1">Set the maximum allowed request velocity for this route before throttling kicks in.</p>
                 </div>
 
-                <form action="{{ route('admin.rate-limits.update', $rateLimit) }}" method="POST">
+                <form action="{{ route('super-admin.rate-limits.update', $rateLimit) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="p-6 sm:p-8 space-y-6">
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="bg-white/[0.02] px-6 py-4 border-t border-white/10 flex items-center justify-end gap-3">
-                        <a href="{{ route('admin.rate-limits.index') }}" class="px-4 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
+                        <a href="{{ route('super-admin.rate-limits.index') }}" class="px-4 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
                             Cancel
                         </a>
                         <button type="submit" class="inline-flex items-center gap-x-2 rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-emerald-950/40 hover:opacity-95 border border-emerald-400/30 transition-all duration-200">

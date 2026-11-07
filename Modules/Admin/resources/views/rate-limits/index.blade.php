@@ -1,4 +1,4 @@
-@extends('admin::layouts.app')
+@extends('superadmin::layouts.app')
 
 @section('title', 'Security & Rate Limiting')
 
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.rate-limits.sync') }}" class="inline-flex items-center gap-x-2 rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-emerald-950/40 hover:opacity-95 border border-emerald-400/30 transition-all duration-200">
+            <a href="{{ route('super-admin.rate-limits.sync') }}" class="inline-flex items-center gap-x-2 rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-emerald-950/40 hover:opacity-95 border border-emerald-400/30 transition-all duration-200">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                 </svg>
@@ -188,11 +188,11 @@
                             </td>
                             <td class="relative whitespace-nowrap py-4 pl-3 pr-6 text-right">
                                 <div class="flex items-center justify-end gap-x-2">
-                                    <a href="{{ route('admin.rate-limits.edit', $limit) }}" 
+                                    <a href="{{ route('super-admin.rate-limits.edit', $limit) }}" 
                                        class="inline-flex items-center rounded-xl bg-white/5 px-3 py-1.5 text-xs font-bold text-emerald-300 border border-white/10 hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all duration-200">
                                         Configure
                                     </a>
-                                    <form action="{{ route('admin.rate-limits.destroy', $limit) }}" method="POST" class="inline" onsubmit="return confirm('Remove route from rate limiting registry?');">
+                                    <form action="{{ route('super-admin.rate-limits.destroy', $limit) }}" method="POST" class="inline" onsubmit="return confirm('Remove route from rate limiting registry?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" title="Remove route" class="p-1.5 text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all duration-200">
@@ -215,7 +215,7 @@
                                     </div>
                                     <h3 class="text-base font-bold text-white">No Routes Found</h3>
                                     <p class="mt-1 text-xs text-gray-400 max-w-sm">Synchronize all available application routes to scan routes and enable rate limit controls.</p>
-                                    <a href="{{ route('admin.rate-limits.sync') }}" class="mt-4 inline-flex items-center rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-950/40">
+                                    <a href="{{ route('super-admin.rate-limits.sync') }}" class="mt-4 inline-flex items-center rounded-xl bg-gradient-to-r from-[#0E5E4A] to-[#10B981] px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-950/40">
                                         Sync Routes Now
                                     </a>
                                 </div>

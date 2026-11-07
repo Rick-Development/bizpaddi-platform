@@ -1,4 +1,4 @@
-@extends('admin::layouts.app')
+@extends('superadmin::layouts.app')
 
 @section('title', 'System Operations & Maintenance')
 
@@ -75,7 +75,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Optimize Platform</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Compile and cache configuration, routes, and services for maximum speed.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="optimize">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-[#0E5E4A] to-[#10B981] hover:brightness-110 text-white shadow-md active:scale-95 transition-all">
@@ -93,7 +93,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Clear Optimization</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Safely clear compiled cache files across config, routes, and services.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="optimize-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -111,7 +111,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Clear Route Cache</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Flush cached route mapping when routes are updated or modified.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="route-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -129,7 +129,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Clear Blade Views</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Purge pre-rendered Blade templates so new HTML changes reflect immediately.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="view-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -147,7 +147,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Clear Configuration</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Remove cached .env configurations so updated credentials take effect.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="config-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -165,7 +165,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Flush App Cache</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Wipe in-memory and database key-value cache records.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="cache-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -183,7 +183,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Link Storage Symlink</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Recreate public/storage symlink to serve uploaded product images and logos.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="storage-link">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -201,7 +201,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Composer Autoload</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Regenerate PHP autoload classmap for new controllers, models, and traits.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="composer-dump">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -229,7 +229,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">Execute Core Migrations</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Safely apply pending database column and table changes (`migrate --force`).</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="migrate">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:bg-amber-500/30 active:scale-95 transition-all">
@@ -247,7 +247,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">Module Migrations</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Run all modular table migrations across Admin, Accounting, and AI modules.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="module-migrate">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -265,7 +265,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Reset Permissions</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Purge and rebuild cached roles and RBAC permission tables.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="permission-cache-reset">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -283,7 +283,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Clean Media Library</h3>
                     <p class="text-xs text-gray-400 mt-1 line-clamp-2">Purge orphaned uploaded files not referenced in any model.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="medialibrary-clean">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -311,7 +311,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">Restart Queue Workers</h3>
                     <p class="text-xs text-gray-400 mt-1">Instruct active queue worker daemons to gracefully reload after code deployment.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="queue-restart">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-blue-500/20 border border-blue-500/30 text-blue-300 hover:bg-blue-500/30 active:scale-95 transition-all">
@@ -329,7 +329,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">Retry All Failed Jobs</h3>
                     <p class="text-xs text-gray-400 mt-1">Re-queue all failed jobs (emails, webhooks, disbursements) back into pipeline.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST">
+                <form action="{{ route('super-admin.system.run') }}" method="POST">
                     @csrf
                     <input type="hidden" name="command" value="queue-retry-all">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-[#0E5E4A] to-[#10B981] hover:brightness-110 text-white shadow-md active:scale-95 transition-all">
@@ -347,7 +347,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-red-400 transition-colors">Flush Failed Jobs</h3>
                     <p class="text-xs text-gray-400 mt-1">Permanently purge all failed queue job records from the database table.</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST" onsubmit="return confirm('Permanently clear all failed jobs?')">
+                <form action="{{ route('super-admin.system.run') }}" method="POST" onsubmit="return confirm('Permanently clear all failed jobs?')">
                     @csrf
                     <input type="hidden" name="command" value="queue-flush">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/20 active:scale-95 transition-all">
@@ -366,14 +366,14 @@
                     <p class="text-xs text-gray-400 mt-1">Pause queue processing during scheduled maintenance, then resume.</p>
                 </div>
                 <div class="flex gap-2">
-                    <form action="{{ route('admin.system.run') }}" method="POST" class="flex-1">
+                    <form action="{{ route('super-admin.system.run') }}" method="POST" class="flex-1">
                         @csrf
                         <input type="hidden" name="command" value="queue-pause">
                         <button type="submit" class="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 active:scale-95 transition-all">
                             Pause
                         </button>
                     </form>
-                    <form action="{{ route('admin.system.run') }}" method="POST" class="flex-1">
+                    <form action="{{ route('super-admin.system.run') }}" method="POST" class="flex-1">
                         @csrf
                         <input type="hidden" name="command" value="queue-resume">
                         <button type="submit" class="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 active:scale-95 transition-all">
@@ -393,14 +393,14 @@
                     <p class="text-xs text-gray-400 mt-1">Delete old completed batches and prune expired job entries.</p>
                 </div>
                 <div class="flex gap-2">
-                    <form action="{{ route('admin.system.run') }}" method="POST" class="flex-1">
+                    <form action="{{ route('super-admin.system.run') }}" method="POST" class="flex-1">
                         @csrf
                         <input type="hidden" name="command" value="queue-prune-batches">
                         <button type="submit" class="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
                             Batches
                         </button>
                     </form>
-                    <form action="{{ route('admin.system.run') }}" method="POST" class="flex-1">
+                    <form action="{{ route('super-admin.system.run') }}" method="POST" class="flex-1">
                         @csrf
                         <input type="hidden" name="command" value="queue-prune-failed">
                         <button type="submit" class="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-white/[0.04] border border-white/10 text-gray-300 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all">
@@ -419,7 +419,7 @@
                     <h3 class="text-sm font-bold text-white group-hover:text-red-400 transition-colors">Clear Pending Queue</h3>
                     <p class="text-xs text-gray-400 mt-1">Discard all pending waiting jobs in default queue (destructive).</p>
                 </div>
-                <form action="{{ route('admin.system.run') }}" method="POST" onsubmit="return confirm('⚠️ DANGER: This will delete ALL pending background jobs. Are you sure?')">
+                <form action="{{ route('super-admin.system.run') }}" method="POST" onsubmit="return confirm('⚠️ DANGER: This will delete ALL pending background jobs. Are you sure?')">
                     @csrf
                     <input type="hidden" name="command" value="queue-clear">
                     <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/20 active:scale-95 transition-all">
