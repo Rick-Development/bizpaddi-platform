@@ -77,6 +77,10 @@ class SeoService
             $ogImage = rtrim($base, '/') . '/' . ltrim($ogImage, '/');
         }
 
+        $twitterCard = $seo->twitter_card ?? 'summary_large_image';
+        $noIndex = $seo->noindex ?? false;
+        $noFollow = $seo->nofollow ?? false;
+
         // 4. If we have a model, check for direct SEO fields (like blog posts)
         if ($model) {
             if (isset($model->meta_title) && !empty($model->meta_title)) {
