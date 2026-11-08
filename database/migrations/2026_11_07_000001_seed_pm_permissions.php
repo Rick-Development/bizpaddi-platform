@@ -47,3 +47,4 @@ return new class extends Migration
         // Safe to leave permissions
     }
 };
+

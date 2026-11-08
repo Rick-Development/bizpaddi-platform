@@ -110,8 +110,8 @@
                     Our African onboarding team is available to assist you with workspace setup, DNS migration, or custom enterprise requirements.
                 </p>
                 <div class="pt-2 flex items-center justify-center space-x-4">
-                    <a href="https://wa.me/2349030117230" target="_blank" class="px-6 py-3 rounded-xl bg-[#25D366] hover:bg-emerald-600 text-white font-bold text-xs shadow-md transition flex items-center space-x-2">
-                        <span>Chat on WhatsApp</span>
+                    <a href="{{ route('contact.index') }}" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs shadow-md transition flex items-center space-x-2 border border-white/10">
+                        <span>Contact Support</span>
                     </a>
                     <a href="{{ route('admin.register') }}" target="_blank" rel="noopener" class="px-6 py-3 rounded-xl bg-[#0E5E4A] hover:bg-[#0c4e3e] text-white font-bold text-xs border border-emerald-400/30 transition">
                         Get Started Now
