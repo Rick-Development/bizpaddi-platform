@@ -141,6 +141,13 @@ Route::get('/clear-cache', function () {
 Route::get('/deploy-git-pull', function () {
     $basePath = base_path();
     $output = shell_exec("cd {$basePath} && git fetch origin main 2>&1 && git reset --hard origin/main 2>&1");
+    
+    // Attempt npm build if npm is available
+    $npmPath = shell_exec("which npm 2>/dev/null") ? trim(shell_exec("which npm 2>/dev/null")) : null;
+    if ($npmPath) {
+        $output .= "\n" . shell_exec("cd {$basePath} && {$npmPath} run build 2>&1");
+    }
+    
     \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
     \Illuminate\Support\Facades\Artisan::call('optimize:clear');
     if (function_exists('opcache_reset')) {
