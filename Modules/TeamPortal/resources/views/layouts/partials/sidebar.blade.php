@@ -1,6 +1,9 @@
-<div class="flex grow flex-col gap-y-5 overflow-y-auto bg-brand-secondary  px-6">
-    <div class="flex h-16 shrink-0 items-center">
-        <span class="text-xl font-bold text-white">Team Portal <!-- DEBUG: MODULE SIDEBAR --></span>
+<div class="flex grow flex-col gap-y-5 overflow-y-auto bg-brand-secondary px-6">
+    <div class="flex h-16 shrink-0 items-center justify-between">
+        <a href="{{ route('team.dashboard') }}" class="flex items-center gap-3 group">
+            <img src="{{ asset('images/bizpaddi/logo.png') }}" alt="Bizpaddi" class="h-8 w-auto">
+            <span class="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider text-emerald-400">Team</span>
+        </a>
     </div>
     <nav class="flex flex-1 flex-col">
         <ul role="list" class="flex flex-1 flex-col gap-y-7">

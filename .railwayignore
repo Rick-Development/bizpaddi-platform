@@ -7,4 +7,6 @@ storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
 tests
+public/images/bg_1.png
+public/images/bg_2.png
 
