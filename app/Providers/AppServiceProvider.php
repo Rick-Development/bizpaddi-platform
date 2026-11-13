@@ -20,6 +20,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (
+            (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+            (isset($_SERVER['HTTP_HOST']) && (str_contains($_SERVER['HTTP_HOST'], 'railway.app') || str_contains($_SERVER['HTTP_HOST'], 'bizpaddi.com')))
+        ) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Load all module migrations regardless of directory casing on Linux (database/migrations vs Database/Migrations)
         $moduleMigrationDirs = array_merge(
             glob(base_path('Modules/*/database/migrations'), GLOB_ONLYDIR) ?: [],
