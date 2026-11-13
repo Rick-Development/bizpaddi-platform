@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "facb0385fbea6c9c5e1c5100894e400f",
+    "content-hash": "8449f9ac397244a69ba4985ef9e8aff1",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -9364,12 +9364,12 @@
             "version": "v5.6.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vlucas/phpdotenv.git",
+                "url": "https://github.com/phpdotenv/phpdotenv.git",
                 "reference": "955e7815d677a3eaa7075231212f2110983adecc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/955e7815d677a3eaa7075231212f2110983adecc",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/955e7815d677a3eaa7075231212f2110983adecc",
                 "reference": "955e7815d677a3eaa7075231212f2110983adecc",
                 "shasum": ""
             },
@@ -12017,8 +12017,19 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.4",
+        "ext-gd": "*",
+        "ext-exif": "*",
+        "ext-zip": "*",
+        "ext-pdo_mysql": "*",
+        "ext-bcmath": "*",
+        "ext-intl": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "platform-overrides": {
+        "ext-gd": "1.0",
+        "ext-exif": "1.0",
+        "ext-zip": "1.0"
+    },
+    "plugin-api-version": "2.9.0"
 }
