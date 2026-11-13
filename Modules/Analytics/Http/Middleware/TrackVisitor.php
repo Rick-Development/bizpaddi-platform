@@ -93,7 +93,6 @@ class TrackVisitor
                     Log::error('Visitor tracking failed: ' . $e->getMessage());
                 }
             });
-        }
 
         return $response;
     }
