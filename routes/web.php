@@ -66,39 +66,65 @@ Route::get('/storage/{path}', function ($path) {
     // Strip accidental duplicate storage/ or domain prefixes if any
     $path = preg_replace('/^(storage\/)+/', '', $path);
     $path = ltrim($path, '/');
+
+    // Block directory traversal or sensitive paths (.log, logs/, .env, hidden files, etc.)
+    if (
+        str_contains($path, '..') ||
+        str_starts_with($path, 'logs') ||
+        str_ends_with($path, '.log') ||
+        str_contains($path, '.env') ||
+        str_starts_with($path, '.')
+    ) {
+        abort(404);
+    }
+
     $filename = basename($path);
 
     $possiblePaths = [
+        public_path('storage/' . $path),
         storage_path('app/public/' . $path),
         storage_path('app/public/resumes/' . $filename),
         storage_path('app/private/' . $path),
         storage_path('app/private/resumes/' . $filename),
         storage_path('app/' . $path),
         storage_path('app/resumes/' . $filename),
-        public_path('storage/' . $path),
-        public_path('storage/resumes/' . $filename),
     ];
 
     foreach ($possiblePaths as $fullPath) {
         if (file_exists($fullPath) && !is_dir($fullPath)) {
             $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
-            return response()->file($fullPath, ['Content-Type' => $mimeType]);
+            return response()->file($fullPath, [
+                'Content-Type' => $mimeType,
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
         }
     }
 
-    try {
-        $remoteStorageBase = config('app.remote_storage_url', 'https://bizpaddi.com/storage');
-        $liveUrl = rtrim($remoteStorageBase, '/') . '/' . $path;
-        $remoteResponse = \Illuminate\Support\Facades\Http::timeout(5)->get($liveUrl);
-        if ($remoteResponse->successful()) {
-            $localSavePath = storage_path('app/public/' . $path);
-            @mkdir(dirname($localSavePath), 0755, true);
-            @file_put_contents($localSavePath, $remoteResponse->body());
-            $contentType = $remoteResponse->header('Content-Type') ?: 'application/octet-stream';
-            return response($remoteResponse->body(), 200, ['Content-Type' => $contentType]);
+    // Only attempt remote storage fallback if an explicit external remote storage base URL is configured
+    // and is NOT this server itself (to avoid self-referential HTTP deadlocks).
+    $remoteStorageBase = config('app.remote_storage_url');
+    if ($remoteStorageBase) {
+        $remoteHost = parse_url($remoteStorageBase, PHP_URL_HOST);
+        $currentHost = request()->getHost();
+
+        if ($remoteHost && $remoteHost !== $currentHost && !str_ends_with($currentHost, $remoteHost)) {
+            try {
+                $liveUrl = rtrim($remoteStorageBase, '/') . '/' . $path;
+                $remoteResponse = \Illuminate\Support\Facades\Http::timeout(2)->get($liveUrl);
+                if ($remoteResponse->successful()) {
+                    $localSavePath = storage_path('app/public/' . $path);
+                    @mkdir(dirname($localSavePath), 0755, true);
+                    @file_put_contents($localSavePath, $remoteResponse->body());
+                    $contentType = $remoteResponse->header('Content-Type') ?: 'application/octet-stream';
+                    return response($remoteResponse->body(), 200, [
+                        'Content-Type' => $contentType,
+                        'Cache-Control' => 'public, max-age=86400',
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // ignore and fallback to 404
+            }
         }
-    } catch (\Throwable $e) {
-        // ignore and fallback to 404
     }
 
     abort(404, 'File not found on storage server');

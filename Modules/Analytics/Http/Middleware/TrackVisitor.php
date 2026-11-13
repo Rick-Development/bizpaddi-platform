@@ -22,16 +22,22 @@ class TrackVisitor
     {
         $response = $next($request);
 
+        // Only track successful 200 OK GET requests to actual application pages
         if (
-            $request->isMethod('GET') &&
-            !$request->is('admin/*') &&
-            !$request->is('super-admin/*') &&
-            !$request->is('dashboard/*') &&
-            !$request->is('api/*') &&
-            !$request->is('_debugbar/*') &&
-            !$request->is('storage/*')
+            $response->getStatusCode() !== 200 ||
+            !$request->isMethod('GET') ||
+            $request->is('admin/*') ||
+            $request->is('super-admin/*') ||
+            $request->is('dashboard/*') ||
+            $request->is('api/*') ||
+            $request->is('_debugbar/*') ||
+            $request->is('storage/*') ||
+            $request->is('build/*')
         ) {
-            app()->terminating(function () use ($request) {
+            return $response;
+        }
+
+        app()->terminating(function () use ($request) {
                 try {
                     $agent = new Agent();
 
