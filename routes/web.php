@@ -140,7 +140,12 @@ Route::get('/clear-cache', function () {
 
 Route::get('/deploy-git-pull', function () {
     $basePath = base_path();
+    $pwd = shell_exec("cd {$basePath} && pwd");
+    $gitStatus = shell_exec("cd {$basePath} && git status -s 2>&1");
+    $gitHead = shell_exec("cd {$basePath} && git rev-parse HEAD 2>&1");
     $output = shell_exec("cd {$basePath} && git fetch origin main 2>&1 && git reset --hard origin/main 2>&1");
+    $newHead = shell_exec("cd {$basePath} && git rev-parse HEAD 2>&1");
+    $buildFiles = shell_exec("ls -la {$basePath}/public/build/assets 2>&1");
     
     // Attempt npm build if npm is available
     $npmPath = shell_exec("which npm 2>/dev/null") ? trim(shell_exec("which npm 2>/dev/null")) : null;
@@ -153,7 +158,7 @@ Route::get('/deploy-git-pull', function () {
     if (function_exists('opcache_reset')) {
         @opcache_reset();
     }
-    return "<pre>" . e($output) . "\nMigration & Cache clear completed!</pre>";
+    return "<pre>PWD: {$pwd}OLD HEAD: {$gitHead}NEW HEAD: {$newHead}GIT STATUS:\n{$gitStatus}\nOUTPUT:\n{$output}\nBUILD FILES:\n{$buildFiles}\nMigration & Cache clear completed!</pre>";
 });
 
 
