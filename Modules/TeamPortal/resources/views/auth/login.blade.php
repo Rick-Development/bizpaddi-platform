@@ -110,9 +110,9 @@
                 <div class="mt-6 pt-5 border-t border-white/10 text-center space-y-2">
                     <p class="text-xs text-gray-400">Team accounts are provisioned by your business manager.</p>
                     <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold pt-1">
-                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace (/dashboard)</a>
+                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace</a>
                         <span class="text-gray-600">&bull;</span>
-                        <a href="{{ route('client.login') }}" class="text-emerald-400 hover:underline">Client Portal (/dashboard/client)</a>
+                        <a href="{{ route('client.login') }}" class="text-emerald-400 hover:underline">Client Portal</a>
                     </div>
                 </div>
             </div>

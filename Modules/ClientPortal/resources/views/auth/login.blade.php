@@ -115,9 +115,9 @@
                         Client access is granted by invitation from your vendor or company. Please check your invitation email.
                     </p>
                     <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold pt-1">
-                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace (/dashboard)</a>
+                        <a href="{{ route('admin.login') }}" class="text-emerald-400 hover:underline">Business Workspace</a>
                         <span class="text-gray-600">&bull;</span>
-                        <a href="{{ route('team.login') }}" class="text-emerald-400 hover:underline">Staff Portal (/dashboard/team)</a>
+                        <a href="{{ route('team.login') }}" class="text-emerald-400 hover:underline">Staff & Team Portal</a>
                     </div>
                 </div>
             </div>
