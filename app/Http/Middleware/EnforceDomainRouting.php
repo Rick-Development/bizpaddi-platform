@@ -27,16 +27,19 @@ class EnforceDomainRouting
         $appDomain = strtolower(config('app.app_domain', 'app.' . $baseDomain));
         $adminDomain = strtolower(config('app.admin_domain', 'admin.' . $baseDomain));
 
+        // When admin domain is merged into app domain (e.g. 2-domain architecture on Railway)
+        $isMergedAdmin = ($adminDomain === $appDomain || $adminDomain === 'app.' . $baseDomain || env('APP_ADMIN_DOMAIN') === 'app.' . $baseDomain || env('MERGE_ADMIN_INTO_APP', true));
+
         // Determine current domain role: 'admin', 'app', 'web', or null (unscoped local IP like 127.0.0.1)
         $domainRole = null;
         $rootDomain = $baseDomain;
 
-        if ($host === $adminDomain || str_starts_with($host, 'admin.') || str_starts_with($host, 'superadmin.')) {
+        if (!$isMergedAdmin && ($host === $adminDomain || str_starts_with($host, 'admin.') || str_starts_with($host, 'superadmin.'))) {
             $domainRole = 'admin';
             $rootDomain = preg_replace('/^(super)?admin\./', '', $host);
-        } elseif ($host === $appDomain || str_starts_with($host, 'app.')) {
+        } elseif ($host === $appDomain || str_starts_with($host, 'app.') || ($isMergedAdmin && (str_starts_with($host, 'admin.') || str_starts_with($host, 'superadmin.')))) {
             $domainRole = 'app';
-            $rootDomain = substr($host, 4);
+            $rootDomain = preg_replace('/^(app|(super)?admin)\./', '', $host);
         } elseif ($host === $baseDomain || $host === 'www.' . $baseDomain || config('app.enforce_subdomains')) {
             $domainRole = 'web';
             $rootDomain = preg_replace('/^www\./', '', $host);
@@ -56,7 +59,12 @@ class EnforceDomainRouting
 
         $webOrigin = "{$scheme}://{$rootDomain}{$portSuffix}";
         $appOrigin = "{$scheme}://app.{$rootDomain}{$portSuffix}";
-        $adminOrigin = "{$scheme}://admin.{$rootDomain}{$portSuffix}";
+        $adminOrigin = $isMergedAdmin ? $appOrigin : "{$scheme}://admin.{$rootDomain}{$portSuffix}";
+
+        // If traffic arrives on legacy admin. subdomain and admin is merged, redirect to app. domain immediately
+        if ($isMergedAdmin && (str_starts_with($host, 'admin.') || str_starts_with($host, 'superadmin.'))) {
+            return redirect()->away($appOrigin . $request->getRequestUri());
+        }
 
         $path = trim($request->path(), '/');
 
@@ -97,7 +105,14 @@ class EnforceDomainRouting
         // 2. Handle APP domain (app.bizpaddi.com)
         if ($domainRole === 'app') {
             if ($path === '') {
-                if (Auth::guard('admin')->check()) {
+                $adminUser = Auth::guard('admin')->user();
+                if ($adminUser) {
+                    if ($adminUser->role === 'super_admin') {
+                        return redirect('/super-admin');
+                    }
+                    if (is_null($adminUser->tenant_id)) {
+                        return redirect('/admin');
+                    }
                     return redirect('/dashboard');
                 }
                 if (Auth::guard('web')->check()) {
@@ -110,7 +125,8 @@ class EnforceDomainRouting
             }
 
             if ($request->isMethod('GET')) {
-                if ($this->isPlatformAdminPath($path)) {
+                // If admin is NOT merged, redirect platform admin paths away to adminOrigin
+                if (!$isMergedAdmin && $this->isPlatformAdminPath($path)) {
                     return redirect()->away($adminOrigin . $request->getRequestUri());
                 }
 

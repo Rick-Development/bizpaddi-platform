@@ -67,7 +67,7 @@ return [
 
     'domain' => env('APP_DOMAIN', 'bizpaddi.com'),
     'app_domain' => env('APP_PORTAL_DOMAIN', 'app.' . env('APP_DOMAIN', 'bizpaddi.com')),
-    'admin_domain' => env('APP_ADMIN_DOMAIN', 'admin.' . env('APP_DOMAIN', 'bizpaddi.com')),
+    'admin_domain' => env('APP_ADMIN_DOMAIN', env('APP_PORTAL_DOMAIN', 'app.' . env('APP_DOMAIN', 'bizpaddi.com'))),
     'enforce_subdomains' => (bool) env('ENFORCE_SUBDOMAINS', false),
 
     /*
