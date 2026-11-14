@@ -11,30 +11,33 @@
     }
 
     .detail-hero {
-        background: linear-gradient(135deg, var(--navy) 0%, #12153a 60%, #1e1048 100%);
-        border-radius: 20px;
+        background: linear-gradient(135deg, #10231C 0%, #0d221b 60%, #08110e 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 24px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
     .detail-hero::before {
         content: '';
         position: absolute;
         top: -60px; right: -60px;
         width: 260px; height: 260px;
-        background: radial-gradient(circle, rgba(251,76,75,0.15) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
         pointer-events: none;
     }
 
     .detail-card {
-        background: #fff;
-        border: 1px solid #e8eaf0;
-        border-radius: 18px;
+        background: rgba(16,35,28,0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 24px rgba(25,28,71,0.04);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .detail-card-header {
-        background: #f8f9fc;
-        border-bottom: 1.5px solid #e8eaf0;
+        background: rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
         padding: 16px 24px;
         display: flex;
         align-items: center;
@@ -45,7 +48,7 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: #64748b;
+        color: #9ca3af;
         margin: 0;
     }
 
@@ -54,31 +57,31 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.09em;
-        color: #94a3b8;
+        color: #9ca3af;
         display: block;
         margin-bottom: 4px;
     }
 
-    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; }
-    .pill-red   { background:#fff0f0; color:var(--brand); border:1px solid #ffd5d5; }
-    .pill-green { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
-    .pill-blue  { background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; }
-    .pill-amber { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
-    .pill-slate { background:#f1f5f9; color:#475569; border:1px solid #e2e8f0; }
-    .pill-navy  { background:rgba(25,28,71,0.06); color:var(--navy); border:1px solid rgba(25,28,71,0.12); }
-    .pill-purple { background:#faf5ff; color:#7e22ce; border:1px solid #e9d5ff; }
+    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 999px; font-size: 10px; font-weight: 800; text-transform: uppercase; tracking: 0.05em; }
+    .pill-red   { background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); }
+    .pill-green { background:rgba(16,185,129,0.2); color:#6ee7b7; border:1px solid rgba(16,185,129,0.3); }
+    .pill-blue  { background:rgba(59,130,246,0.2); color:#93c5fd; border:1px solid rgba(59,130,246,0.3); }
+    .pill-amber { background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.3); }
+    .pill-slate { background:rgba(255,255,255,0.08); color:#d1d5db; border:1px solid rgba(255,255,255,0.1); }
+    .pill-navy  { background:rgba(16,35,28,0.8); color:#34d399; border:1px solid rgba(16,185,129,0.3); }
+    .pill-purple { background:rgba(168,85,247,0.2); color:#d8b4fe; border:1px solid rgba(168,85,247,0.3); }
 
     .task-result-card {
-        background: #fafbfc;
-        border: 1.5px solid #e8eaf0;
-        border-radius: 14px;
+        background: rgba(8,17,14,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
         overflow: hidden;
-        transition: box-shadow 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .task-result-card:hover { box-shadow: 0 4px 20px rgba(25,28,71,0.08); }
+    .task-result-card:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
     .task-result-card .card-top {
         padding: 16px 20px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -87,15 +90,15 @@
     }
     .task-result-card .card-body { padding: 16px 20px; }
 
-    .result-completed { border-color: #bbf7d0; background: #f0fdf4; }
-    .result-partial   { border-color: #bfdbfe; background: #eff6ff; }
-    .result-blocked   { border-color: #fecaca; background: #fff5f5; }
-    .result-assigned  { border-color: #e9d5ff; background: #faf5ff; }
+    .result-completed { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+    .result-partial   { border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.05); }
+    .result-blocked   { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+    .result-assigned  { border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.05); }
 
     .stat-box {
-        background: #fff;
-        border: 1.5px solid #e8eaf0;
-        border-radius: 12px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
         padding: 14px 18px;
         display: flex;
         flex-direction: column;
@@ -104,15 +107,15 @@
     .stat-box .stat-val {
         font-size: 22px;
         font-weight: 900;
-        color: #0f172a;
+        color: #ffffff;
         line-height: 1;
     }
     .stat-box .stat-lbl {
         font-size: 10px;
-        font-weight: 700;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.07em;
-        color: #94a3b8;
+        letter-spacing: 0.08em;
+        color: #9ca3af;
     }
 
     .output-tag {
@@ -120,50 +123,50 @@
         padding: 4px 11px;
         border-radius: 999px;
         font-size: 11px; font-weight: 700;
-        background: #f1f5f9;
-        color: #475569;
-        border: 1px solid #e2e8f0;
+        background: rgba(255,255,255,0.06);
+        color: #d1d5db;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .evidence-box {
-        background: #f8f9fc;
-        border: 1.5px solid #e8eaf0;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
         border-radius: 12px;
         padding: 14px 18px;
         font-size: 13px;
-        color: #334155;
+        color: #e5e7eb;
         line-height: 1.6;
     }
 
     .blocker-badge {
-        background: #fff5f5;
-        border: 1.5px solid #fecaca;
-        border-radius: 12px;
-        padding: 12px 16px;
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+        border-radius: 14px;
+        padding: 14px 18px;
     }
 
     .back-btn {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 8px 16px;
-        background: white;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
         font-size: 13px; font-weight: 600;
-        color: #475569;
+        color: #d1d5db;
         text-decoration: none;
-        transition: background 0.2s, border-color 0.2s;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
-    .back-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .back-btn:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
 
-    .prose-content { font-size: 13px; color: #334155; line-height: 1.7; }
+    .prose-content { font-size: 13px; color: #d1d5db; line-height: 1.7; }
     .prose-content p { margin: 0 0 8px; }
     .prose-content ul, .prose-content ol { margin: 0 0 8px 16px; }
-    .prose-content strong { font-weight: 700; }
+    .prose-content strong { font-weight: 700; color: #fff; }
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-7 pb-12">
+<div class="max-w-5xl mx-auto space-y-7 pb-12 animate-fade-in">
 
     {{-- Back + title --}}
     <div class="flex items-center gap-4 pt-2">
@@ -172,28 +175,28 @@
             Back to Work Logs
         </a>
         <div>
-            <h1 class="text-xl font-extrabold text-slate-900 leading-tight">Session Detail</h1>
-            <p class="text-xs text-slate-400 mt-0.5">{{ $workLog->start_time->format('l, F d, Y') }}</p>
+            <h1 class="text-2xl font-black text-white leading-tight">Session Detail</h1>
+            <p class="text-xs text-gray-400 mt-0.5">{{ $workLog->start_time->format('l, F d, Y') }}</p>
         </div>
     </div>
 
     {{-- Hero --}}
     <div class="detail-hero p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div class="space-y-2 relative z-10">
-            <span class="pill pill-red">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="pill pill-green">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Completed Session
             </span>
-            <h2 class="text-2xl font-extrabold text-white">{{ $workLog->start_time->format('M d, Y') }}</h2>
-            <p class="text-sm text-white/50">{{ $workLog->start_time->format('H:i') }} → {{ $workLog->end_time?->format('H:i') ?? '—' }}</p>
+            <h2 class="text-2xl sm:text-3xl font-black text-white">{{ $workLog->start_time->format('M d, Y') }}</h2>
+            <p class="text-sm text-gray-300 font-mono">{{ $workLog->start_time->format('H:i') }} → {{ $workLog->end_time?->format('H:i') ?? '—' }}</p>
         </div>
         <div class="grid grid-cols-2 gap-3 relative z-10">
             <div class="stat-box">
-                <span class="stat-val">{{ $workLog->duration_minutes }}<span class="text-sm font-semibold text-slate-400 ml-1">min</span></span>
+                <span class="stat-val font-mono">{{ $workLog->duration_minutes }}<span class="text-sm font-semibold text-gray-400 ml-1">min</span></span>
                 <span class="stat-lbl">Duration</span>
             </div>
             <div class="stat-box">
-                <span class="stat-val">{{ $workLog->tasks_data ? count($workLog->tasks_data) : '—' }}</span>
+                <span class="stat-val font-mono">{{ $workLog->tasks_data ? count($workLog->tasks_data) : '—' }}</span>
                 <span class="stat-lbl">Tasks Logged</span>
             </div>
         </div>
@@ -202,18 +205,18 @@
     {{-- Session Overview --}}
     <div class="detail-card">
         <div class="detail-card-header">
-            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
             <h3>Session Overview</h3>
         </div>
         <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
                 <span class="section-label">Planned Focus</span>
-                <div class="text-sm font-semibold text-slate-800 leading-relaxed mt-1 prose-sm">{!! $workLog->planned_tasks ?? '—' !!}</div>
+                <div class="text-sm font-semibold text-white leading-relaxed mt-1 prose-sm">{!! $workLog->planned_tasks ?? '—' !!}</div>
             </div>
             @if($workLog->session_goal)
             <div>
                 <span class="section-label">Session Goal</span>
-                <div class="text-sm font-semibold text-slate-800 leading-relaxed mt-1 prose-sm">{!! $workLog->session_goal !!}</div>
+                <div class="text-sm font-semibold text-white leading-relaxed mt-1 prose-sm">{!! $workLog->session_goal !!}</div>
             </div>
             @endif
             @if($workLog->resources_needed)
@@ -229,7 +232,7 @@
     @if($workLog->actual_tasks)
     <div class="detail-card">
         <div class="detail-card-header">
-            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             <h3>General Work Summary</h3>
         </div>
         <div class="p-6">
@@ -255,7 +258,7 @@
     @if($workLog->tasks_data && count($workLog->tasks_data) > 0)
     <div class="space-y-4">
         <div class="flex items-center gap-3">
-            <h2 class="text-lg font-extrabold text-slate-900">Task Breakdown</h2>
+            <h2 class="text-lg font-extrabold text-white">Task Breakdown</h2>
             <span class="pill pill-slate">{{ count($workLog->tasks_data) }} task(s)</span>
         </div>
 
@@ -287,11 +290,11 @@
             @endphp
             <div class="task-result-card {{ $resultClass }}">
                 <div class="card-top">
-                    <div class="space-y-0.5">
+                    <div class="space-y-1">
                         <span class="pill pill-slate text-[10px]">Task #{{ $task['task_id'] ?? '?' }}</span>
-                        <h4 class="text-sm font-extrabold text-slate-900">{{ $taskModel->title ?? ('Task ID: ' . ($task['task_id'] ?? '?')) }}</h4>
+                        <h4 class="text-base font-extrabold text-white">{{ $taskModel->title ?? ('Task ID: ' . ($task['task_id'] ?? '?')) }}</h4>
                         @if($taskModel?->project)
-                            <p class="text-[11px] text-slate-400">{{ $taskModel->project->name }}</p>
+                            <p class="text-xs text-gray-400">{{ $taskModel->project->name }}</p>
                         @endif
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
@@ -300,7 +303,7 @@
                             <span class="pill pill-navy">{{ $task['progress_percent'] }}%</span>
                         @endif
                         @if(isset($task['time_spent_minutes']) && $task['time_spent_minutes'] > 0)
-                            <span class="pill pill-slate">{{ $task['time_spent_minutes'] }} min</span>
+                            <span class="pill pill-slate font-mono">{{ $task['time_spent_minutes'] }} min</span>
                         @endif
                     </div>
                 </div>
@@ -317,7 +320,7 @@
                     {{-- Evidence --}}
                     @if(!empty($task['evidence']))
                     <div>
-                        <span class="section-label">Evidence / Reference <span class="text-[10px] text-slate-400 normal-case font-normal">({{ $task['evidence_type'] ?? 'N/A' }})</span></span>
+                        <span class="section-label">Evidence / Reference <span class="text-[10px] text-gray-400 normal-case font-normal">({{ $task['evidence_type'] ?? 'N/A' }})</span></span>
                         <div class="evidence-box mt-1 prose-content">{!! $task['evidence'] !!}</div>
                     </div>
                     @endif
@@ -338,7 +341,7 @@
                             @foreach($outputs as $label => $val)
                                 @if($val)
                                 <span class="output-tag">
-                                    <svg class="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    <svg class="w-3 h-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                     {{ $label }}
                                 </span>
                                 @endif
@@ -350,12 +353,12 @@
                     {{-- Blocker Details --}}
                     @if($result === 'Blocked' && !empty($task['blocker_details']))
                     <div class="blocker-badge space-y-3">
-                        <p class="text-xs font-extrabold text-red-700 uppercase tracking-wider">Blocker Details</p>
+                        <p class="text-xs font-extrabold text-red-300 uppercase tracking-wider">Blocker Details</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             @if(!empty($task['blocker_details']['blocked_by']))
                             <div>
                                 <span class="section-label">Blocked By</span>
-                                <p class="text-sm font-semibold text-slate-800">{{ $task['blocker_details']['blocked_by'] }}</p>
+                                <p class="text-sm font-semibold text-white">{{ $task['blocker_details']['blocked_by'] }}</p>
                             </div>
                             @endif
                             @if(!empty($task['blocker_details']['blocking_item']))
@@ -367,7 +370,7 @@
                             @if(!empty($task['blocker_details']['expected_resolution']))
                             <div>
                                 <span class="section-label">Expected Resolution</span>
-                                <p class="text-sm font-semibold text-slate-800">{{ \Carbon\Carbon::parse($task['blocker_details']['expected_resolution'])->format('M d, Y') }}</p>
+                                <p class="text-sm font-semibold text-white">{{ \Carbon\Carbon::parse($task['blocker_details']['expected_resolution'])->format('M d, Y') }}</p>
                             </div>
                             @endif
                             @if(!empty($task['blocker_details']['owner']))
@@ -389,25 +392,25 @@
     @if($workLog->kpi_metrics && count($workLog->kpi_metrics) > 0)
     <div class="detail-card">
         <div class="detail-card-header">
-            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             <h3>KPI Metrics</h3>
         </div>
         <div class="p-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
             @if(isset($workLog->kpi_metrics['tasks_assigned']))
             <div class="stat-box">
-                <span class="stat-val">{{ $workLog->kpi_metrics['tasks_assigned'] }}</span>
+                <span class="stat-val font-mono">{{ $workLog->kpi_metrics['tasks_assigned'] }}</span>
                 <span class="stat-lbl">Tasks Assigned</span>
             </div>
             @endif
             @if(isset($workLog->kpi_metrics['tasks_closed']))
             <div class="stat-box">
-                <span class="stat-val">{{ $workLog->kpi_metrics['tasks_closed'] }}</span>
+                <span class="stat-val font-mono">{{ $workLog->kpi_metrics['tasks_closed'] }}</span>
                 <span class="stat-lbl">Tasks Closed</span>
             </div>
             @endif
             @if(isset($workLog->kpi_metrics['requires_mgmt_attention']))
             <div class="stat-box sm:col-span-2">
-                <span class="stat-val text-sm font-bold {{ $workLog->kpi_metrics['requires_mgmt_attention'] ? 'text-red-500' : 'text-green-600' }}">
+                <span class="stat-val text-sm font-bold {{ $workLog->kpi_metrics['requires_mgmt_attention'] ? 'text-red-400' : 'text-emerald-400' }}">
                     {{ $workLog->kpi_metrics['requires_mgmt_attention'] ? 'Yes — Escalated' : 'No Escalation' }}
                 </span>
                 <span class="stat-lbl">Management Attention</span>
